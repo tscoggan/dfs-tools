@@ -178,7 +178,8 @@ class GameData(id: String) {
             logDebug("\t### Double play")
             hitter.addAtBat
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
-            val allAdvances = Bases.merge(runnerOutAdvances, advances)
+            val batterAdvance = if (runnerOutAdvances.length == 2) List("B-1") else Nil // implied that batter reaches 1st base
+            val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
             pitcher.addOuts(2 - allAdvances.count(_.contains("X"))) // required because not all outs are explicitly specified
             bases.update(hitter, pitcher, allAdvances: _*) // no RBI's credited on double plays
 
@@ -196,6 +197,9 @@ class GameData(id: String) {
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, advances)
             hitter.addRBI(bases.update(hitter, pitcher, allAdvances: _*))
+
+          } else if (play.startsWith("FLE")) {
+            logDebug("\t### Foul ball error")
 
           } else if (play.takeWhile(_ != '(').contains("E")) {
             logDebug("\t### Error")
@@ -333,9 +337,7 @@ class GameData(id: String) {
 
             if (play.startsWith("K+")) update(nextLine.replaceAllLiterally("K+", ""))
             else if (play.startsWith("K23+")) update(nextLine.replaceAllLiterally("K23+", ""))
-
-          } else if (play.startsWith("FLE")) {
-            logDebug("\t### Foul ball error")
+            else bases.update(hitter, pitcher, advances: _*)
 
           } else if (play == "C") {
             logDebug("\t### Catcher interference")

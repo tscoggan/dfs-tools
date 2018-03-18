@@ -131,7 +131,6 @@ object Bases {
    * If there are multiple advances with the same length (example: 2-3 and 2X3) the advance from the subsequent list is chosen.
    */
   def merge(advances: List[Advance]*): List[Advance] = {
-    println("### " + advances.mkString(" ++ "))
     val longestAdvancePerBase = advances.reduceLeft(_ ++ _).groupBy(adv => baseNumberOf(adv.head)) map {
       case (fromBase, advances) => (fromBase, advances.sortBy(lengthOf(_)).last)
     }
