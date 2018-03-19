@@ -24,9 +24,9 @@ case class Game(
     visitingTeamPlayerStats: List[PlayerGameStats],
     homeTeamPlayerStats: List[PlayerGameStats]) {
 
-  override def toString: String = s"$visitingTeam @ $homeTeam (${date.print()}${
-    if (gameNumber != SINGLE_GAME) s" game $gameNumber" else ""
-  })" + "\n$visitingTeam stats:\n" + visitingTeamPlayerStats.map(_.printStats).mkString("\n") + "\n$homeTeam stats:\n" + homeTeamPlayerStats.map(_.printStats).mkString("\n")
+  override def toString: String = s"$visitingTeam @ $homeTeam (${date.print()}${if (gameNumber != SINGLE_GAME) s" game $gameNumber" else ""})" +
+    s"\n  $visitingTeam stats:\n\t" + visitingTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.atBats)).map(_.printStats).mkString("\n\t") +
+    s"\n  $homeTeam stats:\n\t" + homeTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.atBats)).map(_.printStats).mkString("\n\t")
 }
 
 object GameNumbers {
