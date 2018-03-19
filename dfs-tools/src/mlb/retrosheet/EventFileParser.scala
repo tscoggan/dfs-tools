@@ -58,7 +58,7 @@ class EventFileParser(filename: String) {
 class GameData(id: String) {
   import EventFileConstants._
 
-  var bases: Bases = new Bases
+  var bases: Bases = new Bases(this)
 
   var date: Option[Date] = None
   var gameNumber: GameNumber = 0
@@ -89,7 +89,15 @@ class GameData(id: String) {
   val homeTeamPlayers: mutable.ListBuffer[PlayerGameStats] = mutable.ListBuffer.empty
 
   var inning: Int = -1
+  var outsThisInning = 0
   var visitingOrHome: Int = -1
+
+  def recordOuts(numberOfOuts: Int) = {
+    val pitcher = if (visitingOrHome.toInt == VISITING_TEAM) homeTeamPitcher.get else visitingTeamPitcher.get
+    pitcher.addOuts(numberOfOuts)
+    outsThisInning += numberOfOuts
+    if (outsThisInning > 3) logDebug(s"WARNING: outsThisInning = $outsThisInning")
+  }
 
   def update(nextLine: String): GameData = {
     nextLine.splitCSV() match {
@@ -131,9 +139,16 @@ class GameData(id: String) {
 
       case Array("sub", playerID, playerName, visitingOrHome, battingPosition, fieldingPosition) =>
         logDebug(nextLine)
-        val sub = fieldingPosition.toInt match {
-          case PITCHER => PitcherGameStats(playerID, true, battingPosition.toInt)
-          case _       => HitterGameStats(playerID, true, battingPosition.toInt)
+        val sub = (visitingTeamPlayers ++ homeTeamPlayers).find(_.playerID == playerID) // first look to see if player is already in the game (e.g. switching field positions)
+          .getOrElse {
+            fieldingPosition.toInt match {
+              case PITCHER => PitcherGameStats(playerID, true, battingPosition.toInt)
+              case _       => HitterGameStats(playerID, true, battingPosition.toInt)
+            }
+          }
+        if (sub.battingPosition != battingPosition.toInt) {
+          logDebug(s"!!! Changing $sub batting position from ${sub.battingPosition} to ${battingPosition.toInt}")
+          sub.battingPosition = battingPosition.toInt
         }
         winningPitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].win = 1 }
         losingPitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].loss = 1 }
@@ -148,6 +163,7 @@ class GameData(id: String) {
               visitingTeamPlayers += sub
               if (fieldingPosition.toInt == PITCHER) visitingTeamPitcher = Some(sub.asInstanceOf[PitcherGameStats])
               logDebug(s"$sub replaced $subFor for ${visitingTeam.get} in inning $inning (batting position: $battingPosition)")
+              bases.replace(subFor, sub)
             }
           case HOME_TEAM =>
             val subFor = homeTeamActivePlayers.find { case (playerID, p) => p.battingPosition == battingPosition.toInt }.get._2
@@ -157,12 +173,16 @@ class GameData(id: String) {
               homeTeamPlayers += sub
               if (fieldingPosition.toInt == PITCHER) homeTeamPitcher = Some(sub.asInstanceOf[PitcherGameStats])
               logDebug(s"$sub replaced $subFor for ${homeTeam.get} in inning $inning (batting position: $battingPosition)")
+              bases.replace(subFor, sub)
             }
         }
 
       case Array("play", inning, visitingOrHome, batterPlayerID, pitchCount, pitches, event) =>
         logDebug(nextLine)
-        if (this.inning != inning.toInt || this.visitingOrHome != visitingOrHome.toInt) bases.clear
+        if (this.inning != inning.toInt || this.visitingOrHome != visitingOrHome.toInt) {
+          bases.clear
+          outsThisInning = 0
+        }
         this.inning = inning.toInt
         this.visitingOrHome = visitingOrHome.toInt
 
@@ -178,9 +198,9 @@ class GameData(id: String) {
             logDebug("\t### Double play")
             hitter.addAtBat
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
-            val batterAdvance = if (runnerOutAdvances.length == 2) List("B-1") else Nil // implied that batter reaches 1st base
+            val batterAdvance = if ((runnerOutAdvances ++ advances).count(adv => adv.contains("X") && !adv.contains("E")) == 2) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
-            pitcher.addOuts(2 - allAdvances.count(_.contains("X"))) // required because not all outs are explicitly specified
+            recordOuts(2 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
             bases.update(hitter, pitcher, allAdvances: _*) // no RBI's credited on double plays
 
           } else if (play.head.isDigit && modifiers.exists(_.contains("TP"))) {
@@ -188,7 +208,7 @@ class GameData(id: String) {
             hitter.addAtBat
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val allAdvances = Bases.merge(runnerOutAdvances, advances)
-            pitcher.addOuts(3 - allAdvances.count(_.contains("X"))) // required because not all outs are explicitly specified
+            recordOuts(3 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
             bases.update(hitter, pitcher, allAdvances: _*) // no RBI's credited on triple plays
 
           } else if (play.startsWith("FC")) {
@@ -213,7 +233,7 @@ class GameData(id: String) {
             if (modifiers.exists(_.startsWith("FO"))) {
               logDebug("\t### Force out")
               hitter.addAtBat
-              val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
+              val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + nextBase(base.head).get } // runners called out
               val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
               val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
               hitter.addRBI(bases.update(hitter, pitcher, allAdvances: _*))
@@ -221,7 +241,7 @@ class GameData(id: String) {
             } else {
               logDebug("\t### Out")
               hitter.addAtBat
-              pitcher.addOuts(1)
+              recordOuts(1)
               hitter.addRBI(bases.update(hitter, pitcher, advances: _*))
             }
 
@@ -332,12 +352,22 @@ class GameData(id: String) {
           } else if (play.startsWith("K")) {
             logDebug("\t### Strikeout")
             hitter.addAtBat
-            pitcher.addOuts(1)
             pitcher.addStrikeout
 
-            if (play.startsWith("K+")) update(nextLine.replaceAllLiterally("K+", ""))
-            else if (play.startsWith("K23+")) update(nextLine.replaceAllLiterally("K23+", ""))
-            else bases.update(hitter, pitcher, advances: _*)
+            val cleanedAdvances = advances.filterNot(_.startsWith("BX"))
+
+            if (play.startsWith("K+")) {
+              if (!advances.exists(_.startsWith("B-"))) recordOuts(1)
+              update(nextLine.replaceAllLiterally("K+", ""))
+            } else if (play.startsWith("K23+")) { // dropped 3rd strike, throwout at 1st base
+              recordOuts(1)
+              update(nextLine.replaceAllLiterally("K23+", ""))
+            } else if (cleanedAdvances.exists(_.contains("X")) && outsThisInning == 2) { // runner out on (dropped?) 3rd strike --- ignore runner out to avoid double-counting 3rd out
+              recordOuts(1)
+            } else {
+              recordOuts(1)
+              bases.update(hitter, pitcher, cleanedAdvances: _*)
+            }
 
           } else if (play == "C") {
             logDebug("\t### Catcher interference")

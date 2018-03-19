@@ -11,7 +11,7 @@ import utils.Logger._
 trait PlayerGameStats {
   val playerID: PlayerID
   val isStarter: Boolean
-  val battingPosition: Int
+  var battingPosition: Int
 
   var atBats = 0 // actually a count of plate appearances, because walks and sac flies/bunts are included
   def addAtBat = {
@@ -71,13 +71,13 @@ trait PlayerGameStats {
 
   override def toString: String = Players.get(playerID).toString
 
-  def printStats: String = this.toString +
-    s" - AB: $atBats, 1B: $singles, 2B: $doubles, 3B: $triples, HR: $homeRuns, RBI: $rbi, R: $runs, SB: $stolenBases, W: $walks"
+  def printStats: String = { if (battingPosition != 0) battingPosition + ") " else "" } + this.toString +
+    s" - AB: $atBats, 1B: $singles, 2B: $doubles, 3B: $triples, HR: $homeRuns, RBI: $rbi, R: $runs, SB: $stolenBases, W: $walks [FPTS: ${fantasyPoints()}]"
 }
 
-case class HitterGameStats(playerID: PlayerID, isStarter: Boolean, battingPosition: Int) extends PlayerGameStats
+case class HitterGameStats(playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats
 
-case class PitcherGameStats(playerID: PlayerID, isStarter: Boolean, battingPosition: Int) extends PlayerGameStats {
+case class PitcherGameStats(playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
   var hitsAgainst = 0
   def addHitAgainst = {
     hitsAgainst += 1
@@ -116,6 +116,6 @@ case class PitcherGameStats(playerID: PlayerID, isStarter: Boolean, battingPosit
   var completeGame = 0
 
   override def printStats: String = this.toString +
-    s" - Outs: $outs, H: $hitsAgainst, W: $walksAgainst, ER: $earnedRuns, K: $strikeouts" +
-    { if (win > 0) ", Win" else "" } + { if (loss > 0) ", Loss" else "" } + { if (save > 0) ", Save" else "" } + { if (qStart > 0) ", Q-Start" else "" }
+    s" - Outs: $outs, H: $hitsAgainst, W: $walksAgainst, ER: $earnedRuns, K: $strikeouts" + { if (win > 0) ", Win" else "" } +
+    { if (loss > 0) ", Loss" else "" } + { if (save > 0) ", Save" else "" } + { if (qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
 }

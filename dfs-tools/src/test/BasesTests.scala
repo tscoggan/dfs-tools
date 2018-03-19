@@ -32,7 +32,7 @@ class BasesTests extends FunSuite {
   test("Merge works with equal length advances") {
     val adv1 = List("2-3", "1-2")
     val adv2 = List("2X3", "1-3")
-    assert(merge(adv1, adv2) == List("2X3", "1-3"))
+    assert(merge(adv1, adv2) == List("2X3", "1-3") && merge(adv2, adv1) == List("2X3", "1-3"))
   }
 
   test("baseNumberOf works") {

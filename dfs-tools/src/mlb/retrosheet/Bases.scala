@@ -5,7 +5,7 @@ import mlb.model._
 import utils.Logger._
 import mlb.model.CustomTypes._
 
-class Bases {
+class Bases(game: GameData) {
   import Bases._
 
   var baserunners: mutable.Map[BaseNumber, PlayerGameStats] = mutable.Map.empty
@@ -16,6 +16,16 @@ class Bases {
   }
 
   def runnerOn(base: Int): Option[PlayerGameStats] = baserunners.get(base)
+
+  def replace(oldRunner: PlayerGameStats, newRunner: PlayerGameStats): Unit = {
+    baserunners.find { case (baseNum, player) => player.playerID == oldRunner.playerID } match {
+      case Some((baseNum, player)) =>
+        logDebug(s"$newRunner replacing $oldRunner on base ${baseWithNumber(baseNum)}")
+        baserunners(baseNum) = player
+        logDebug(s"Bases updated: ${this.toString}")
+      case None => // do nothing
+    }
+  }
 
   /**
    * Returns # of RBIs credited for runs scored
@@ -44,7 +54,7 @@ class Bases {
                 batter.addRun
                 if (adv.contains("NR") || adv.contains("NORBI")) 0 else 1
               case (BATTER, to) =>
-                if (baserunners.contains(to.asDigit)) logDebug(s"WARNING: Destination base ($to) already has a runner (${baserunners(to.asDigit)})")
+                if (baserunners.contains(to.asDigit) && game.outsThisInning < 3) logDebug(s"WARNING: Destination base ($to) already has a runner (${baserunners(to.asDigit)})")
                 baserunners(to.asDigit) = batter
                 0
               case (from, HOME_BASE) =>
@@ -53,7 +63,7 @@ class Bases {
                 baserunners.remove(from.asDigit)
                 if (adv.contains("NR") || adv.contains("NORBI")) 0 else 1
               case (from, to) =>
-                if (baserunners.contains(to.asDigit)) logDebug(s"WARNING: Destination base ($to) already has a runner (${baserunners(to.asDigit)})")
+                if (baserunners.contains(to.asDigit) && game.outsThisInning < 3) logDebug(s"WARNING: Destination base ($to) already has a runner (${baserunners(to.asDigit)})")
                 if (!baserunners.contains(from.asDigit)) logDebug(s"WARNING: Source base ($from) has no runner")
                 baserunners(to.asDigit) = baserunners(from.asDigit)
                 baserunners.remove(from.asDigit)
@@ -64,7 +74,7 @@ class Bases {
           val delim = adv.indexOf('X')
           val fromBase = adv.charAt(delim - 1)
           if (fromBase.isDigit) baserunners.remove(fromBase.asDigit)
-          pitcher.addOuts(1)
+          game.recordOuts(1)
           0
         } else throw new Exception(s"Invalid baserunner advance: $adv")
       }.sum
@@ -127,13 +137,16 @@ object Bases {
   }
 
   /**
-   * Merges multiple lists of base advances into a single list with one advance (the longest one) per baserunner.
-   * If there are multiple advances with the same length (example: 2-3 and 2X3) the advance from the subsequent list is chosen.
+   * Merges multiple lists of base advances into a single list with one advance per baserunner.
+   * If there are multiple advances per baserunner, the following precedence order is used to choose one:
+   * 1) Advance containing an 'X' (for an out)
+   * 2) Longest advance
+   * 3) Advance from the last list
    */
   def merge(advances: List[Advance]*): List[Advance] = {
-    val longestAdvancePerBase = advances.reduceLeft(_ ++ _).groupBy(adv => baseNumberOf(adv.head)) map {
-      case (fromBase, advances) => (fromBase, advances.sortBy(lengthOf(_)).last)
+    val chosenAdvancePerBase = advances.reduceLeft(_ ++ _).groupBy(adv => baseNumberOf(adv.head)) map {
+      case (fromBase, advances) => (fromBase, advances.find(_.contains("X")).getOrElse(advances.sortBy(lengthOf(_)).last))
     }
-    longestAdvancePerBase.toList.sortBy { case (fromBase, adv) => fromBase }.reverse.map(_._2)
+    chosenAdvancePerBase.toList.sortBy { case (fromBase, adv) => fromBase }.reverse.map(_._2)
   }
 }
