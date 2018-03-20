@@ -1,6 +1,7 @@
 package utils
 
 import scala.annotation.tailrec
+import java.util.Date
 
 object StringUtils {
 
@@ -46,6 +47,8 @@ object StringUtils {
       }
       next(Nil, s)
     }
+
+    def toDate(format: String = "yyyy-MM-dd"): Date = DateTimeUtils.getDateFormat(format).parse(s)
 
   }
 
