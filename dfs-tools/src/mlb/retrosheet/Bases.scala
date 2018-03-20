@@ -21,7 +21,7 @@ class Bases(game: GameData) {
     baserunners.find { case (baseNum, player) => player.playerID == oldRunner.playerID } match {
       case Some((baseNum, player)) =>
         logDebug(s"$newRunner replacing $oldRunner on base ${baseWithNumber(baseNum)}")
-        baserunners(baseNum) = player
+        baserunners(baseNum) = newRunner
         logDebug(s"Bases updated: ${this.toString}")
       case None => // do nothing
     }
