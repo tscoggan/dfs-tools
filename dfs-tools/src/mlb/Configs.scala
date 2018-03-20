@@ -8,7 +8,7 @@ import utils.Logger._
 object Configs {
   private val conf = ConfigFactory.load.getConfig("mlb")
 
-  val dataFileDir: String = conf.getString("data_file_dir")
+  val dataFileDir_2017: String = conf.getString("data_file_dir_2017")
   
   val teamsFileName: String = conf.getString("teams_file")
   

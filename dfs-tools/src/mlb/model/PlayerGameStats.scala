@@ -12,6 +12,8 @@ trait PlayerGameStats {
   val playerID: PlayerID
   val isStarter: Boolean
   var battingPosition: Int
+  
+  lazy val player: Player = Players.get(playerID)
 
   var atBats = 0 // actually a count of plate appearances, because walks and sac flies/bunts are included
   def addAtBat = {

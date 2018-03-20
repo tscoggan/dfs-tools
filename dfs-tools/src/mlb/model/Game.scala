@@ -24,6 +24,10 @@ case class Game(
     visitingTeamPlayerStats: List[PlayerGameStats],
     homeTeamPlayerStats: List[PlayerGameStats]) {
 
+  lazy val allPlayerStats: List[PlayerGameStats] = visitingTeamPlayerStats ++ homeTeamPlayerStats
+  
+  lazy val starterStats: List[PlayerGameStats] = visitingTeamPlayerStats.filter(_.isStarter) ++ homeTeamPlayerStats.filter(_.isStarter)
+
   override def toString: String = s"$visitingTeam @ $homeTeam (${date.print()}${if (gameNumber != SINGLE_GAME) s" game $gameNumber" else ""})" +
     s"\n  $visitingTeam stats:\n\t" + visitingTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.atBats)).map(_.printStats).mkString("\n\t") +
     s"\n  $homeTeam stats:\n\t" + homeTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.atBats)).map(_.printStats).mkString("\n\t")
