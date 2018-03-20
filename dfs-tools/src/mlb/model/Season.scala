@@ -5,12 +5,12 @@ import mlb._
 
 class Season(year: Int, games: List[Game]) {
 
-  lazy val playerGameStats: Map[Player, List[PlayerGameStats]] = games.flatMap(_.allPlayerStats).groupBy(_.player)
+  val statsByPlayer: Map[PlayerID, PlayerSeasonStats] = games.flatMap(_.allPlayerStats).groupBy(_.player).map {
+    case (player, games) => (player.id, PlayerSeasonStats(player, games))
+  }
 
-  lazy val starterGameStats: Map[Player, List[PlayerGameStats]] = games.flatMap(_.starterStats).groupBy(_.player)
-
-  def allStatsFor(playerID: PlayerID): List[PlayerGameStats] = playerGameStats.getOrElse(Players.get(playerID), Nil)
-
-  def starterStatsFor(playerID: PlayerID): List[PlayerGameStats] = starterGameStats.getOrElse(Players.get(playerID), Nil)
+  lazy val allPlayers: List[PlayerSeasonStats] = statsByPlayer.values.toList
+  lazy val allHitters: List[PlayerSeasonStats] = allPlayers.filterNot(_.isPitcher)
+  lazy val allPitchers: List[PlayerSeasonStats] = allPlayers.filter(_.isPitcher)
 
 }
