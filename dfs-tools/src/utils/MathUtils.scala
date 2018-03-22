@@ -22,6 +22,15 @@ object MathUtils {
     val xsAdjusted = xs.map { value => scala.math.min(value.toDouble - minAcceptableValue.toDouble, 0) }
     math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
   }
+  
+  /**
+   * A "upside deviation" measure that is similar to standard deviation but only measures variance above a specified
+   * benchmark. See https://www.managedfuturesinvesting.com/a-better-measure-of-risk-standard-deviation-or-downside-deviation/
+   */
+  def upsideDev[T: Numeric](xs: Iterable[T], benchmark: T): Double = {
+    val xsAdjusted = xs.map { value => scala.math.max(value.toDouble - benchmark.toDouble, 0) }
+    math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
+  }
 
   /**
    * Returns % of elements in the specified list for which the `isTrue` function is true.

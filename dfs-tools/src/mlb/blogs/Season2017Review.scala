@@ -24,6 +24,18 @@ object Season2017Review extends App {
 
   log(s"Finished loading ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
 
+  val hitterLeagueAvgPointsPerGameStarted = mean(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  val hitterLeaguePointsPerGameStartedStdDev = stdDev(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  log(s"League avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${hitterLeaguePointsPerGameStartedStdDev.rounded(2)}")
+
+  val pitcherLeagueAvgPointsPerGameStarted = mean(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  val pitcherLeaguePointsPerGameStartedStdDev = stdDev(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  log(s"League avg PPG for pitchers: ${pitcherLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${pitcherLeaguePointsPerGameStartedStdDev.rounded(2)}")
+
+  case class Stats(stdDev: Double, downsideDev: Double, upsideDev: Double) {
+    val netUpsideDev: Double = upsideDev - downsideDev
+  }
+
   // Part 1:
 
   log("\n***********************************************")
@@ -129,22 +141,37 @@ object Season2017Review extends App {
   log("***Which of 2017's top players were the most consistently good? ***")
   log("*******************************************************************\n")
 
-  
-  
-  
+  log("\n### Hitters with highest net upside deviation in fantasy points per game started (min 25 games started): ###\n")
+  val pointsPerGameStartedDeviation: List[(PlayerSeasonStats, Stats)] = season.allHitters
+    .filter(p => p.numberOfGamesStarted >= 25)
+    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints())),
+      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), hitterLeagueAvgPointsPerGameStarted),
+      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), hitterLeagueAvgPointsPerGameStarted))))
+  pointsPerGameStartedDeviation.sortBy(_._2.netUpsideDev).reverse.take(30).map {
+    case (p, stats) =>
+      s"${p.player} - ${stats.netUpsideDev.rounded(2)} Net Upside Dev, ${stats.downsideDev.rounded(2)} Downside Dev" +
+        s", ${stats.upsideDev.rounded(2)} Upside Dev, ${stats.stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
+        s", ${p.numberOfGamesStarted} games started)"
+  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+
+  log("\n### Pitchers with highest net upside deviation in fantasy points per game started (min 10 games started): ###\n")
+  val pitcherPointsPerGameStartedDeviation: List[(PlayerSeasonStats, Stats)] = season.allPitchers
+    .filter(p => p.numberOfGamesStarted >= 10)
+    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints())),
+      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev),
+      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev))))
+  pitcherPointsPerGameStartedDeviation.sortBy(_._2.netUpsideDev).reverse.take(30).map {
+    case (p, stats) =>
+      s"${p.player} - ${stats.netUpsideDev.rounded(2)} Net Upside Dev, ${stats.downsideDev.rounded(2)} Downside Dev" +
+        s", ${stats.upsideDev.rounded(2)} Upside Dev, ${stats.stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
+        s", ${p.numberOfGamesStarted} games started)"
+  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+
   // Part 3:
 
   log("\n********************************************************")
   log("***Who were the best high-ceiling players for GPP's? ***")
   log("********************************************************\n")
-
-  val hitterLeagueAvgPointsPerGameStarted = mean(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  val hitterLeaguePointsPerGameStartedStdDev = stdDev(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  log(s"League avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${hitterLeaguePointsPerGameStartedStdDev.rounded(2)}")
-
-  val pitcherLeagueAvgPointsPerGameStarted = mean(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  val pitcherLeaguePointsPerGameStartedStdDev = stdDev(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  log(s"League avg PPG for pitchers: ${pitcherLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${pitcherLeaguePointsPerGameStartedStdDev.rounded(2)}")
 
   log("\n### Hitters with highest % of games started > 1 std deviation above avg FPTS for all starters (min 25 games started): ###\n")
   val hitter1PPGLeagueAvgPlus1StdDev = hitterLeagueAvgPointsPerGameStarted + hitterLeaguePointsPerGameStartedStdDev
