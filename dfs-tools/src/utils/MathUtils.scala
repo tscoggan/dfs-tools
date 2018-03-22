@@ -14,4 +14,26 @@ object MathUtils {
 
   def stdDev[T: Numeric](xs: Iterable[T]): Double = math.sqrt(variance(xs))
 
+  /**
+   * A "downside deviation" measure that is similar to standard deviation but only measures variance below a specified
+   * minimum threshold. See https://www.managedfuturesinvesting.com/a-better-measure-of-risk-standard-deviation-or-downside-deviation/
+   */
+  def downsideDev[T: Numeric](xs: Iterable[T], minAcceptableValue: T): Double = {
+    val xsAdjusted = xs.map { value => scala.math.min(value.toDouble - minAcceptableValue.toDouble, 0) }
+    math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
+  }
+
+  /**
+   * Returns % of elements in the specified list for which the `isTrue` function is true.
+   */
+  def percent[T](xs: Iterable[T], isTrue: T => Boolean): Double = {
+    var total = 0
+    var matchCount = 0
+    xs.foreach { x =>
+      total += 1
+      if (isTrue(x)) matchCount += 1
+    }
+    (matchCount.toDouble / total.toDouble) * 100d
+  }
+
 }

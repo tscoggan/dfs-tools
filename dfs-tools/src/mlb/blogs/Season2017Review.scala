@@ -24,6 +24,8 @@ object Season2017Review extends App {
 
   log(s"Finished loading ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
 
+  // Part 1:
+
   log("\n***********************************************")
   log("***Who were the top-scoring players in 2017?***")
   log("***********************************************\n")
@@ -89,15 +91,17 @@ object Season2017Review extends App {
   pitcherMostImprovedPointsPerGameStarted.map {
     case (p, fptsIncrease) =>
       s"${p.player} - ${fptsIncrease.rounded(2)} FPTS increase " +
-        s"(1st half: ${season1stHalf.statsByPlayer(p.playerID).fptsPerGameAsStarter().rounded(1)} FPTS/game in ${season1stHalf.statsByPlayer(p.playerID).gamesStarted} starts)" +
-        s"(2nd half: ${season2ndHalf.statsByPlayer(p.playerID).fptsPerGameAsStarter().rounded(1)} FPTS/game in ${season2ndHalf.statsByPlayer(p.playerID).gamesStarted} starts)"
+        s"(1st half: ${season1stHalf.statsByPlayer(p.playerID).fptsPerGameAsStarter().rounded(1)} FPTS/game in ${season1stHalf.statsByPlayer(p.playerID).numberOfGamesStarted} starts)" +
+        s"(2nd half: ${season2ndHalf.statsByPlayer(p.playerID).fptsPerGameAsStarter().rounded(1)} FPTS/game in ${season2ndHalf.statsByPlayer(p.playerID).numberOfGamesStarted} starts)"
   }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+
+  // Part 2:
 
   log("\n************************************************************")
   log("***Which of 2017's top players were the most consistent? ***")
   log("************************************************************\n")
 
-  log("\n### Hitters with lowest standard deviation in DFS pts per game started (min 25 games started, min 10 FPTS/game): ###\n")
+  log("\n### Hitters with lowest standard deviation in FPTS per game started (min 25 games started, min 10 FPTS/game): ###\n")
   val pointsPerGameStartedStdDev: List[(PlayerSeasonStats, Double)] = season.allHitters
     .filter(p => p.numberOfGamesStarted >= 25 && p.fptsPerGameAsStarter() >= 10)
     .map(p => (p, stdDev(p.gamesStarted.map(_.fantasyPoints()))))
@@ -106,29 +110,64 @@ object Season2017Review extends App {
       s"${p.player} - ${stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game, ${p.numberOfGamesStarted} games started)"
   }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
 
-  log("\n### Pitchers with lowest standard deviation in DFS pts per game started (min 10 games started, min 30 FPTS/game): ###\n")
+  log("\n### Top hitters ranked by standard deviation in FPTS per game started (min 25 games started, min 13 FPTS/game): ###\n")
+  pointsPerGameStartedStdDev.filter(_._1.fptsPerGameAsStarter() >= 13).sortBy(_._2).map {
+    case (p, stdDev) =>
+      s"${p.player} - ${stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game, ${p.numberOfGamesStarted} games started)"
+  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+
+  log("\n### Top pitchers with lowest standard deviation in FPTS per game started (min 10 games started, min 35 FPTS/game): ###\n")
   val pitcherPointsPerGameStartedStdDev: List[(PlayerSeasonStats, Double)] = season.allPitchers
-    .filter(p => p.numberOfGamesStarted >= 10 && p.fptsPerGameAsStarter() >= 30)
+    .filter(p => p.numberOfGamesStarted >= 10 && p.fptsPerGameAsStarter() >= 35)
     .map(p => (p, stdDev(p.gamesStarted.map(_.fantasyPoints()))))
-  pitcherPointsPerGameStartedStdDev.sortBy(_._2).take(10).map {
+  pitcherPointsPerGameStartedStdDev.sortBy(_._2).map {
     case (p, stdDev) =>
       s"${p.player} - ${stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game, ${p.numberOfGamesStarted} games started)"
   }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
 
-  log("\n*************************************************************")
-  log("***Which of 2017's top players were the least consistent? ***")
-  log("*************************************************************\n")
+  log("\n*******************************************************************")
+  log("***Which of 2017's top players were the most consistently good? ***")
+  log("*******************************************************************\n")
 
-  log("\n### Hitters with highest standard deviation in DFS pts per game started (min 25 games started, min 10 FPTS/game): ###\n")
-  pointsPerGameStartedStdDev.sortBy(_._2).reverse.take(10).map {
-    case (p, stdDev) =>
-      s"${p.player} - ${stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game, ${p.numberOfGamesStarted} games started)"
+  
+  
+  
+  // Part 3:
+
+  log("\n********************************************************")
+  log("***Who were the best high-ceiling players for GPP's? ***")
+  log("********************************************************\n")
+
+  val hitterLeagueAvgPointsPerGameStarted = mean(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  val hitterLeaguePointsPerGameStartedStdDev = stdDev(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  log(s"League avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${hitterLeaguePointsPerGameStartedStdDev.rounded(2)}")
+
+  val pitcherLeagueAvgPointsPerGameStarted = mean(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  val pitcherLeaguePointsPerGameStartedStdDev = stdDev(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
+  log(s"League avg PPG for pitchers: ${pitcherLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${pitcherLeaguePointsPerGameStartedStdDev.rounded(2)}")
+
+  log("\n### Hitters with highest % of games started > 1 std deviation above avg FPTS for all starters (min 25 games started): ###\n")
+  val hitter1PPGLeagueAvgPlus1StdDev = hitterLeagueAvgPointsPerGameStarted + hitterLeaguePointsPerGameStartedStdDev
+  val hitterPercentOfGamesAboveLeagueAvgPlus1StdDev = season.allHitters
+    .filter(p => p.numberOfGamesStarted >= 25)
+    .map(p => (p, percent(p.gamesStarted, (pgs: PlayerGameStats) => pgs.fantasyPoints() > hitter1PPGLeagueAvgPlus1StdDev)))
+    .sortBy(_._2).reverse
+  log("1 std deviation above avg FPTS for all starters = " + hitter1PPGLeagueAvgPlus1StdDev.rounded(1))
+  hitterPercentOfGamesAboveLeagueAvgPlus1StdDev.take(10).map {
+    case (p, percent) =>
+      s"${p.player} - ${percent.rounded(1)}% (${p.numberOfGamesStarted} games started)"
   }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
 
-  log("\n### Pitchers with highest standard deviation in DFS pts per game started (min 10 games started, min 30 FPTS/game): ###\n")
-  pitcherPointsPerGameStartedStdDev.sortBy(_._2).reverse.take(10).map {
-    case (p, stdDev) =>
-      s"${p.player} - ${stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game, ${p.numberOfGamesStarted} games started)"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  log("\n**************************************************************")
+  log("***Who were the safest (low floor) players for cash games? ***")
+  log("**************************************************************\n")
+
+  //highest % of games > 1 std deviation below avg FPTS for all starters
+
+  log("\n*********************************************")
+  log("***Which positions score the most points? ***")
+  log("*********************************************\n")
+
+  //average FPTS per game for all starters per position
 
 }
