@@ -5,9 +5,11 @@ import mlb.model._
 import utils.FloatUtils._
 
 class ScoringSystemTests extends FunSuite {
+  
+  val date = java.util.Calendar.getInstance.getTime
 
   test("FanDuel MLB scoring system works for hitter") {
-    val p = HitterGameStats("bellj005", true, 3)
+    val p = HitterGameStats(date, "bellj005", true, 3)
     p.atBats = 5
     p.singles = 1
     p.doubles = 1
@@ -21,7 +23,7 @@ class ScoringSystemTests extends FunSuite {
   }
   
   test("FanDuel MLB scoring system works for hitter 2") {
-    val p = HitterGameStats("bellj005", true, 3)
+    val p = HitterGameStats(date, "bellj005", true, 3)
     p.atBats = 4
     p.triples = 1
     p.homeRuns = 1
@@ -31,7 +33,7 @@ class ScoringSystemTests extends FunSuite {
   }
 
   test("DraftKings MLB scoring system works for hitter") {
-    val p = HitterGameStats("bellj005", true, 3)
+    val p = HitterGameStats(date, "bellj005", true, 3)
     p.atBats = 5
     p.singles = 1
     p.doubles = 1
@@ -45,7 +47,7 @@ class ScoringSystemTests extends FunSuite {
   }
 
   test("FanDuel MLB scoring system works for pitcher with qStart & win") {
-    val p = PitcherGameStats("gonzg003", true, 0)
+    val p = PitcherGameStats(date, "gonzg003", true, 0)
     p.hitsAgainst = 6
     p.walksAgainst = 3
     p.earnedRuns = 3
@@ -56,7 +58,7 @@ class ScoringSystemTests extends FunSuite {
   }
   
   test("FanDuel MLB scoring system works for pitcher without qStart & win") {
-    val p = PitcherGameStats("gonzg003", true, 0)
+    val p = PitcherGameStats(date, "gonzg003", true, 0)
     p.atBats = 5
     p.singles = 1
     p.doubles = 1
@@ -77,7 +79,7 @@ class ScoringSystemTests extends FunSuite {
   }
   
   test("FanDuel MLB scoring system works for pitcher with qStart but no win") {
-    val p = PitcherGameStats("gonzg003", true, 0)    
+    val p = PitcherGameStats(date, "gonzg003", true, 0)    
     p.earnedRuns = 1
     p.strikeouts = 3
     p.outs = 18
@@ -85,7 +87,7 @@ class ScoringSystemTests extends FunSuite {
   }
   
   test("DraftKings MLB scoring system works for pitcher with no hitter") {
-    val p = PitcherGameStats("gonzg003", true, 0)
+    val p = PitcherGameStats(date, "gonzg003", true, 0)
     p.atBats = 5
     p.singles = 1
     p.doubles = 1

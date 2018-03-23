@@ -3,12 +3,14 @@ package mlb.model
 import mlb._
 import CustomTypes._
 import utils.Logger._
+import java.util.Date
 
 /**
  * Single-game stats for a player
  */
 
 trait PlayerGameStats {
+  val gameDate: Date
   val playerID: PlayerID
   val isStarter: Boolean
   var battingPosition: Int
@@ -77,9 +79,9 @@ trait PlayerGameStats {
     s" - AB: $atBats, 1B: $singles, 2B: $doubles, 3B: $triples, HR: $homeRuns, RBI: $rbi, R: $runs, SB: $stolenBases, W: $walks [FPTS: ${fantasyPoints()}]"
 }
 
-case class HitterGameStats(playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats
+case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats
 
-case class PitcherGameStats(playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
+case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
   var hitsAgainst = 0
   def addHitAgainst = {
     hitsAgainst += 1

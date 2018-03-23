@@ -119,8 +119,8 @@ class GameData(id: String) {
       case Array("start", playerID, playerName, visitingOrHome, battingPosition, fieldingPosition) =>
         logDebug(nextLine)
         val starter = fieldingPosition.toInt match {
-          case PITCHER => PitcherGameStats(playerID, true, battingPosition.toInt)
-          case _       => HitterGameStats(playerID, true, battingPosition.toInt)
+          case PITCHER => PitcherGameStats(date.get, playerID, true, battingPosition.toInt)
+          case _       => HitterGameStats(date.get, playerID, true, battingPosition.toInt)
         }
         winningPitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].win = 1 }
         losingPitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].loss = 1 }
@@ -142,8 +142,8 @@ class GameData(id: String) {
         val sub = (visitingTeamPlayers ++ homeTeamPlayers).find(_.playerID == playerID) // first look to see if player is already in the game (e.g. switching field positions)
           .getOrElse {
             fieldingPosition.toInt match {
-              case PITCHER => PitcherGameStats(playerID, true, battingPosition.toInt)
-              case _       => HitterGameStats(playerID, true, battingPosition.toInt)
+              case PITCHER => PitcherGameStats(date.get, playerID, true, battingPosition.toInt)
+              case _       => HitterGameStats(date.get, playerID, true, battingPosition.toInt)
             }
           }
         if (sub.battingPosition != battingPosition.toInt) {
