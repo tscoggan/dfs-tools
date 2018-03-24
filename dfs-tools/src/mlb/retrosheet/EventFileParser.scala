@@ -142,8 +142,8 @@ class GameData(id: String) {
         val sub = (visitingTeamPlayers ++ homeTeamPlayers).find(_.playerID == playerID) // first look to see if player is already in the game (e.g. switching field positions)
           .getOrElse {
             fieldingPosition.toInt match {
-              case PITCHER => PitcherGameStats(date.get, playerID, true, battingPosition.toInt)
-              case _       => HitterGameStats(date.get, playerID, true, battingPosition.toInt)
+              case PITCHER => PitcherGameStats(date.get, playerID, false, battingPosition.toInt)
+              case _       => HitterGameStats(date.get, playerID, false, battingPosition.toInt)
             }
           }
         if (sub.battingPosition != battingPosition.toInt) {
