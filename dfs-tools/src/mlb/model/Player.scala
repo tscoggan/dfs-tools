@@ -14,5 +14,5 @@ case class Player (
   teamID: TeamID,
   position: Position) {
   
-  override def toString: String = s"$name ($position, $teamID)"
+  override def toString: String = s"$name ($position)"//, $teamID)"
 }

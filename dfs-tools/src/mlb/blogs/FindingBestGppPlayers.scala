@@ -45,68 +45,124 @@ object FindingBestGppPlayers extends App {
   val pitcherPointsPerGameStartedDeviation: List[(PlayerSeasonStats, Stats)] = season.allPitchers
     .filter(p => p.numberOfGamesStarted >= 10)
     .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints())),
-      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted), // + pitcherLeaguePointsPerGameStartedStdDev),
-      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted))))// + pitcherLeaguePointsPerGameStartedStdDev))))
+      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev),
+      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev))))
 
   log("\n**************************************************")
   log("***How can we identify good cash game players? ***")
   log("**************************************************\n")
 
   log("\n### Hitters with lowest downside deviation in fantasy points per game started (min 25 games started): ###\n")
-  pointsPerGameStartedDeviation.sortBy(_._2.downsideDev).take(30).map {
-    case (p, stats) =>
-      s"${p.player} - ${stats.downsideDev.rounded(2)} Downside Dev" +
-        s", ${stats.upsideDev.rounded(2)} Upside Dev, ${stats.stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
-        s", ${p.numberOfGamesStarted} games started)" //+ s"\nGame log: ${p.gamesStarted.sortBy(_.gameDate).map(_.fantasyPoints()).mkString(", ")}"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  log(toHtmlTable(
+    List("Player", "Downside deviation", "Upside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
+    pointsPerGameStartedDeviation.sortBy(_._2.downsideDev).take(30).map {
+      case (p, stats) =>
+        List(p.player,
+          stats.downsideDev.rounded(2),
+          stats.upsideDev.rounded(2),
+          stats.stdDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
 
   log("\n### Pitchers with lowest downside deviation in fantasy points per game started (min 10 games started): ###\n")
-  pitcherPointsPerGameStartedDeviation.sortBy(_._2.downsideDev).take(30).map {
-    case (p, stats) =>
-      s"${p.player} - ${stats.downsideDev.rounded(2)} Downside Dev" +
-        s", ${stats.upsideDev.rounded(2)} Upside Dev, ${stats.stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
-        s", ${p.numberOfGamesStarted} games started)" + s"\nGame log: ${p.gamesStarted.sortBy(_.gameDate).map(_.fantasyPoints()).mkString(", ")}"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  log(toHtmlTable(
+    List("Player", "Downside deviation", "Upside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
+    pitcherPointsPerGameStartedDeviation.sortBy(_._2.downsideDev).take(30).map {
+      case (p, stats) =>
+        List(p.player,
+          stats.downsideDev.rounded(2),
+          stats.upsideDev.rounded(2),
+          stats.stdDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
 
   log("\n********************************************")
   log("***How can we identify good GPP players? ***")
   log("********************************************\n")
 
   log("\n### Hitters with highest upside deviation in fantasy points per game started (min 25 games started): ###\n")
-  pointsPerGameStartedDeviation.sortBy(_._2.upsideDev).reverse.take(30).map {
-    case (p, stats) =>
-      s"${p.player} - ${stats.upsideDev.rounded(2)} Upside Dev" +
-        s", ${stats.downsideDev.rounded(2)} Downside Dev, ${stats.stdDev.rounded(2)} Std Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
-        s", ${p.numberOfGamesStarted} games started)" //+ s"\nGame log: ${p.gamesStarted.sortBy(_.gameDate).map(_.fantasyPoints()).mkString(", ")}"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  log(toHtmlTable(
+    List("Player", "Upside deviation", "Downside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
+    pointsPerGameStartedDeviation.sortBy(_._2.upsideDev).reverse.take(30).map {
+      case (p, stats) =>
+        List(p.player,
+          stats.upsideDev.rounded(2),
+          stats.downsideDev.rounded(2),
+          stats.stdDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
 
-  log("\n### Hitters with highest % of games started > 1 std deviation above avg FPTS for all starters (min 25 games started): ###\n")
-  val hitter1PPGLeagueAvgPlus1StdDev = hitterLeagueAvgPointsPerGameStarted + hitterLeaguePointsPerGameStartedStdDev
-  val hitterPercentOfGamesAboveLeagueAvgPlus1StdDev = season.allHitters
-    .filter(p => p.numberOfGamesStarted >= 25)
-    .map(p => (p, percent(p.gamesStarted, (pgs: PlayerGameStats) => pgs.fantasyPoints() > hitter1PPGLeagueAvgPlus1StdDev)))
-    .sortBy(_._2).reverse
-  log("1 std deviation above avg FPTS for all starters = " + hitter1PPGLeagueAvgPlus1StdDev.rounded(1))
-  hitterPercentOfGamesAboveLeagueAvgPlus1StdDev.take(30).map {
-    case (p, percent) =>
-      s"${p.player} - ${percent.rounded(1)}% (${p.numberOfGamesStarted} games started)"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  //  log("\n### Hitters with highest % of games started > 1 std deviation above avg FPTS for all starters (min 25 games started): ###\n")
+  //  val hitter1PPGLeagueAvgPlus1StdDev = hitterLeagueAvgPointsPerGameStarted + hitterLeaguePointsPerGameStartedStdDev
+  //  val hitterPercentOfGamesAboveLeagueAvgPlus1StdDev = season.allHitters
+  //    .filter(p => p.numberOfGamesStarted >= 25)
+  //    .map(p => (p, percent(p.gamesStarted, (pgs: PlayerGameStats) => pgs.fantasyPoints() > hitter1PPGLeagueAvgPlus1StdDev)))
+  //    .sortBy(_._2).reverse
+  //  log("1 std deviation above avg FPTS for all starters = " + hitter1PPGLeagueAvgPlus1StdDev.rounded(1))
+  //  hitterPercentOfGamesAboveLeagueAvgPlus1StdDev.take(30).map {
+  //    case (p, percent) =>
+  //      s"${p.player} - ${percent.rounded(1)}% (${p.numberOfGamesStarted} games started)"
+  //  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
 
-  log("\n### Hitters with highest (upside deviation - avg FPTS/game) in fantasy points per game started (min 25 games started): ###\n")
-  pointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev - p.fptsPerGameAsStarter() }.reverse.take(30).map {
-    case (p, stats) =>
-      s"${p.player} - ${(stats.upsideDev - p.fptsPerGameAsStarter()).rounded(2)} Upside Dev-FPPG delta, ${stats.downsideDev.rounded(2)} Downside Dev" +
-        s", ${stats.upsideDev.rounded(2)} Upside Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
-        s", ${p.numberOfGamesStarted} games started)" + s"\nGame log: ${p.gamesStarted.sortBy(_.gameDate).map(_.fantasyPoints()).mkString(", ")}"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  log("\n### Hitters with highest (upside deviation / avg FPTS/game) in fantasy points per game started (min 25 games started): ###\n")
+  log(toHtmlTable(
+    List("Player", "Upside Dev / FPPG", "Downside deviation", "Upside deviation", "Avg FPTS / game", "# of games started"),
+    pointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.fptsPerGameAsStarter() }.reverse.take(30).map {
+      case (p, stats) =>
+        List(p.player,
+          (stats.upsideDev / p.fptsPerGameAsStarter()).rounded(2),
+          stats.downsideDev.rounded(2),
+          stats.upsideDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
 
-  log("\n### Pitchers with highest (upside deviation - avg FPTS/game) in fantasy points per game started (min 10 games started): ###\n")
-  pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev - p.fptsPerGameAsStarter() }.reverse.take(30).map {
-    case (p, stats) =>
-      s"${p.player} - ${(stats.upsideDev - p.fptsPerGameAsStarter()).rounded(2)} Upside Dev-FPPG delta, ${stats.downsideDev.rounded(2)} Downside Dev" +
-        s", ${stats.upsideDev.rounded(2)} Upside Dev (${p.fptsPerGameAsStarter().rounded(1)} FPTS/game" +
-        s", ${p.numberOfGamesStarted} games started)" + //s"\nGame log: ${p.gamesStarted.sortBy(_.gameDate).map(_.fantasyPoints()).mkString(", ")}"
-        s"\nGame log: ${p.gamesStarted.sortBy(_.gameDate).map(p => p.gameDate + " -> " +p.fantasyPoints()).mkString(", ")}"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  //  val pitcherPointsPerGameStartedDeviation2: List[(PlayerSeasonStats, Stats)] = season.allPitchers
+  //    .filter(p => p.numberOfGamesStarted >= 10)
+  //    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints())),
+  //      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted),
+  //      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted))))
+
+  log("\n### Pitchers with highest (upside deviation / avg FPTS/game) in fantasy points per game started (min 10 games started): ###\n")
+  log(toHtmlTable(
+    List("Player", "Upside Dev / FPPG", "Downside deviation", "Upside deviation", "Avg FPTS / game", "# of games started"),
+    pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.fptsPerGameAsStarter() }.reverse.take(30).map {
+      case (p, stats) =>
+        List(p.player,
+          (stats.upsideDev / p.fptsPerGameAsStarter()).rounded(2),
+          stats.downsideDev.rounded(2),
+          stats.upsideDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
+
+  log("\n### Hitters with highest net upside deviation in fantasy points per game started (min 25 games started): ###\n")
+  log(toHtmlTable(
+    List("Player", "Net upside deviation", "Upside deviation", "Downside deviation", "Avg FPTS / game", "# of games started"),
+    pointsPerGameStartedDeviation.sortBy { case (p, s) => s.netUpsideDev }.reverse.take(20).map {
+      case (p, stats) =>
+        List(p.player,
+          stats.netUpsideDev.rounded(2),
+          stats.upsideDev.rounded(2),
+          stats.downsideDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
+
+  log("\n### Pitchers with highest net upside deviation in fantasy points per game started (min 10 games started): ###\n")
+  log(toHtmlTable(
+    List("Player", "Net upside deviation", "Upside deviation", "Downside deviation", "Avg FPTS / game", "# of games started"),
+    pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.netUpsideDev }.reverse.take(20).map {
+      case (p, stats) =>
+        List(p.player,
+          stats.netUpsideDev.rounded(2),
+          stats.upsideDev.rounded(2),
+          stats.downsideDev.rounded(2),
+          p.fptsPerGameAsStarter().rounded(1),
+          p.numberOfGamesStarted)
+    }))
 
 }
