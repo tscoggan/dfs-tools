@@ -8,14 +8,20 @@ import utils.Logger._
 object Configs {
   private val conf = ConfigFactory.load.getConfig("mlb")
 
-  val dataFileDir_2017: String = conf.getString("data_file_dir_2017")
+  object Retrosheet {
+    private val conf = Configs.conf.getConfig("retrosheet")
+
+    val dataFileDir_2017: String = conf.getString("data_file_dir_2017")
+
+    val teamsFileName: String = conf.getString("teams_file")
+  }
   
-  val teamsFileName: String = conf.getString("teams_file")
-  
-  val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match{
-    case "FanDuel MLB" => FanDuelMLB
+  val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
+
+  val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {
+    case "FanDuel MLB"    => FanDuelMLB
     case "DraftKings MLB" => DraftKingsMLB
-    case _ => throw new Exception("Invalid \"dfs_scoring_system\" value in application.conf!")
+    case _                => throw new Exception("Invalid \"dfs_scoring_system\" value in application.conf!")
   }
   log(s"Using $dfsScoringSystem scoring system")
 

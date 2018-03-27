@@ -14,7 +14,7 @@ object FindingBestGppPlayers extends App {
 
   val allStarGameDate = "2017-07-11".toDate("yyyy-MM-dd")
 
-  val games = FileUtils.getListOfFiles(Configs.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
+  val games = FileUtils.getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
 
   val season = Season(2017, games)
 

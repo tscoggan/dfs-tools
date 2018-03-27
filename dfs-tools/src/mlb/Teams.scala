@@ -6,7 +6,7 @@ import model.CustomTypes._
 
 object Teams {
   
-  val allTeams: List[Team] = TeamData.parseFrom(Configs.teamsFileName)
+  val allTeams: List[Team] = TeamData.parseFrom(Configs.Retrosheet.teamsFileName)
 
   val teamsByID: Map[TeamID, Team] = allTeams.map { t => (t.id, t) }.toMap
   
