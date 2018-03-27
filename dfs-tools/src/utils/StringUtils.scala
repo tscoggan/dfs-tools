@@ -14,7 +14,7 @@ object StringUtils {
      * {{{ Array("a", "b", "c,d", "e") }}}
      */
     def splitCSV(discardOuterQuotes: Boolean = true): Array[String] = {
-      val tokens = s.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)")
+      val tokens = s.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1) // 2nd param ensures trailing empty tokens are included
       if (discardOuterQuotes) tokens.map(_.trimPrefix("\"").trimSuffix("\""))
       else tokens
     }

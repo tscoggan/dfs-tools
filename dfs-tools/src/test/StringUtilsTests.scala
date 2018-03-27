@@ -14,6 +14,11 @@ class StringUtilsTests extends FunSuite {
     val s = "a,b,\"c,d\",e"
     assert(s.splitCSV().deep == Array("a","b","c,d","e").deep)
   }
+  
+  test("splitCSV works with trailing empty tokens") {
+    val s = "a,b,c,d,e,,"
+    assert(s.splitCSV().deep == Array("a","b","c","d","e","","").deep)
+  }
 
   test("trimPrefix works") {
     assert(",p.BLAH".trimPrefix(",p.") == "BLAH")
