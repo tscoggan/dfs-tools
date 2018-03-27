@@ -5,8 +5,14 @@ import mlb._
 
 case class Season(year: Int, games: List[Game]) {
 
-  val statsByPlayer: Map[PlayerID, PlayerSeasonStats] = games.flatMap(_.allPlayerStats).groupBy(_.player).map {
-    case (player, games) => (player.id, PlayerSeasonStats(player, games.sortBy(_.gameDate)))
+  val statsByPlayer: Map[PlayerID, PlayerSeasonStats] = {
+    games.flatMap { game =>
+      val aps = game.allPlayerStats
+      aps.foreach { pgs => pgs.game = Some(game) }
+      aps
+    }.groupBy(_.player).map {
+      case (player, games) => (player.id, PlayerSeasonStats(player, games.sortBy(_.gameDate)))
+    }
   }
 
   lazy val allPlayers: List[PlayerSeasonStats] = statsByPlayer.values.toList

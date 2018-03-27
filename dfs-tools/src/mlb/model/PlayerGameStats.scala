@@ -10,6 +10,7 @@ import java.util.Date
  */
 
 trait PlayerGameStats {
+  var game: Option[Game] = None
   val gameDate: Date
   val playerID: PlayerID
   val isStarter: Boolean

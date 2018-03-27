@@ -21,7 +21,7 @@ object MLBDataAnalyzerApp extends App {
   val games = FileUtils.getListOfFiles(Configs.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
 
   val season = Season(2017, games)
-  
-  season.statsByPlayer("castl003").gamesStarted.foreach { g => println(g.fantasyPoints()) }
+
+  season.statsByPlayer("santd001").gamesStarted.foreach { g => println(g.game.get.alias + " -> " + g.fantasyPoints()) }
 
 }
