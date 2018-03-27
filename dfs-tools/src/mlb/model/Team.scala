@@ -7,10 +7,12 @@ import CustomTypes._
  */
 
 case class Team(
-  id: TeamID,
-  league: String,
-  city: String,
-  name: String) {
-  
-  override def toString: String = id
+    id: TeamID,
+    league: String,
+    city: String,
+    name: String,
+    fanduelID: String,
+    draftkingsID: String) {
+
+  override def toString: String = draftkingsID
 }

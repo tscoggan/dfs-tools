@@ -24,5 +24,7 @@ object Configs {
     case _                => throw new Exception("Invalid \"dfs_scoring_system\" value in application.conf!")
   }
   log(s"Using $dfsScoringSystem scoring system")
+  
+  val teamMappingsFile: String = conf.getString("team_mappings_file")
 
 }

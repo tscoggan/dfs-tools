@@ -2,6 +2,7 @@ package mlb.retrosheet
 
 import mlb.model._
 import mlb.model.CustomTypes._
+import mlb.Teams
 
 /**
  * Parsed from TEAMYYYY files
@@ -26,7 +27,7 @@ object TeamData {
 
         if (values.length != 4) throw new Exception(s"Invalid teams file format: $teamsFileName")
 
-        Team(values(0), values(1), values(2), values(3))
+        Team(values(0), values(1), values(2), values(3), Teams.teamIDMappings(values(0))._1, Teams.teamIDMappings(values(0))._2)
     }
 
 }
