@@ -70,10 +70,11 @@ object Players {
   val allPlayers: List[Player] = (retrosheetPlayers ++ newPlayers) map { player =>
     val fd = fanduelPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
     val dk = draftkingsPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
-    val newTeam = dk.map(_.team).orElse(fd.map(_.team)).map(Teams.get(_)).getOrElse(player.team)
+    val newTeam = dk.map(_.team).orElse(fd.map(_.team)).getOrElse(player.team)
+    val newOpponent = dk.map(_.opponent).orElse(fd.map(_.opponent))
     //val newPosition = dk.map(_.position).orElse(fd.map(_.)).map(Teams.get(_)).getOrElse(player.team)
-    player.copy(team = newTeam,
-      fanduel = fd.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary)),
+    player.copy(team = newTeam, opponent = newOpponent,
+      fanduel = fd.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.probablePitcher)),
       draftkings = dk.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary)))
   }
 

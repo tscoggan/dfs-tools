@@ -52,6 +52,7 @@ class Bases(game: GameData) {
             (fromBase, toBase) match {
               case (BATTER, HOME_BASE) =>
                 batter.addRun
+                pitcher.addRunAgainst
                 if (adv.contains("NR") || adv.contains("NORBI")) 0 else 1
               case (BATTER, to) =>
                 if (baserunners.contains(to.asDigit) && game.outsThisInning < 3) logDebug(s"WARNING: Destination base ($to) already has a runner (${baserunners(to.asDigit)})")
@@ -60,6 +61,7 @@ class Bases(game: GameData) {
               case (from, HOME_BASE) =>
                 if (!baserunners.contains(from.asDigit)) logDebug(s"WARNING: Source base ($from) has no runner")
                 baserunners(from.asDigit).addRun
+                pitcher.addRunAgainst
                 baserunners.remove(from.asDigit)
                 if (adv.contains("NR") || adv.contains("NORBI")) 0 else 1
               case (from, to) =>

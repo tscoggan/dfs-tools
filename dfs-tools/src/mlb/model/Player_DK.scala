@@ -3,6 +3,7 @@ package mlb.model
 import CustomTypes._
 import utils.StringUtils._
 import mlb._
+import utils.Logger._
 
 /**
  * DraftKings player data for a given slate
@@ -13,9 +14,17 @@ case class Player_DK(
     salary: Int,
     game: String,
     fptsPerGame: Double,
-    team: String) {
+    team: Team) {
 
   val id: String = s"$name-$team" // is this unique?
+  
+  val opponent: Team = {
+    val atIndex = game.indexOf('@')
+    if (atIndex <= 0) log(s"WARNING: Unexpected format for DK game info: $game")
+    val awayTeam = Teams.get(game.substring(0,atIndex))
+    val homeTeam = Teams.get(game.substringsBetween("@", " ").head)
+    if (awayTeam == team) homeTeam else awayTeam
+  }
 
   val player: Option[Player] = {
     Players.playerMappings.find(_.dkNameAndTeam == id) match {
@@ -24,8 +33,8 @@ case class Player_DK(
           Players.newPlayers.find(_.id == mapping.retrosheetID)
         }
       case None =>
-        Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse {// && p.team == Teams.get(team)).orElse {
-          Players.newPlayers.find(p => p.name.toUpperCase == name.toUpperCase && p.team == Teams.get(team))
+        Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse {// && p.team == team).orElse {
+          Players.newPlayers.find(p => p.name.toUpperCase == name.toUpperCase && p.team == team)
         }
     }
   }
@@ -58,6 +67,6 @@ object Player_DK {
           salary.toInt,
           game,
           fptsPerGame.toDouble,
-          team)
+          Teams.get(team))
     }
 }

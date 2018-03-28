@@ -17,8 +17,8 @@ case class Player_FD(
     gamesPlayed: Int,
     salary: Int,
     game: String,
-    team: String,
-    opponent: String,
+    team: Team,
+    opponent: Team,
     injuryIndicator: Option[String],
     injuryDetails: Option[String],
     probablePitcher: Option[Boolean],
@@ -31,8 +31,8 @@ case class Player_FD(
           Players.newPlayers.find(_.id == mapping.retrosheetID)
         }
       case None =>
-        Players.retrosheetPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase).orElse {// && p.team == Teams.get(team)).orElse {
-          Players.newPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase && p.team == Teams.get(team))
+        Players.retrosheetPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase).orElse {// && p.team == team).orElse {
+          Players.newPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase && p.team == team)
         }
     }
   }
@@ -81,8 +81,8 @@ object Player_FD {
           gamesPlayed.toInt,
           salary.toInt,
           game,
-          team,
-          opponent,
+          Teams.get(team),
+          Teams.get(opponent),
           injuryIndicator.trim.isEmpty match {
             case true  => None
             case false => Some(injuryIndicator.trim)

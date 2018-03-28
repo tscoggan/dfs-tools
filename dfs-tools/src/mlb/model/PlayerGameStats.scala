@@ -15,7 +15,7 @@ trait PlayerGameStats {
   val playerID: PlayerID
   val isStarter: Boolean
   var battingPosition: Int
-  
+
   lazy val player: Player = Players.get(playerID)
 
   var atBats = 0 // actually a count of plate appearances, because walks and sac flies/bunts are included
@@ -83,10 +83,50 @@ trait PlayerGameStats {
 case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats
 
 case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
+  var atBatsAgainst = 0
+  def addAtBatAgainst = {
+    atBatsAgainst += 1
+  }
+
   var hitsAgainst = 0
   def addHitAgainst = {
     hitsAgainst += 1
     logDebug(s"$this hitsAgainst += 1")
+  }
+
+  var singlesAgainst = 0
+  def addSingleAgainst = {
+    singlesAgainst += 1
+  }
+
+  var doublesAgainst = 0
+  def addDoubleAgainst = {
+    doublesAgainst += 1
+  }
+
+  var triplesAgainst = 0
+  def addTripleAgainst = {
+    triplesAgainst += 1
+  }
+
+  var rbiAgainst = 0
+  def addRBIAgainst(runs: Int) = {
+    rbiAgainst += runs
+  }
+
+  var homeRunsAgainst = 0
+  def addHomeRunAgainst = {
+    homeRunsAgainst += 1
+  }
+
+  var runsAgainst = 0
+  def addRunAgainst = {
+    runsAgainst += 1
+  }
+
+  var stolenBasesAgainst = 0
+  def addStolenBaseAgainst = {
+    stolenBasesAgainst += 1
   }
 
   var walksAgainst = 0
@@ -119,6 +159,21 @@ case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boole
   var loss = 0
   var save = 0
   var completeGame = 0
+
+  // FPTS scored by batters against this pitcher
+  def fantasyPointsAgainst(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = {
+    val hittingStats = HitterGameStats(null, "", false, 0)
+    hittingStats.atBats = atBatsAgainst
+    hittingStats.singles = singlesAgainst
+    hittingStats.doubles = doublesAgainst
+    hittingStats.triples = triplesAgainst
+    hittingStats.homeRuns = homeRunsAgainst
+    hittingStats.rbi = rbiAgainst
+    hittingStats.runs = runsAgainst
+    hittingStats.stolenBases = stolenBasesAgainst
+    hittingStats.walks = walksAgainst
+    scoringSystem.calculateFantasyPoints(hittingStats)
+  }
 
   override def printStats: String = "P) " + this.toString +
     s" - Outs: $outs, H: $hitsAgainst, W: $walksAgainst, ER: $earnedRuns, K: $strikeouts" + { if (win > 0) ", Win" else "" } +
