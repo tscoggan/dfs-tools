@@ -61,7 +61,7 @@ object Season2017Stats {
       downsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_DK + pitcherLeaguePointsPerGameStartedStdDev_DK),
       upsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_DK + pitcherLeaguePointsPerGameStartedStdDev_DK))))
 
-  val pitcherStatsAgainst: Map[Player, PitcherStatsAgainst] = {
+  val pitcherStatsAgainstAllHitters: Map[Player, PitcherStatsAgainst] = {
     season.allPitchers.map(_.player).map { pitcher =>
       val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
         _ match {
@@ -74,7 +74,58 @@ object Season2017Stats {
       val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
       val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
       val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
-      (pitcher -> PitcherStatsAgainst(atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK))
+      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
+    }.toMap
+  }
+
+  val pitcherStatsAgainstLefties: Map[Player, PitcherStatsAgainst] = {
+    season.allPitchers.map(_.player).map { pitcher =>
+      val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
+        _ match {
+          case pitcherStats: PitcherGameStats => Some(pitcherStats)
+          case hitterStats: HitterGameStats   => None
+        }
+      }
+      val atBatsAgainst = gamesPitched.map(_.atBatsAgainst(Some(Left))).sum
+      val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble).sum
+      val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
+      val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble).sum
+      val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
+      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Left)))
+    }.toMap
+  }
+
+  val pitcherStatsAgainstRighties: Map[Player, PitcherStatsAgainst] = {
+    season.allPitchers.map(_.player).map { pitcher =>
+      val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
+        _ match {
+          case pitcherStats: PitcherGameStats => Some(pitcherStats)
+          case hitterStats: HitterGameStats   => None
+        }
+      }
+      val atBatsAgainst = gamesPitched.map(_.atBatsAgainst(Some(Right))).sum
+      val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble).sum
+      val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
+      val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble).sum
+      val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
+      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Right)))
+    }.toMap
+  }
+
+  val pitcherStatsAgainstSwitchHitters: Map[Player, PitcherStatsAgainst] = {
+    season.allPitchers.map(_.player).map { pitcher =>
+      val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
+        _ match {
+          case pitcherStats: PitcherGameStats => Some(pitcherStats)
+          case hitterStats: HitterGameStats   => None
+        }
+      }
+      val atBatsAgainst = gamesPitched.map(_.atBatsAgainst(Some(Switch))).sum
+      val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble).sum
+      val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
+      val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble).sum
+      val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
+      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Switch)))
     }.toMap
   }
 

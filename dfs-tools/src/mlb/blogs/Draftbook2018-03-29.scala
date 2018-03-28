@@ -19,8 +19,8 @@ object Draftbook20180329 extends App {
   val startingPitchers = pitchers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
 
   println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
-    s"$pitcher [${pitcherStatsAgainst.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
-      s"${pitcherStatsAgainst.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
+    s"$pitcher [${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
+      s"${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
         pitcher.opposingHitters(hitters).sortBy(p => season.statsByPlayer(p.id).fptsPerAtBat(FanDuelMLB)).reverse.map { hitter =>
           s"$hitter - ${season.statsByPlayer(hitter.id).fptsPerAtBat(FanDuelMLB).rounded(1)} FPTS/AB (FanDuel), " +
             s"${season.statsByPlayer(hitter.id).fptsPerAtBat(DraftKingsMLB).rounded(1)} FPTS/AB (DraftKings)"
@@ -56,14 +56,31 @@ object Draftbook20180329 extends App {
   log(toHtmlTable(
     List("Player", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
-      .sortBy { p => pitcherStatsAgainst.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
+      .sortBy { p => pitcherStatsAgainstAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
       .map { pitcher =>
-        val statsAgainst = pitcherStatsAgainst.get(pitcher)
+        val statsAgainst = pitcherStatsAgainstAllHitters.get(pitcher)
         List(pitcher,
           pitcher.opponent.get,
           statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("Unknown"),
           statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("Unknown"),
           statsAgainst.map(_.atBatsAgainst).getOrElse("Unknown"))
+      }))
+
+  log("\n### Pitchers ranked by FPTS given up per plate appearance (by batter handedness): ###\n")
+  log(toHtmlTable(
+    List("Player", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
+    startingPitchers
+      .flatMap { pitcher =>
+        List(pitcherStatsAgainstLefties.get(pitcher), pitcherStatsAgainstRighties.get(pitcher), pitcherStatsAgainstSwitchHitters.get(pitcher)).flatten
+      }
+      .sortBy(_.fptsPerAtBatAgainst_FD).reverse
+      .map { stats =>
+        List(stats.pitcher,
+          stats.pitcher.opponent.get,
+          stats.batterHandedness.get.toVerboseString,
+          stats.fptsPerAtBatAgainst_FD.rounded(1),
+          stats.fptsPerAtBatAgainst_DK.rounded(1),
+          stats.atBatsAgainst)
       }))
 
   log("\n**************************************************")
