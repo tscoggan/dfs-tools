@@ -69,7 +69,7 @@ object Season2017Stats {
           case hitterStats: HitterGameStats   => None
         }
       }
-      val atBatsAgainst = gamesPitched.map(_.atBatsAgainst).sum
+      val atBatsAgainst = gamesPitched.map(_.atBatsAgainst()).sum
       val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
       val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
       val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum

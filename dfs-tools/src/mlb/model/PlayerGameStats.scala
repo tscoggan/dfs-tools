@@ -83,15 +83,114 @@ trait PlayerGameStats {
 case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats
 
 case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
-  var atBatsAgainst = 0
-  def addAtBatAgainst = {
-    atBatsAgainst += 1
-  }
+  val hittingStatsAgainst: Map[Handedness, HittingStatsAgainst] = Map(Left -> new HittingStatsAgainst, Right -> new HittingStatsAgainst, Switch -> new HittingStatsAgainst)
 
   var hitsAgainst = 0
   def addHitAgainst = {
     hitsAgainst += 1
     logDebug(s"$this hitsAgainst += 1")
+  }
+
+  var walksAgainst = 0
+  def addWalkAgainst = {
+    walksAgainst += 1
+    logDebug(s"$this walksAgainst += 1")
+  }
+
+  var earnedRuns = 0
+  def addEarnedRuns(runs: Int) = {
+    earnedRuns += runs
+    if (runs != 0) logDebug(s"$this earnedRuns += $runs")
+  }
+
+  var strikeouts = 0
+  def addStrikeout = {
+    strikeouts += 1
+    logDebug(s"$this strikeouts += 1")
+  }
+
+  var outs = 0
+  def addOuts(numberOfOuts: Int) = {
+    outs += numberOfOuts
+    if (numberOfOuts != 0) logDebug(s"$this outs += $numberOfOuts")
+  }
+
+  def qStart = if (outs >= 18 && earnedRuns <= 3) 1 else 0
+
+  var win = 0
+  var loss = 0
+  var save = 0
+  var completeGame = 0
+
+  // FPTS scored by batters against this pitcher
+  def fantasyPointsAgainst(scoringSystem: DFSScoringSystem, hitterHandedness: Option[Handedness] = None): Float = {
+    val hittingStats = HitterGameStats(null, "", false, 0)
+    hittingStats.atBats = atBatsAgainst(hitterHandedness)
+    hittingStats.singles = singlesAgainst(hitterHandedness)
+    hittingStats.doubles = doublesAgainst(hitterHandedness)
+    hittingStats.triples = triplesAgainst(hitterHandedness)
+    hittingStats.homeRuns = homeRunsAgainst(hitterHandedness)
+    hittingStats.rbi = rbisAgainst(hitterHandedness)
+    hittingStats.runs = runsAgainst(hitterHandedness)
+    hittingStats.stolenBases = stolenBasesAgainst(hitterHandedness)
+    hittingStats.walks = walksAgainst(hitterHandedness)
+    scoringSystem.calculateFantasyPoints(hittingStats)
+  }
+
+  def atBatsAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).atBatsAgainst
+    case None    => hittingStatsAgainst.values.map(_.atBatsAgainst).sum
+  }
+
+  def singlesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).singlesAgainst
+    case None    => hittingStatsAgainst.values.map(_.singlesAgainst).sum
+  }
+
+  def doublesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).doublesAgainst
+    case None    => hittingStatsAgainst.values.map(_.doublesAgainst).sum
+  }
+
+  def triplesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).triplesAgainst
+    case None    => hittingStatsAgainst.values.map(_.triplesAgainst).sum
+  }
+
+  def homeRunsAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).homeRunsAgainst
+    case None    => hittingStatsAgainst.values.map(_.homeRunsAgainst).sum
+  }
+
+  def rbisAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).rbiAgainst
+    case None    => hittingStatsAgainst.values.map(_.rbiAgainst).sum
+  }
+
+  def runsAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).runsAgainst
+    case None    => hittingStatsAgainst.values.map(_.runsAgainst).sum
+  }
+
+  def stolenBasesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).stolenBasesAgainst
+    case None    => hittingStatsAgainst.values.map(_.stolenBasesAgainst).sum
+  }
+
+  def walksAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
+    case Some(h) => hittingStatsAgainst(h).walksAgainst
+    case None    => hittingStatsAgainst.values.map(_.walksAgainst).sum
+  }
+
+  override def printStats: String = "P) " + this.toString +
+    s" - Outs: $outs, H: $hitsAgainst, W: $walksAgainst, ER: $earnedRuns, K: $strikeouts" + { if (win > 0) ", Win" else "" } +
+    { if (loss > 0) ", Loss" else "" } + { if (save > 0) ", Save" else "" } + { if (qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
+}
+
+class HittingStatsAgainst {
+  var atBatsAgainst = 0
+  def addAtBatAgainst = {
+    atBatsAgainst += 1
   }
 
   var singlesAgainst = 0
@@ -132,50 +231,5 @@ case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boole
   var walksAgainst = 0
   def addWalkAgainst = {
     walksAgainst += 1
-    logDebug(s"$this walksAgainst += 1")
   }
-
-  var earnedRuns = 0
-  def addEarnedRuns(runs: Int) = {
-    earnedRuns += runs
-    if (runs != 0) logDebug(s"$this earnedRuns += $runs")
-  }
-
-  var strikeouts = 0
-  def addStrikeout = {
-    strikeouts += 1
-    logDebug(s"$this strikeouts += 1")
-  }
-
-  var outs = 0
-  def addOuts(numberOfOuts: Int) = {
-    outs += numberOfOuts
-    if (numberOfOuts != 0) logDebug(s"$this outs += $numberOfOuts")
-  }
-
-  def qStart = if (outs >= 18 && earnedRuns <= 3) 1 else 0
-
-  var win = 0
-  var loss = 0
-  var save = 0
-  var completeGame = 0
-
-  // FPTS scored by batters against this pitcher
-  def fantasyPointsAgainst(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = {
-    val hittingStats = HitterGameStats(null, "", false, 0)
-    hittingStats.atBats = atBatsAgainst
-    hittingStats.singles = singlesAgainst
-    hittingStats.doubles = doublesAgainst
-    hittingStats.triples = triplesAgainst
-    hittingStats.homeRuns = homeRunsAgainst
-    hittingStats.rbi = rbiAgainst
-    hittingStats.runs = runsAgainst
-    hittingStats.stolenBases = stolenBasesAgainst
-    hittingStats.walks = walksAgainst
-    scoringSystem.calculateFantasyPoints(hittingStats)
-  }
-
-  override def printStats: String = "P) " + this.toString +
-    s" - Outs: $outs, H: $hitsAgainst, W: $walksAgainst, ER: $earnedRuns, K: $strikeouts" + { if (win > 0) ", Win" else "" } +
-    { if (loss > 0) ", Loss" else "" } + { if (save > 0) ", Save" else "" } + { if (qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
 }
