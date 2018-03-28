@@ -2,6 +2,7 @@ package mlb.retrosheet
 
 import mlb.model._
 import mlb.model.CustomTypes._
+import mlb.Teams
 
 /**
  * Parsed from .ROS files
@@ -29,7 +30,7 @@ object PlayerData {
 
         if (values.length != 7) throw new Exception(s"Invalid roster file format: $rosterFileName")
 
-        Player(values(0), values(2) + " " + values(1), values(3), values(4), values(5), values(6))
+        Player(values(0), values(2) + " " + values(1), values(3), values(4), Teams.get(values(5)), values(6))
     }
 
 }

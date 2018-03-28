@@ -2,6 +2,7 @@ package mlb.model
 
 import CustomTypes._
 import utils.StringUtils._
+import mlb._
 
 /**
  * FanDuel player data for a given slate
@@ -22,6 +23,19 @@ case class Player_FD(
     injuryDetails: Option[String],
     probablePitcher: Option[Boolean],
     battingOrder: Option[Int]) {
+
+  val player: Option[Player] = {
+    Players.playerMappings.find(_.fdPlayerID == id) match {
+      case Some(mapping) =>
+        Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
+          Players.newPlayers.find(_.id == mapping.retrosheetID)
+        }
+      case None =>
+        Players.retrosheetPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase).orElse {// && p.team == Teams.get(team)).orElse {
+          Players.newPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase && p.team == Teams.get(team))
+        }
+    }
+  }
 
   override def toString: String = s"FD[$nickname ($position, $team, $salary)]"
 

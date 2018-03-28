@@ -26,5 +26,9 @@ object Configs {
   log(s"Using $dfsScoringSystem scoring system")
   
   val teamMappingsFile: String = conf.getString("team_mappings_file")
+  
+  val playerMappingsFile: String = conf.getString("player_mappings_file")
+  
+  val newPlayersFile: String = conf.getString("new_players_file")
 
 }
