@@ -18,6 +18,15 @@ object Draftbook20180329 extends App {
   val (pitchers, hitters) = Players.allPlayers.filter(p => p.fanduel.nonEmpty || p.draftkings.nonEmpty).partition(_.position == Pitcher)
   val startingPitchers = pitchers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
 
+  val hitters_FD = hitters.filter(_.fanduel.map(_.salary).nonEmpty)
+  val hitters_DK = hitters.filter(_.draftkings.map(_.salary).nonEmpty)
+
+  val expensiveHitters_FD = hitters_FD.filter(_.fanduel.map(_.salary).get >= 3500)
+  val cheapHitters_FD = hitters_FD.filter(p => p.fanduel.map(_.salary).get < 3500 && p.fanduel.map(_.salary).get >= 2500)
+
+  val expensiveHitters_DK = hitters_DK.filter(_.draftkings.map(_.salary).get >= 4000)
+  val cheapHitters_DK = hitters_DK.filter(p => p.draftkings.map(_.salary).get < 4000 && p.draftkings.map(_.salary).get > 3000)
+
   //  println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
   //    s"$pitcher [${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
   //      s"${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
@@ -47,25 +56,37 @@ object Draftbook20180329 extends App {
       }"
   }.mkString("\n"))
 
-  val hitterFPPGDeviation_FD: List[(PlayerSeasonStats, Stats)] = season.allHitters.filter(_.player.fanduel.nonEmpty)
+  val hitter2017Stats_FD: Map[Player, (PlayerSeasonStats, Stats)] = season.allHitters.filter(_.player.fanduel.nonEmpty)
     .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB))),
       downsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_FD),
       upsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_FD))))
+    .map {
+      case (pss, stats) => (pss.player, (pss, stats))
+    }.toMap
 
-  val pitcherPointsPerGameStartedDeviation_FD: List[(PlayerSeasonStats, Stats)] = season.allPitchers //.filter(p => startingPitchers.contains(p.player))
+  val pitcher2017Stats_FD: Map[Player, (PlayerSeasonStats, Stats)] = season.allPitchers.filter(_.player.fanduel.nonEmpty)
     .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB))),
       downsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_FD + pitcherLeaguePointsPerGameStartedStdDev_FD),
       upsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_FD + pitcherLeaguePointsPerGameStartedStdDev_FD))))
+    .map {
+      case (pss, stats) => (pss.player, (pss, stats))
+    }.toMap
 
-  val pointsPerGameStartedDeviation_DK: List[(PlayerSeasonStats, Stats)] = season.allHitters //.filter(p => hitters.contains(p.player))
+  val hitter2017Stats_DK: Map[Player, (PlayerSeasonStats, Stats)] = season.allHitters.filter(_.player.draftkings.nonEmpty)
     .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB))),
       downsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_DK),
       upsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_DK))))
+    .map {
+      case (pss, stats) => (pss.player, (pss, stats))
+    }.toMap
 
-  val pitcherPointsPerGameStartedDeviation_DK: List[(PlayerSeasonStats, Stats)] = season.allPitchers //.filter(p => startingPitchers.contains(p.player))
+  val pitcher2017Stats_DK: Map[Player, (PlayerSeasonStats, Stats)] = season.allPitchers.filter(_.player.draftkings.nonEmpty)
     .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB))),
       downsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_DK + pitcherLeaguePointsPerGameStartedStdDev_DK),
       upsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_DK + pitcherLeaguePointsPerGameStartedStdDev_DK))))
+    .map {
+      case (pss, stats) => (pss.player, (pss, stats))
+    }.toMap
 
   log("\n**************************************************")
   log("*** Hitter stacks ***")
@@ -104,20 +125,95 @@ object Draftbook20180329 extends App {
       }))
 
   log("\n**************************************************")
+  log("*** Value hitters - FD ***")
+  log("**************************************************\n")
+
+  log("\n### Top 10 expensive hitters ranked by value (FanDuel): ###\n")
+  log(toHtmlTable(
+    List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
+    expensiveHitters_FD.flatMap(p => hitter2017Stats_FD.get(p).map(stats => (p, stats))).map {
+      case (p, (seasonStats, deviationStats)) =>
+        val pitcherFptsPerAtBatAgainst = p.bats match {
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+        }
+        val value = mean(List(seasonStats.fptsPerAtBat(FanDuelMLB), seasonStats.fptsPerAtBat(FanDuelMLB), pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
+        (p, value)
+    }.sortBy(_._2).reverse.take(10).map {
+      case (p, value) =>
+        List(p, p.fanduel.map(fd => "$" + fd.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
+    }))
+
+  log("\n### Top 10 cheap hitters ranked by value (FanDuel): ###\n")
+  log(toHtmlTable(
+    List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
+    cheapHitters_FD.flatMap(p => hitter2017Stats_FD.get(p).map(stats => (p, stats))).map {
+      case (p, (seasonStats, deviationStats)) =>
+        val pitcherFptsPerAtBatAgainst = p.bats match {
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+        }
+        val value = mean(List(seasonStats.fptsPerAtBat(FanDuelMLB), seasonStats.fptsPerAtBat(FanDuelMLB), pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
+        (p, value)
+    }.sortBy(_._2).reverse.take(10).map {
+      case (p, value) =>
+        List(p, p.fanduel.map(fd => "$" + fd.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
+    }))
+
+  log("\n**************************************************")
+  log("*** Value hitters - DK ***")
+  log("**************************************************\n")
+
+  log("\n### Top 10 expensive hitters ranked by value (DraftKings): ###\n")
+  log(toHtmlTable(
+    List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
+    expensiveHitters_DK.flatMap(p => hitter2017Stats_DK.get(p).map(stats => (p, stats))).map {
+      case (p, (seasonStats, deviationStats)) =>
+        val pitcherFptsPerAtBatAgainst = p.bats match {
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+        }
+        val value = mean(List(seasonStats.fptsPerAtBat(DraftKingsMLB), seasonStats.fptsPerAtBat(DraftKingsMLB), pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
+        (p, value)
+    }.sortBy(_._2).reverse.take(10).map {
+      case (p, value) =>
+        List(p, p.draftkings.map(dk => "$" + dk.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
+    }))
+
+  log("\n### Top 10 cheap hitters ranked by value (DraftKings): ###\n")
+  log(toHtmlTable(
+    List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
+    cheapHitters_DK.flatMap(p => hitter2017Stats_DK.get(p).map(stats => (p, stats))).map {
+      case (p, (seasonStats, deviationStats)) =>
+        val pitcherFptsPerAtBatAgainst = p.bats match {
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+        }
+        val value = mean(List(seasonStats.fptsPerAtBat(DraftKingsMLB), seasonStats.fptsPerAtBat(DraftKingsMLB), pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
+        (p, value)
+    }.sortBy(_._2).reverse.take(10).map {
+      case (p, value) =>
+        List(p, p.draftkings.map(dk => "$" + dk.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
+    }))
+
+  log("\n**************************************************")
   log("*** Pitchers ***")
   log("**************************************************\n")
 
-  //  log("\n### Probable starting pitchers ranked by fantasy points per game started (FPPG) net upside deviation / salary: ###\n")
-  //  log(toHtmlTable(
-  //    List("Player", "NUD / FD salary", "FD salary", "Avg FD FPPG", "NUD / DK salary", "DK salary", "Avg DK FPPG", "# of games started (2017)"),
-  //    pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.netUpsideDev }.reverse.take(20).map {
-  //      case (p, stats) =>
-  //        List(p.player,
-  //          stats.netUpsideDev.rounded(2),
-  //          stats.upsideDev.rounded(2),
-  //          stats.downsideDev.rounded(2),
-  //          p.fptsPerGameAsStarter().rounded(1),
-  //          p.numberOfGamesStarted)
-  //    }))
+  log("\n### Starting pitchers ranked by value (FanDuel): ###\n")
+  log(toHtmlTable(
+    List("Pitcher", "FD Salary", "Opponent", "Value"),
+    startingPitchers.flatMap(p => pitcher2017Stats_FD.get(p).map(stats => (p, stats))).map {
+      case (p, (seasonStats, deviationStats)) =>
+        val value = mean(List(seasonStats.fptsPerGameAsStarter(FanDuelMLB))) / p.fanduel.map(_.salary).get
+        (p, value)
+    }.sortBy(_._2).reverse.map {
+      case (p, value) =>
+        List(p, p.fanduel.map(fd => "$" + fd.salary).getOrElse("Unknown"), p.opponent.get, (value * 1000).rounded(2))
+    }))
 
 }
