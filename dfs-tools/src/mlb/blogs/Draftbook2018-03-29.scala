@@ -18,12 +18,31 @@ object Draftbook20180329 extends App {
   val (pitchers, hitters) = Players.allPlayers.filter(p => p.fanduel.nonEmpty || p.draftkings.nonEmpty).partition(_.position == Pitcher)
   val startingPitchers = pitchers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
 
+  //  println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
+  //    s"$pitcher [${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
+  //      s"${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
+  //        pitcher.opposingHitters(hitters).sortBy(p => season.statsByPlayer(p.id).fptsPerAtBat(FanDuelMLB)).reverse.map { hitter =>
+  //          s"$hitter - ${season.statsByPlayer(hitter.id).fptsPerAtBat(FanDuelMLB).rounded(1)} FPTS/AB (FanDuel), " +
+  //            s"${season.statsByPlayer(hitter.id).fptsPerAtBat(DraftKingsMLB).rounded(1)} FPTS/AB (DraftKings)"
+  //        }.mkString("\n\t")
+  //      }"
+  //  }.mkString("\n"))
+
   println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
     s"$pitcher [${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
       s"${pitcherStatsAgainstAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
         pitcher.opposingHitters(hitters).sortBy(p => season.statsByPlayer(p.id).fptsPerAtBat(FanDuelMLB)).reverse.map { hitter =>
-          s"$hitter - ${season.statsByPlayer(hitter.id).fptsPerAtBat(FanDuelMLB).rounded(1)} FPTS/AB (FanDuel), " +
-            s"${season.statsByPlayer(hitter.id).fptsPerAtBat(DraftKingsMLB).rounded(1)} FPTS/AB (DraftKings)"
+          s"${hitter.name} (${hitter.bats}) - ${
+            hitter.fanduel.map(_.salary) match {
+              case Some(salary) => ((season.statsByPlayer(hitter.id).fptsPerAtBat(FanDuelMLB).toDouble / salary.toDouble) * 1000d).rounded(2)
+              case None         => "???"
+            }
+          } value (FanDuel), ${
+            hitter.draftkings.map(_.salary) match {
+              case Some(salary) => ((season.statsByPlayer(hitter.id).fptsPerAtBat(DraftKingsMLB).toDouble / salary.toDouble) * 1000d).rounded(2)
+              case None         => "???"
+            }
+          } value (DraftKings)"
         }.mkString("\n\t")
       }"
   }.mkString("\n"))
@@ -54,7 +73,7 @@ object Draftbook20180329 extends App {
 
   log("\n### Pitchers ranked by FPTS given up per plate appearance: ###\n")
   log(toHtmlTable(
-    List("Player", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
+    List("Pitcher", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
       .sortBy { p => pitcherStatsAgainstAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
       .map { pitcher =>
@@ -66,14 +85,15 @@ object Draftbook20180329 extends App {
           statsAgainst.map(_.atBatsAgainst).getOrElse("Unknown"))
       }))
 
-  log("\n### Pitchers ranked by FPTS given up per plate appearance (by batter handedness): ###\n")
+  log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance (by batter handedness): ###\n")
   log(toHtmlTable(
-    List("Player", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
+    List("Pitcher", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
       .flatMap { pitcher =>
         List(pitcherStatsAgainstLefties.get(pitcher), pitcherStatsAgainstRighties.get(pitcher), pitcherStatsAgainstSwitchHitters.get(pitcher)).flatten
       }
       .sortBy(_.fptsPerAtBatAgainst_FD).reverse
+      //.take(10)
       .map { stats =>
         List(stats.pitcher,
           stats.pitcher.opponent.get,
