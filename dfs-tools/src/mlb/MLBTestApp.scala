@@ -24,6 +24,6 @@ object MLBTestApp extends App {
 
   val gameURLs = MLBWebsiteParser.getGameURLs("2017-06-01".toDate())
   println("Loading "+gameURLs.head)
-  println(MLBWebsiteParser.getPlayers(gameURLs.head).mkString("\n"))
+  println(MLBWebsiteParser.getPlayerURLs(gameURLs.head).mkString("\n"))
 
 }
