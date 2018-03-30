@@ -40,7 +40,7 @@ object StringUtils {
         case 0 => results.reverse
         case _ =>
           val prefixStart = remaining.indexOf(prefix)
-          val suffixStart = remaining.indexOf(suffix)
+          val suffixStart = remaining.indexOf(suffix, prefixStart + prefix.length)
           if (prefixStart >= 0 && suffixStart > prefixStart) {
             next(remaining.substring(prefixStart + prefix.length, suffixStart) :: results, remaining.substring(suffixStart + suffix.length))
           } else results.reverse
