@@ -11,7 +11,7 @@ import utils.MathUtils._
 import utils.StringUtils._
 import mlb.Season2017Stats._
 
-object Draftbook20180329 extends App {
+object Draftbook extends App {
 
   Season2017Stats.logSummary
 
@@ -133,12 +133,13 @@ object Draftbook20180329 extends App {
     List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
     expensiveHitters_FD.flatMap(p => hitter2017Stats_FD.get(p).map(stats => (p, stats))).map {
       case (p, (seasonStats, deviationStats)) =>
+        val hitterFptsPerAB = seasonStats.fptsPerAtBat(FanDuelMLB).toDouble
         val pitcherFptsPerAtBatAgainst = p.bats match {
-          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
-          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
-          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).getOrElse(hitterFptsPerAB)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).getOrElse(hitterFptsPerAB)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).getOrElse(hitterFptsPerAB)
         }
-        val value = mean(List(seasonStats.fptsPerAtBat(FanDuelMLB), pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
+        val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
         (p, value)
     }.sortBy(_._2).reverse.take(10).map {
       case (p, value) =>
@@ -150,12 +151,13 @@ object Draftbook20180329 extends App {
     List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
     cheapHitters_FD.flatMap(p => hitter2017Stats_FD.get(p).map(stats => (p, stats))).map {
       case (p, (seasonStats, deviationStats)) =>
+        val hitterFptsPerAB = seasonStats.fptsPerAtBat(FanDuelMLB).toDouble
         val pitcherFptsPerAtBatAgainst = p.bats match {
-          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
-          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
-          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).get //.getOrElse(0)
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).getOrElse(hitterFptsPerAB)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).getOrElse(hitterFptsPerAB)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_FD).getOrElse(hitterFptsPerAB)
         }
-        val value = mean(List(seasonStats.fptsPerAtBat(FanDuelMLB), pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
+        val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
         (p, value)
     }.sortBy(_._2).reverse.take(10).map {
       case (p, value) =>
@@ -171,12 +173,13 @@ object Draftbook20180329 extends App {
     List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
     expensiveHitters_DK.flatMap(p => hitter2017Stats_DK.get(p).map(stats => (p, stats))).map {
       case (p, (seasonStats, deviationStats)) =>
+        val hitterFptsPerAB = seasonStats.fptsPerAtBat(DraftKingsMLB).toDouble
         val pitcherFptsPerAtBatAgainst = p.bats match {
-          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
-          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
-          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).getOrElse(hitterFptsPerAB)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).getOrElse(hitterFptsPerAB)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).getOrElse(hitterFptsPerAB)
         }
-        val value = mean(List(seasonStats.fptsPerAtBat(DraftKingsMLB), pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
+        val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
         (p, value)
     }.sortBy(_._2).reverse.take(10).map {
       case (p, value) =>
@@ -188,12 +191,13 @@ object Draftbook20180329 extends App {
     List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
     cheapHitters_DK.flatMap(p => hitter2017Stats_DK.get(p).map(stats => (p, stats))).map {
       case (p, (seasonStats, deviationStats)) =>
+        val hitterFptsPerAB = seasonStats.fptsPerAtBat(DraftKingsMLB).toDouble
         val pitcherFptsPerAtBatAgainst = p.bats match {
-          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
-          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
-          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).get //.getOrElse(0)
+          case Left   => pitcherStatsAgainstLefties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).getOrElse(hitterFptsPerAB)
+          case Right  => pitcherStatsAgainstRighties.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).getOrElse(hitterFptsPerAB)
+          case Switch => pitcherStatsAgainstSwitchHitters.get(p.opposingPitcher(startingPitchers)).map(_.fptsPerAtBatAgainst_DK).getOrElse(hitterFptsPerAB)
         }
-        val value = mean(List(seasonStats.fptsPerAtBat(DraftKingsMLB), pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
+        val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
         (p, value)
     }.sortBy(_._2).reverse.take(10).map {
       case (p, value) =>

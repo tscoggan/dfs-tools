@@ -16,6 +16,12 @@ object Configs {
     val teamsFileName: String = conf.getString("teams_file")
   }
   
+  object MlbDotCom {
+    private val conf = Configs.conf.getConfig("mlbdotcom")
+    
+    val baseURL: String = conf.getString("base_url")
+  }
+  
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {
