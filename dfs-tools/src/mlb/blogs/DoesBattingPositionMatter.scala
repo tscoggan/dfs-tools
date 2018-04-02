@@ -45,7 +45,7 @@ object DoesBattingPositionMatter extends App {
   log("***************************************************************************************\n")
 
   val leagueAvgFptsPerAtBatByBattingPosition: Map[BattingPosition, (AtBats, AvgFpts)] = season.allHitters.flatMap(_.games).groupBy(_.battingPosition).map {
-    case (bp, games) => (bp -> (games.map(_.atBats).sum, games.map(_.fantasyPoints().toDouble).sum / games.map(_.atBats).sum))
+    case (bp, games) => (bp -> (games.map(_.hittingStats.atBats).sum, games.map(_.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum))
   }
 
   leagueAvgFptsPerAtBatByBattingPosition.toList.sortBy(_._1).tail.foreach {

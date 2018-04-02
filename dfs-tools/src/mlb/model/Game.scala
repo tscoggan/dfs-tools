@@ -36,8 +36,8 @@ case class Game(
   def statsFor(player: Player): Option[PlayerGameStats] = allPlayerStats.find(_.player == player)
 
   override def toString: String = alias +
-    s"\n  $visitingTeam stats:\n\t" + visitingTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.atBats)).map(_.printStats).mkString("\n\t") +
-    s"\n  $homeTeam stats:\n\t" + homeTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.atBats)).map(_.printStats).mkString("\n\t")
+    s"\n  $visitingTeam stats:\n\t" + visitingTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.hittingStats.atBats)).map(_.printStats).mkString("\n\t") +
+    s"\n  $homeTeam stats:\n\t" + homeTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.hittingStats.atBats)).map(_.printStats).mkString("\n\t")
 }
 
 object GameNumbers {

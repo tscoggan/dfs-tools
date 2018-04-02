@@ -13,8 +13,8 @@ case class PlayerSeasonStats(player: Player, games: List[PlayerGameStats]) {
   val numberOfGames: Int = games.length
   lazy val numberOfGamesStarted: Int = gamesStarted.length
 
-  val atBats: Int = games.map(_.atBats).sum
-  lazy val atBatsAsStarter: Int = gamesStarted.map(_.atBats).sum
+  val atBats: Int = games.map(_.hittingStats.atBats).sum
+  lazy val atBatsAsStarter: Int = gamesStarted.map(_.hittingStats.atBats).sum
 
   def fptsPerAtBat(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = games.map(_.fantasyPoints(scoringSystem)).sum / atBats
   def fptsPerAtBatAsStarter(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = gamesStarted.map(_.fantasyPoints(scoringSystem)).sum / atBatsAsStarter

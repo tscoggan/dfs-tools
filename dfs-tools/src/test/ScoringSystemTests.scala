@@ -10,101 +10,101 @@ class ScoringSystemTests extends FunSuite {
 
   test("FanDuel MLB scoring system works for hitter") {
     val p = HitterGameStats(date, "bellj005", true, 3)
-    p.atBats = 5
-    p.singles = 1
-    p.doubles = 1
-    p.triples = 1
-    p.homeRuns = 1
-    p.rbi = 1
-    p.runs = 1
-    p.stolenBases = 1
-    p.walks = 1
+    p.hittingStats.atBats = 5
+    p.hittingStats.singles = 1
+    p.hittingStats.doubles = 1
+    p.hittingStats.triples = 1
+    p.hittingStats.homeRuns = 1
+    p.hittingStats.rbi = 1
+    p.hittingStats.runs = 1
+    p.hittingStats.stolenBases = 1
+    p.hittingStats.walks = 1
     assert(p.fantasyPoints(FanDuelMLB) ~= 45.7)
   }
   
   test("FanDuel MLB scoring system works for hitter 2") {
     val p = HitterGameStats(date, "bellj005", true, 3)
-    p.atBats = 4
-    p.triples = 1
-    p.homeRuns = 1
-    p.rbi = 2
-    p.runs = 1
+    p.hittingStats.atBats = 4
+    p.hittingStats.triples = 1
+    p.hittingStats.homeRuns = 1
+    p.hittingStats.rbi = 2
+    p.hittingStats.runs = 1
     assert(p.fantasyPoints(FanDuelMLB) ~= 31.2)
   }
 
   test("DraftKings MLB scoring system works for hitter") {
     val p = HitterGameStats(date, "bellj005", true, 3)
-    p.atBats = 5
-    p.singles = 1
-    p.doubles = 1
-    p.triples = 1
-    p.homeRuns = 1
-    p.rbi = 1
-    p.runs = 1
-    p.stolenBases = 1
-    p.walks = 1
+    p.hittingStats.atBats = 5
+    p.hittingStats.singles = 1
+    p.hittingStats.doubles = 1
+    p.hittingStats.triples = 1
+    p.hittingStats.homeRuns = 1
+    p.hittingStats.rbi = 1
+    p.hittingStats.runs = 1
+    p.hittingStats.stolenBases = 1
+    p.hittingStats.walks = 1
     assert(p.fantasyPoints(DraftKingsMLB) ~= 37)
   }
 
   test("FanDuel MLB scoring system works for pitcher with qStart & win") {
     val p = PitcherGameStats(date, "gonzg003", true, 0)
-    p.hitsAgainst = 6
-    p.walksAgainst = 3
-    p.earnedRuns = 3
-    p.win = 1
-    p.strikeouts = 7
-    p.outs = 18
+    p.pitchingStats.hitsAgainst = 6
+    p.pitchingStats.walksAgainst = 3
+    p.pitchingStats.earnedRuns = 3
+    p.pitchingStats.win = 1
+    p.pitchingStats.strikeouts = 7
+    p.pitchingStats.outs = 18
     assert(p.fantasyPoints(FanDuelMLB) ~= 40)
   }
   
   test("FanDuel MLB scoring system works for pitcher without qStart & win") {
     val p = PitcherGameStats(date, "gonzg003", true, 0)
-    p.atBats = 5
-    p.singles = 1
-    p.doubles = 1
-    p.triples = 1
-    p.homeRuns = 1
-    p.rbi = 1
-    p.runs = 1
-    p.stolenBases = 1
-    p.walks = 1
+    p.hittingStats.atBats = 5
+    p.hittingStats.singles = 1
+    p.hittingStats.doubles = 1
+    p.hittingStats.triples = 1
+    p.hittingStats.homeRuns = 1
+    p.hittingStats.rbi = 1
+    p.hittingStats.runs = 1
+    p.hittingStats.stolenBases = 1
+    p.hittingStats.walks = 1
     
-    p.hitsAgainst = 6
-    p.walksAgainst = 3
-    p.earnedRuns = 4
-    p.loss = 1
-    p.strikeouts = 5
-    p.outs = 20
+    p.pitchingStats.hitsAgainst = 6
+    p.pitchingStats.walksAgainst = 3
+    p.pitchingStats.earnedRuns = 4
+    p.pitchingStats.loss = 1
+    p.pitchingStats.strikeouts = 5
+    p.pitchingStats.outs = 20
     assert(p.fantasyPoints(FanDuelMLB) ~= 23)
   }
   
   test("FanDuel MLB scoring system works for pitcher with qStart but no win") {
     val p = PitcherGameStats(date, "gonzg003", true, 0)    
-    p.earnedRuns = 1
-    p.strikeouts = 3
-    p.outs = 18
+    p.pitchingStats.earnedRuns = 1
+    p.pitchingStats.strikeouts = 3
+    p.pitchingStats.outs = 18
     assert(p.fantasyPoints(FanDuelMLB) ~= 28)
   }
   
   test("DraftKings MLB scoring system works for pitcher with no hitter") {
     val p = PitcherGameStats(date, "gonzg003", true, 0)
-    p.atBats = 5
-    p.singles = 1
-    p.doubles = 1
-    p.triples = 1
-    p.homeRuns = 1
-    p.rbi = 1
-    p.runs = 1
-    p.stolenBases = 1
-    p.walks = 1
+    p.hittingStats.atBats = 5
+    p.hittingStats.singles = 1
+    p.hittingStats.doubles = 1
+    p.hittingStats.triples = 1
+    p.hittingStats.homeRuns = 1
+    p.hittingStats.rbi = 1
+    p.hittingStats.runs = 1
+    p.hittingStats.stolenBases = 1
+    p.hittingStats.walks = 1
     
-    p.hitsAgainst = 0
-    p.walksAgainst = 1
-    p.earnedRuns = 0
-    p.win = 1
-    p.strikeouts = 11
-    p.outs = 27
-    p.completeGame = 1
+    p.pitchingStats.hitsAgainst = 0
+    p.pitchingStats.walksAgainst = 1
+    p.pitchingStats.earnedRuns = 0
+    p.pitchingStats.win = 1
+    p.pitchingStats.strikeouts = 11
+    p.pitchingStats.outs = 27
+    p.pitchingStats.completeGame = 1
     println(p.fantasyPoints(DraftKingsMLB))
     assert(p.fantasyPoints(DraftKingsMLB) ~= 60.65)
   }

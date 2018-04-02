@@ -94,7 +94,7 @@ class GameData(id: String) {
 
   def recordOuts(numberOfOuts: Int) = {
     val pitcher = if (visitingOrHome.toInt == VISITING_TEAM) homeTeamPitcher.get else visitingTeamPitcher.get
-    pitcher.addOuts(numberOfOuts)
+    pitcher.pitchingStats.addOuts(numberOfOuts)
     outsThisInning += numberOfOuts
     if (outsThisInning > 3) logDebug(s"WARNING: outsThisInning = $outsThisInning")
   }
@@ -122,9 +122,9 @@ class GameData(id: String) {
           case PITCHER => PitcherGameStats(date.get, playerID, true, battingPosition.toInt)
           case _       => HitterGameStats(date.get, playerID, true, battingPosition.toInt)
         }
-        winningPitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].win = 1 }
-        losingPitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].loss = 1 }
-        savePitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].save = 1 }
+        winningPitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].pitchingStats.win = 1 }
+        losingPitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].pitchingStats.loss = 1 }
+        savePitcher.foreach { p => if (p.id == playerID) starter.asInstanceOf[PitcherGameStats].pitchingStats.save = 1 }
 
         visitingOrHome.toInt match {
           case VISITING_TEAM =>
@@ -150,9 +150,9 @@ class GameData(id: String) {
           logDebug(s"!!! Changing $sub batting position from ${sub.battingPosition} to ${battingPosition.toInt}")
           sub.battingPosition = battingPosition.toInt
         }
-        winningPitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].win = 1 }
-        losingPitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].loss = 1 }
-        savePitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].save = 1 }
+        winningPitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].pitchingStats.win = 1 }
+        losingPitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].pitchingStats.loss = 1 }
+        savePitcher.foreach { p => if (p.id == playerID) sub.asInstanceOf[PitcherGameStats].pitchingStats.save = 1 }
 
         visitingOrHome.toInt match {
           case VISITING_TEAM =>
@@ -196,8 +196,8 @@ class GameData(id: String) {
 
           if (play.head.isDigit && modifiers.exists(_.contains("DP"))) { // ### WHAT ABOUT OTHER TYPES OF DOUBLE PLAYS? EXAMPLE: K/DP ###
             logDebug("\t### Double play")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val batterAdvance = if ((runnerOutAdvances ++ advances).count(adv => adv.contains("X") && !adv.contains("E")) == 2) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
@@ -206,8 +206,8 @@ class GameData(id: String) {
 
           } else if (play.head.isDigit && modifiers.exists(_.contains("TP"))) {
             logDebug("\t### Triple play")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val allAdvances = Bases.merge(runnerOutAdvances, advances)
             recordOuts(3 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
@@ -215,48 +215,48 @@ class GameData(id: String) {
 
           } else if (play.startsWith("FC")) {
             logDebug("\t### Fielder's choice")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, advances)
             val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
           } else if (play.startsWith("FLE")) {
             logDebug("\t### Foul ball error")
 
           } else if (play.takeWhile(_ != '(').contains("E")) {
             logDebug("\t### Error")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
             val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
           } else if (play.head.isDigit) {
             if (modifiers.exists(_.startsWith("FO"))) {
               logDebug("\t### Force out")
-              hitter.addAtBat
-              pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+              hitter.hittingStats.addAtBat
+              pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
               val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + nextBase(base.head).get } // runners called out
               val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
               val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
               val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-              hitter.addRBI(rbi)
-              pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+              hitter.hittingStats.addRBI(rbi)
+              pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
             } else {
               logDebug("\t### Out")
-              hitter.addAtBat
-              pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+              hitter.hittingStats.addAtBat
+              pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
               recordOuts(1)
               val rbi = bases.update(hitter, pitcher, advances: _*)
-              hitter.addRBI(rbi)
-              pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+              hitter.hittingStats.addRBI(rbi)
+              pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
             }
 
           } else if (play.startsWith("SB")) {
@@ -266,8 +266,8 @@ class GameData(id: String) {
                 case HOME_BASE =>
                   bases.runnerOn(3) match {
                     case Some(runner) => {
-                      runner.addStolenBase
-                      pitcher.hittingStatsAgainst(hitter.player.bats).addStolenBaseAgainst
+                      runner.hittingStats.addStolenBase
+                      pitcher.hittingStatsAgainst(hitter.player.bats).addStolenBase
                     }
                     case None => logDebug(s"WARNING: No runner on 3rd base...cannot credit stolen base")
                   }
@@ -275,8 +275,8 @@ class GameData(id: String) {
                 case base =>
                   bases.runnerOn(base.asDigit - 1) match {
                     case Some(runner) => {
-                      runner.addStolenBase
-                      pitcher.hittingStatsAgainst(hitter.player.bats).addStolenBaseAgainst
+                      runner.hittingStats.addStolenBase
+                      pitcher.hittingStatsAgainst(hitter.player.bats).addStolenBase
                     }
                     case None => logDebug(s"WARNING: No runner on base ${base.asDigit - 1}...cannot credit stolen base")
                   }
@@ -320,84 +320,84 @@ class GameData(id: String) {
 
           } else if (play.startsWith("W") || play.startsWith("HP") || play.startsWith("I")) {
             logDebug("\t### Walk")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
-            hitter.addWalk
-            pitcher.hittingStatsAgainst(hitter.player.bats).addWalkAgainst
-            pitcher.addWalkAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
+            hitter.hittingStats.addWalk
+            pitcher.hittingStatsAgainst(hitter.player.bats).addWalk
+            pitcher.pitchingStats.addWalkAgainst
 
             if (play.startsWith("W+")) update(nextLine.replaceAllLiterally("W+", ""))
             else if (play.startsWith("I+")) update(nextLine.replaceAllLiterally("I+", ""))
             else if (play.startsWith("IW+")) update(nextLine.replaceAllLiterally("IW+", ""))
             else {
               val rbi = bases.update(hitter, pitcher, advances: _*)
-              hitter.addRBI(rbi)
-              pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+              hitter.hittingStats.addRBI(rbi)
+              pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
             }
 
             if (!advances.exists(_.startsWith("B-"))) bases.update(hitter, pitcher, "B-1") // implied that batter reaches 1st base
 
           } else if (play.startsWith("S")) {
             logDebug("\t### Single")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
-            hitter.addSingle
-            pitcher.hittingStatsAgainst(hitter.player.bats).addSingleAgainst
-            pitcher.addHitAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
+            hitter.hittingStats.addSingle
+            pitcher.hittingStatsAgainst(hitter.player.bats).addSingle
+            pitcher.pitchingStats.addHitAgainst
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, advances)
             val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
           } else if (play.startsWith("D")) {
             logDebug("\t### Double")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
-            hitter.addDouble
-            pitcher.hittingStatsAgainst(hitter.player.bats).addDoubleAgainst
-            pitcher.addHitAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
+            hitter.hittingStats.addDouble
+            pitcher.hittingStatsAgainst(hitter.player.bats).addDouble
+            pitcher.pitchingStats.addHitAgainst
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-2") else Nil // implied that batter reaches 2nd base
             val allAdvances = Bases.merge(batterAdvance, advances)
             val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
           } else if (play.startsWith("T")) {
             logDebug("\t### Triple")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
-            hitter.addTriple
-            pitcher.hittingStatsAgainst(hitter.player.bats).addTripleAgainst
-            pitcher.addHitAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
+            hitter.hittingStats.addTriple
+            pitcher.hittingStatsAgainst(hitter.player.bats).addTriple
+            pitcher.pitchingStats.addHitAgainst
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-3") else Nil // implied that batter reaches 3rd base
             val allAdvances = Bases.merge(batterAdvance, advances)
             val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
           } else if (play.startsWith("H")) {
             logDebug("\t### Home run")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
-            hitter.addHR
-            pitcher.hittingStatsAgainst(hitter.player.bats).addHomeRunAgainst
-            pitcher.addHitAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
+            hitter.hittingStats.addHomeRun
+            pitcher.hittingStatsAgainst(hitter.player.bats).addHomeRun
+            pitcher.pitchingStats.addHitAgainst
             val rbi = bases.update(hitter, pitcher, advances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
             if (!advances.exists(_.startsWith("B-"))) {
-              hitter.addRBI(1)
-              pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(1)
-              hitter.addRun
-              pitcher.hittingStatsAgainst(hitter.player.bats).addRunAgainst
+              hitter.hittingStats.addRBI(1)
+              pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(1)
+              hitter.hittingStats.addRun
+              pitcher.hittingStatsAgainst(hitter.player.bats).addRun
             }
 
           } else if (play.startsWith("K")) {
             logDebug("\t### Strikeout")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
-            pitcher.addStrikeout
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
+            pitcher.pitchingStats.addStrikeout
 
             val cleanedAdvances = advances.filterNot(_.startsWith("BX"))
 
@@ -416,14 +416,14 @@ class GameData(id: String) {
 
           } else if (play == "C") {
             logDebug("\t### Catcher interference")
-            hitter.addAtBat
-            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBatAgainst
+            hitter.hittingStats.addAtBat
+            pitcher.hittingStatsAgainst(hitter.player.bats).addAtBat
             val batterAdvance = if (!advances.exists(_.startsWith("B-"))) List("B-1") else Nil // implied that batter reaches 1st base
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
             val rbi = bases.update(hitter, pitcher, allAdvances: _*)
-            hitter.addRBI(rbi)
-            pitcher.hittingStatsAgainst(hitter.player.bats).addRBIAgainst(rbi)
+            hitter.hittingStats.addRBI(rbi)
+            pitcher.hittingStatsAgainst(hitter.player.bats).addRBI(rbi)
 
           } else if (play.startsWith("OA")) {
             logDebug("\t### Other baserunner advance")
@@ -438,7 +438,7 @@ class GameData(id: String) {
         logDebug(nextLine)
         visitingTeamPlayers.find(_.playerID == playerID).orElse(homeTeamPlayers.find(_.playerID == playerID)) match {
           case Some(player) => player match {
-            case pitcher: PitcherGameStats => pitcher.earnedRuns = earnedRuns.toInt
+            case pitcher: PitcherGameStats => pitcher.pitchingStats.earnedRuns = earnedRuns.toInt
             case hitter: HitterGameStats   => logDebug(s"Hitter ($hitter) was a pitcher --- ignoring pitching stats: $nextLine")
             case _                         => logDebug(s"WARNING: Player matching this event has unexpected type: $nextLine")
           }
