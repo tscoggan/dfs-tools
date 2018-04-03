@@ -40,28 +40,8 @@ object Season2017Stats {
   case class Stats(stdDev: Double, downsideDev: Double, upsideDev: Double) {
     val netUpsideDev: Double = upsideDev - downsideDev
   }
-
-//  val pointsPerGameStartedDeviation_FD: List[(PlayerSeasonStats, Stats)] = season.allHitters
-//    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB))),
-//      downsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_FD),
-//      upsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_FD))))
-//
-//  val pitcherPointsPerGameStartedDeviation_FD: List[(PlayerSeasonStats, Stats)] = season.allPitchers
-//    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB))),
-//      downsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_FD + pitcherLeaguePointsPerGameStartedStdDev_FD),
-//      upsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_FD + pitcherLeaguePointsPerGameStartedStdDev_FD))))
-//
-//  val pointsPerGameStartedDeviation_DK: List[(PlayerSeasonStats, Stats)] = season.allHitters
-//    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB))),
-//      downsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_DK),
-//      upsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_DK))))
-//
-//  val pitcherPointsPerGameStartedDeviation_DK: List[(PlayerSeasonStats, Stats)] = season.allPitchers
-//    .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB))),
-//      downsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_DK + pitcherLeaguePointsPerGameStartedStdDev_DK),
-//      upsideDev(p.gamesStarted.map(_.fantasyPoints(DraftKingsMLB).toDouble), pitcherLeagueAvgPointsPerGameStarted_DK + pitcherLeaguePointsPerGameStartedStdDev_DK))))
-
-  val pitcherStatsAgainstAllHitters: Map[Player, PitcherStatsAgainst] = {
+  
+  val pitcherStatsAllowedToAllHitters: Map[Player, HittingStatsAllowed] = {
     season.allPitchers.map(_.player).map { pitcher =>
       val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
         _ match {
@@ -74,11 +54,11 @@ object Season2017Stats {
       val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
       val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
       val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
-      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
+      (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
     }.toMap
   }
 
-  val pitcherStatsAgainstLefties: Map[Player, PitcherStatsAgainst] = {
+  val pitcherStatsAllowedToLefties: Map[Player, HittingStatsAllowed] = {
     season.allPitchers.map(_.player).map { pitcher =>
       val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
         _ match {
@@ -91,11 +71,11 @@ object Season2017Stats {
       val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
       val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble).sum
       val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
-      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Left)))
+      (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Left)))
     }.toMap
   }
 
-  val pitcherStatsAgainstRighties: Map[Player, PitcherStatsAgainst] = {
+  val pitcherStatsAllowedToRighties: Map[Player, HittingStatsAllowed] = {
     season.allPitchers.map(_.player).map { pitcher =>
       val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
         _ match {
@@ -108,11 +88,11 @@ object Season2017Stats {
       val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
       val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble).sum
       val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
-      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Right)))
+      (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Right)))
     }.toMap
   }
 
-  val pitcherStatsAgainstSwitchHitters: Map[Player, PitcherStatsAgainst] = {
+  val pitcherStatsAllowedToSwitchHitters: Map[Player, HittingStatsAllowed] = {
     season.allPitchers.map(_.player).map { pitcher =>
       val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
         _ match {
@@ -125,7 +105,7 @@ object Season2017Stats {
       val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
       val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble).sum
       val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
-      (pitcher -> PitcherStatsAgainst(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Switch)))
+      (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Switch)))
     }.toMap
   }
 

@@ -1,6 +1,6 @@
 package mlb.model
 
-case class PitcherStatsAgainst(
+case class HittingStatsAllowed(
   pitcher: Player,
   atBatsAgainst: Int,
   fptsAgainst_FD: Double,

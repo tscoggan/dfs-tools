@@ -4,6 +4,7 @@ import mlb._
 import CustomTypes._
 import utils.Logger._
 import java.util.Date
+import scala.collection.mutable
 
 /**
  * Single-game stats for a player
@@ -24,6 +25,73 @@ trait PlayerGameStats {
   override def toString: String = Players.get(playerID).toString
 
   def printStats: String
+
+  def addAtBatAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addAtBat
+    pitcher.pitchingStats.addAtBat
+    pitcher.pitchingStatsAgainst(player, true).addAtBat
+    pitcher.hittingStatsAllowedTo(player, true).addAtBat
+    logDebug(s"$this atBats += 1")
+  }
+
+  def addSingleAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addSingle
+    pitcher.pitchingStats.addHitAgainst
+    pitcher.pitchingStatsAgainst(player, true).addHitAgainst
+    pitcher.hittingStatsAllowedTo(player, true).addSingle
+    logDebug(s"$this singles += 1")
+  }
+
+  def addDoubleAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addDouble
+    pitcher.pitchingStats.addHitAgainst
+    pitcher.pitchingStatsAgainst(player, true).addHitAgainst
+    pitcher.hittingStatsAllowedTo(player, true).addDouble
+    logDebug(s"$this doubles += 1")
+  }
+
+  def addTripleAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addTriple
+    pitcher.pitchingStats.addHitAgainst
+    pitcher.pitchingStatsAgainst(player, true).addHitAgainst
+    pitcher.hittingStatsAllowedTo(player, true).addTriple
+    logDebug(s"$this triples += 1")
+  }
+
+  def addHomeRunAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addHomeRun
+    pitcher.pitchingStats.addHitAgainst
+    pitcher.pitchingStatsAgainst(player, true).addHitAgainst
+    pitcher.hittingStatsAllowedTo(player, true).addHomeRun
+    logDebug(s"$this homeRuns += 1")
+  }
+
+  def addRBIAgainst(pitcher: PitcherGameStats, runs: Int) = {
+    hittingStats.addRBI(runs)
+    pitcher.pitchingStatsAgainst(player, true).addEarnedRuns(runs) // is this correct???
+    pitcher.hittingStatsAllowedTo(player, true).addRBI(runs)
+    if (runs != 0) logDebug(s"$this rbi += $runs")
+  }
+
+  def addRunAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addRun
+    pitcher.hittingStatsAllowedTo(player, true).addRun
+    logDebug(s"$this runs += 1")
+  }
+
+  def addStolenBaseAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addStolenBase
+    pitcher.hittingStatsAllowedTo(player, true).addStolenBase
+    logDebug(s"$this stolenBases += 1")
+  }
+
+  def addWalkAgainst(pitcher: PitcherGameStats) = {
+    hittingStats.addWalk
+    pitcher.pitchingStats.addWalkAgainst
+    pitcher.pitchingStatsAgainst(player, true).addWalkAgainst
+    pitcher.hittingStatsAllowedTo(player, true).addWalk
+    logDebug(s"$this walks += 1")
+  }
 }
 
 case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
@@ -38,70 +106,117 @@ case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolea
 }
 
 case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
+
   val pitchingStats: PitchingStats = new PitchingStats
-  val hittingStatsAgainst: Map[Handedness, HittingStats] = Map(Left -> new HittingStats, Right -> new HittingStats, Switch -> new HittingStats)
+
+  private val pitchingStatsByHitter: mutable.Map[Player, PitchingStats] = mutable.Map.empty
+
+  private val hittingStatsAllowedByHitter: mutable.Map[Player, HittingStats] = mutable.Map.empty
+
+  def pitchingStatsAgainst(hitter: Player, updateStats: Boolean = false): PitchingStats = pitchingStatsByHitter.get(hitter) match {
+    case Some(stats) => stats
+    case None => synchronized {
+      val stats = new PitchingStats
+      if (updateStats) pitchingStatsByHitter(hitter) = stats
+      stats
+    }
+  }
+
+  def hittingStatsAllowedTo(hitter: Player, updateStats: Boolean = false): HittingStats = hittingStatsAllowedByHitter.get(hitter) match {
+    case Some(stats) => stats
+    case None => synchronized {
+      val stats = new HittingStats
+      if (updateStats) hittingStatsAllowedByHitter(hitter) = stats
+      stats
+    }
+  }
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this.pitchingStats)
 
   // FPTS scored by batters against this pitcher
   def fantasyPointsAgainst(scoringSystem: DFSScoringSystem, hitterHandedness: Option[Handedness] = None): Float = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).fantasyPoints(scoringSystem)
-    case None    => hittingStatsAgainst.values.map(_.fantasyPoints(scoringSystem)).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.fantasyPoints(scoringSystem)).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.fantasyPoints(scoringSystem)).sum
   }
 
   def atBatsAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).atBats
-    case None    => hittingStatsAgainst.values.map(_.atBats).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.atBats).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.atBats).sum
   }
 
   def singlesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).singles
-    case None    => hittingStatsAgainst.values.map(_.singles).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.singles).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.singles).sum
   }
 
   def doublesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).doubles
-    case None    => hittingStatsAgainst.values.map(_.doubles).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.doubles).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.doubles).sum
   }
 
   def triplesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).triples
-    case None    => hittingStatsAgainst.values.map(_.triples).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.triples).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.triples).sum
   }
 
   def homeRunsAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).homeRuns
-    case None    => hittingStatsAgainst.values.map(_.homeRuns).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.homeRuns).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.homeRuns).sum
   }
 
   def rbisAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).rbi
-    case None    => hittingStatsAgainst.values.map(_.rbi).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.rbi).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.rbi).sum
   }
 
   def runsAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).runs
-    case None    => hittingStatsAgainst.values.map(_.runs).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.runs).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.runs).sum
   }
 
   def stolenBasesAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).stolenBases
-    case None    => hittingStatsAgainst.values.map(_.stolenBases).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.stolenBases).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.stolenBases).sum
   }
 
   def walksAgainst(hitterHandedness: Option[Handedness] = None): Int = hitterHandedness match {
-    case Some(h) => hittingStatsAgainst(h).walks
-    case None    => hittingStatsAgainst.values.map(_.walks).sum
+    case Some(h) => hittingStatsAllowedByHitter.filterKeys(_.bats == h).values.map(_.walks).sum
+    case None    => hittingStatsAllowedByHitter.values.map(_.walks).sum
   }
 
   override def printStats: String = "P) " + this.toString +
     s" - Outs: ${pitchingStats.outs}, H: ${pitchingStats.hitsAgainst}, W: ${pitchingStats.walksAgainst}, ER: ${pitchingStats.earnedRuns}, " +
     s"K: ${pitchingStats.strikeouts}" + { if (pitchingStats.win > 0) ", Win" else "" } + { if (pitchingStats.loss > 0) ", Loss" else "" } +
     { if (pitchingStats.save > 0) ", Save" else "" } + { if (pitchingStats.qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
+
+  def addHitAgainst = {
+    pitchingStats.addHitAgainst
+    logDebug(s"$this hitsAgainst += 1")
+  }
+
+  def addWalkAgainst = {
+    pitchingStats.addWalkAgainst
+    logDebug(s"$this walksAgainst += 1")
+  }
+
+  def addEarnedRuns(runs: Int) = {
+    pitchingStats.addEarnedRuns(runs)
+    if (runs != 0) logDebug(s"$this earnedRuns += $runs")
+  }
+
+  def addStrikeout = {
+    pitchingStats.addStrikeout
+    logDebug(s"$this strikeouts += 1")
+  }
+
+  def addOuts(numberOfOuts: Int) = {
+    pitchingStats.addOuts(numberOfOuts)
+    if (numberOfOuts != 0) logDebug(s"$this outs += $numberOfOuts")
+  }
 }
 
 trait PlayerStats {
-  
+
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this)
 
 }
@@ -156,34 +271,34 @@ class HittingStats extends PlayerStats {
 
 class PitchingStats extends PlayerStats {
 
+  var atBats = 0
+  def addAtBat = {
+    atBats += 1
+  }
+
   var hitsAgainst = 0
   def addHitAgainst = {
     hitsAgainst += 1
-    logDebug(s"$this hitsAgainst += 1")
   }
 
   var walksAgainst = 0
   def addWalkAgainst = {
     walksAgainst += 1
-    logDebug(s"$this walksAgainst += 1")
   }
 
   var earnedRuns = 0
   def addEarnedRuns(runs: Int) = {
     earnedRuns += runs
-    if (runs != 0) logDebug(s"$this earnedRuns += $runs")
   }
 
   var strikeouts = 0
   def addStrikeout = {
     strikeouts += 1
-    logDebug(s"$this strikeouts += 1")
   }
 
   var outs = 0
   def addOuts(numberOfOuts: Int) = {
     outs += numberOfOuts
-    if (numberOfOuts != 0) logDebug(s"$this outs += $numberOfOuts")
   }
 
   def qStart = if (outs >= 18 && earnedRuns <= 3) 1 else 0
