@@ -34,6 +34,16 @@ trait PlayerGameStats {
     logDebug(s"$this atBats += 1")
   }
 
+  def addStrikeoutAgainst(pitcher: PitcherGameStats) = {
+    pitcher.pitchingStats.addStrikeout
+    pitcher.pitchingStatsAgainst(player, true).addStrikeout
+  }
+
+  def addOutsAgainst(numberOfOuts: Int, pitcher: PitcherGameStats) = {
+    pitcher.pitchingStats.addOuts(numberOfOuts)
+    pitcher.pitchingStatsAgainst(player, true).addOuts(numberOfOuts)
+  }
+
   def addSingleAgainst(pitcher: PitcherGameStats) = {
     hittingStats.addSingle
     pitcher.pitchingStats.addHitAgainst
@@ -189,30 +199,11 @@ case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boole
     s"K: ${pitchingStats.strikeouts}" + { if (pitchingStats.win > 0) ", Win" else "" } + { if (pitchingStats.loss > 0) ", Loss" else "" } +
     { if (pitchingStats.save > 0) ", Save" else "" } + { if (pitchingStats.qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
 
-  def addHitAgainst = {
-    pitchingStats.addHitAgainst
-    logDebug(s"$this hitsAgainst += 1")
-  }
-
-  def addWalkAgainst = {
-    pitchingStats.addWalkAgainst
-    logDebug(s"$this walksAgainst += 1")
-  }
-
   def addEarnedRuns(runs: Int) = {
     pitchingStats.addEarnedRuns(runs)
     if (runs != 0) logDebug(s"$this earnedRuns += $runs")
   }
 
-  def addStrikeout = {
-    pitchingStats.addStrikeout
-    logDebug(s"$this strikeouts += 1")
-  }
-
-  def addOuts(numberOfOuts: Int) = {
-    pitchingStats.addOuts(numberOfOuts)
-    if (numberOfOuts != 0) logDebug(s"$this outs += $numberOfOuts")
-  }
 }
 
 trait PlayerStats {

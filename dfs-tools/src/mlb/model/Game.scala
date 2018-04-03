@@ -2,6 +2,8 @@ package mlb.model
 
 import java.util.Date
 import utils.DateTimeUtils._
+import utils.FloatUtils._
+import utils.Logger._
 import CustomTypes._
 import GameNumbers._
 import WindDirections._
@@ -32,12 +34,35 @@ case class Game(
 
   val visitingTeamStartingPitcher: Player = visitingTeamPlayerStats.find(p => p.isStarter && p.isInstanceOf[PitcherGameStats]).get.player
   val homeTeamStartingPitcher: Player = homeTeamPlayerStats.find(p => p.isStarter && p.isInstanceOf[PitcherGameStats]).get.player
-  
+
   def statsFor(player: Player): Option[PlayerGameStats] = allPlayerStats.find(_.player == player)
 
   override def toString: String = alias +
     s"\n  $visitingTeam stats:\n\t" + visitingTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.hittingStats.atBats)).map(_.printStats).mkString("\n\t") +
     s"\n  $homeTeam stats:\n\t" + homeTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.hittingStats.atBats)).map(_.printStats).mkString("\n\t")
+
+  // sanity check:
+  allPlayerStats.filter(_.isInstanceOf[HitterGameStats]).find { hitter =>
+    val fptsFD = hitter.fantasyPoints(FanDuelMLB)
+    val fptsDK = hitter.fantasyPoints(DraftKingsMLB)
+    val opposingPlayers = if (visitingTeamPlayerStats.contains(hitter)) homeTeamPlayerStats else visitingTeamPlayerStats
+    val opposingPitchers = opposingPlayers.filter(_.isInstanceOf[PitcherGameStats])
+    println(s"game $alias, hitter $hitter, opposing pitchers: ${opposingPitchers}")
+    (!(fptsFD ~= opposingPitchers.map(_.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(FanDuelMLB)).sum) ||
+      !(fptsDK ~= opposingPitchers.map(_.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(DraftKingsMLB)).sum))
+  } match {
+    case Some(hitter) => log {
+      val opposingPlayers = if (visitingTeamPlayerStats.contains(hitter)) homeTeamPlayerStats else visitingTeamPlayerStats
+      val opposingPitchers = opposingPlayers.filter(_.isInstanceOf[PitcherGameStats])
+      println(hitter.printStats)
+      s"WARNING: Inconsistent stats for game $alias, hitter $hitter: \n" +
+        s"fptsFD = ${hitter.fantasyPoints(FanDuelMLB)}\n" +
+        s"pitcher stats allowed: ${opposingPitchers.map(pitcher => pitcher + " gave up " + pitcher.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(FanDuelMLB)).mkString("\n\t")}\n" +
+        s"fptsDK = ${hitter.fantasyPoints(DraftKingsMLB)}\n" +
+        s"pitcher stats allowed: ${opposingPitchers.map(pitcher => pitcher + " gave up " + pitcher.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(DraftKingsMLB)).mkString("\n\t")}\n"
+    }
+    case None => // OK
+  }
 }
 
 object GameNumbers {

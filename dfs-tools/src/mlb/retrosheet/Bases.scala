@@ -74,7 +74,7 @@ class Bases(game: GameData) {
           val delim = adv.indexOf('X')
           val fromBase = adv.charAt(delim - 1)
           if (fromBase.isDigit) baserunners.remove(fromBase.asDigit)
-          game.recordOuts(1)
+          game.recordOuts(batter, 1)
           0
         } else throw new Exception(s"Invalid baserunner advance: $adv")
       }.sum

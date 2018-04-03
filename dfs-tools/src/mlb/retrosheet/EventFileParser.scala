@@ -92,9 +92,9 @@ class GameData(id: String) {
   var outsThisInning = 0
   var visitingOrHome: Int = -1
 
-  def recordOuts(numberOfOuts: Int) = {
+  def recordOuts(hitter: PlayerGameStats, numberOfOuts: Int) = {
     val pitcher = if (visitingOrHome.toInt == VISITING_TEAM) homeTeamPitcher.get else visitingTeamPitcher.get
-    pitcher.addOuts(numberOfOuts)
+    hitter.addOutsAgainst(numberOfOuts, pitcher)
     outsThisInning += numberOfOuts
     if (outsThisInning > 3) logDebug(s"WARNING: outsThisInning = $outsThisInning")
   }
@@ -200,7 +200,7 @@ class GameData(id: String) {
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val batterAdvance = if ((runnerOutAdvances ++ advances).count(adv => adv.contains("X") && !adv.contains("E")) == 2) List("B-1") else Nil // implied that batter reaches 1st base
             val allAdvances = Bases.merge(batterAdvance, runnerOutAdvances, advances)
-            recordOuts(2 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
+            recordOuts(hitter, 2 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
             bases.update(hitter, pitcher, allAdvances: _*) // no RBI's credited on double plays
 
           } else if (play.head.isDigit && modifiers.exists(_.contains("TP"))) {
@@ -208,7 +208,7 @@ class GameData(id: String) {
             hitter.addAtBatAgainst(pitcher)
             val runnerOutAdvances = play.substringsBetween("(", ")").map { base => base + "X" + base } // runners called out
             val allAdvances = Bases.merge(runnerOutAdvances, advances)
-            recordOuts(3 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
+            recordOuts(hitter, 3 - allAdvances.count(adv => adv.contains("X") && !adv.contains("E"))) // required because not all outs are explicitly specified
             bases.update(hitter, pitcher, allAdvances: _*) // no RBI's credited on triple plays
 
           } else if (play.startsWith("FC")) {
@@ -244,7 +244,7 @@ class GameData(id: String) {
             } else {
               logDebug("\t### Out")
               hitter.addAtBatAgainst(pitcher)
-              recordOuts(1)
+              recordOuts(hitter, 1)
               val rbi = bases.update(hitter, pitcher, advances: _*)
               hitter.addRBIAgainst(pitcher, rbi)
             }
@@ -358,20 +358,20 @@ class GameData(id: String) {
           } else if (play.startsWith("K")) {
             logDebug("\t### Strikeout")
             hitter.addAtBatAgainst(pitcher)
-            pitcher.addStrikeout
+            hitter.addStrikeoutAgainst(pitcher)
 
             val cleanedAdvances = advances.filterNot(_.startsWith("BX"))
 
             if (play.startsWith("K+")) {
-              if (!advances.exists(_.startsWith("B-"))) recordOuts(1)
+              if (!advances.exists(_.startsWith("B-"))) recordOuts(hitter, 1)
               update(nextLine.replaceAllLiterally("K+", ""))
             } else if (play.startsWith("K23+")) { // dropped 3rd strike, throwout at 1st base
-              recordOuts(1)
+              recordOuts(hitter, 1)
               update(nextLine.replaceAllLiterally("K23+", ""))
             } else if (cleanedAdvances.exists(_.contains("X")) && outsThisInning == 2) { // runner out on (dropped?) 3rd strike --- ignore runner out to avoid double-counting 3rd out
-              recordOuts(1)
+              recordOuts(hitter, 1)
             } else {
-              recordOuts(1)
+              recordOuts(hitter, 1)
               bases.update(hitter, pitcher, cleanedAdvances: _*)
             }
 
