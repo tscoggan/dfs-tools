@@ -160,8 +160,7 @@ class GameData(id: String) {
             if (sub.playerID != subFor.playerID) {
               visitingTeamActivePlayers -= subFor.playerID
               visitingTeamActivePlayers(playerID) = sub
-              visitingTeamPlayers += sub
-              if (visitingTeamPlayers.groupBy(_.playerID).exists(_._2.length > 1)) log("WARNING: Duplicate player!")
+              if (!visitingTeamPlayers.contains(sub)) visitingTeamPlayers += sub
               if (fieldingPosition.toInt == PITCHER) visitingTeamPitcher = Some(sub.asInstanceOf[PitcherGameStats])
               logDebug(s"$sub replaced $subFor for ${visitingTeam.get} in inning $inning (batting position: $battingPosition)")
               bases.replace(subFor, sub)
@@ -171,8 +170,7 @@ class GameData(id: String) {
             if (sub.playerID != subFor.playerID) {
               homeTeamActivePlayers -= subFor.playerID
               homeTeamActivePlayers(playerID) = sub
-              homeTeamPlayers += sub
-              if (homeTeamPlayers.groupBy(_.playerID).exists(_._2.length > 1)) log("WARNING: Duplicate player!")
+              if (!homeTeamPlayers.contains(sub)) homeTeamPlayers += sub
               if (fieldingPosition.toInt == PITCHER) homeTeamPitcher = Some(sub.asInstanceOf[PitcherGameStats])
               logDebug(s"$sub replaced $subFor for ${homeTeam.get} in inning $inning (batting position: $battingPosition)")
               bases.replace(subFor, sub)
