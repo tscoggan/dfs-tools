@@ -24,4 +24,4 @@ case class Player(
   override def toString: String = s"$name ($position, $team)"
 }
 
-case class PlayerSiteInfo(name: String, team: Team, position: Position, salary: Int, starter: Option[Boolean] = None)
+case class PlayerSiteInfo(name: String, team: Team, position: Position, salary: Int, starter: Option[Boolean], battingPosition: Option[Int])

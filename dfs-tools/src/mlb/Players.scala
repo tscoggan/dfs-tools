@@ -46,7 +46,7 @@ object Players {
       .last
     log("Loading FD players from file " + file)
     Player_FD.parseFrom(file.getPath)
-  } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // #### Add this back ####
+  } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // ignore non-starting pitchers
   log(s"Found ${fanduelPlayers.length} FD players")
 
   fanduelPlayers.groupBy(_.nickname).foreach {
@@ -60,7 +60,7 @@ object Players {
       .last
     log("Loading DK players from file " + file)
     Player_DK.parseFrom(file.getPath)
-  } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // #### Add this back ####
+  } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // ignore non-starting pitchers
   log(s"Found ${draftkingsPlayers.length} DK players")
 
   draftkingsPlayers.groupBy(_.name).foreach {
@@ -74,9 +74,13 @@ object Players {
     val newOpponent = dk.map(_.opponent).orElse(fd.map(_.opponent))
     //val newPosition = dk.map(_.position).orElse(fd.map(_.)).map(Teams.get(_)).getOrElse(player.team)
     player.copy(team = newTeam, opponent = newOpponent,
-      fanduel = fd.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.probablePitcher)),
-      draftkings = dk.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary)))
+      fanduel = fd.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.battingOrder.map(_ > 0).orElse(p.probablePitcher), p.battingOrder)),
+      draftkings = dk.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
   }
+
+  val startingPlayers = allPlayers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
+
+  println("Starters: \n" + startingPlayers.sortBy(p => p.team.id + p.fanduel.flatMap(_.battingPosition).getOrElse(0)).mkString("\n"))
 
   val playersByID: Map[PlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
 
