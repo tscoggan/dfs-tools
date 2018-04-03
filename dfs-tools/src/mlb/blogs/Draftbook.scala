@@ -18,6 +18,8 @@ object Draftbook extends App {
   val (pitchers, hitters) = Players.allPlayers.filter(p => p.fanduel.nonEmpty || p.draftkings.nonEmpty).partition(_.position == Pitcher)
   val startingPitchers = pitchers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
 
+  val teamsOnSlate = hitters.map(_.team).distinct
+
   val hitters_FD = hitters.filter(_.fanduel.map(_.salary).nonEmpty)
   val hitters_DK = hitters.filter(_.draftkings.map(_.salary).nonEmpty)
 
@@ -37,21 +39,32 @@ object Draftbook extends App {
   //      }"
   //  }.mkString("\n"))
 
+  teamsOnSlate.filter(t => !startingPitchers.map(_.team).contains(t)) match {
+    case Nil      => // OK
+    case notFound => println("\n\nWARNING: No starting pitcher found for " + notFound.mkString(", "))
+  }
+
   println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
     s"$pitcher [${pitcherStatsAllowedToAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
       s"${pitcherStatsAllowedToAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
-        pitcher.opposingHitters(hitters).sortBy(p => season.statsByPlayer(p.id).fptsPerAtBat(FanDuelMLB)).reverse.map { hitter =>
+        pitcher.opposingHitters(hitters).sortBy(p => season.statsByPlayer.get(p.id).map(_.fptsPerAtBat(FanDuelMLB)).getOrElse(0f)).reverse.map { hitter =>
           s"${hitter.name} (${hitter.bats}) - ${
             hitter.fanduel.map(_.salary) match {
-              case Some(salary) => ((season.statsByPlayer(hitter.id).fptsPerAtBat(FanDuelMLB).toDouble / salary.toDouble) * 1000d).rounded(2)
-              case None         => "???"
+              case Some(salary) => season.statsByPlayer.get(hitter.id) match {
+                case Some(stats) => ((stats.fptsPerAtBat(FanDuelMLB).toDouble / salary.toDouble) * 1000d).rounded(2)
+                case None        => "???"
+              }
+              case None => "???"
             }
-          } value (FanDuel), ${
+          } value on FD ${hitter.fanduel.map("($" + _.salary+")").getOrElse("")}, ${
             hitter.draftkings.map(_.salary) match {
-              case Some(salary) => ((season.statsByPlayer(hitter.id).fptsPerAtBat(DraftKingsMLB).toDouble / salary.toDouble) * 1000d).rounded(2)
-              case None         => "???"
+              case Some(salary) => season.statsByPlayer.get(hitter.id) match {
+                case Some(stats) => ((stats.fptsPerAtBat(DraftKingsMLB).toDouble / salary.toDouble) * 1000d).rounded(2)
+                case None        => "???"
+              }
+              case None => "???"
             }
-          } value (DraftKings)"
+          } value on DK ${hitter.draftkings.map("($" + _.salary+")").getOrElse("")}"
         }.mkString("\n\t")
       }"
   }.mkString("\n"))
@@ -114,7 +127,7 @@ object Draftbook extends App {
         List(pitcherStatsAllowedToLefties.get(pitcher), pitcherStatsAllowedToRighties.get(pitcher), pitcherStatsAllowedToSwitchHitters.get(pitcher)).flatten
       }
       .sortBy(_.fptsPerAtBatAgainst_FD).reverse
-      //.take(10)
+      .take(10)
       .map { stats =>
         List(stats.pitcher,
           stats.pitcher.opponent.get,
