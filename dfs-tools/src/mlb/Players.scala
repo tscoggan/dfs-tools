@@ -11,15 +11,15 @@ import scala.io.Source
 
 object Players {
 
-  case class PlayerMapping(retrosheetID: PlayerID, fdPlayerID: String, dkNameAndTeam: String)
+  case class PlayerMapping(retrosheetID: PlayerID, fdPlayerID: String, dkPlayerID: String)
 
   val playerMappings: List[PlayerMapping] = Source.fromFile(Configs.playerMappingsFile).getLines.toList.tail
-    .map(_.trim)
+    .map(_.substringBefore("//").trim)
     .filter(_.nonEmpty)
     .map {
       case nextLine =>
-        val Array(retrosheetID, fdPlayerID, dkNameAndTeam) = nextLine.splitCSV()
-        PlayerMapping(retrosheetID, fdPlayerID, dkNameAndTeam)
+        val Array(retrosheetID, fdPlayerID, dkPlayerID) = nextLine.splitCSV()
+        PlayerMapping(retrosheetID, fdPlayerID.substringAfter("-"), dkPlayerID)
     }
   log(s"Found ${playerMappings.length} player mappings")
 
@@ -68,14 +68,20 @@ object Players {
   }
 
   val allPlayers: List[Player] = (retrosheetPlayers ++ newPlayers) map { player =>
-    val fd = fanduelPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
-    val dk = draftkingsPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
-    val newTeam = dk.map(_.team).orElse(fd.map(_.team)).getOrElse(player.team)
-    val newOpponent = dk.map(_.opponent).orElse(fd.map(_.opponent))
-    //val newPosition = dk.map(_.position).orElse(fd.map(_.)).map(Teams.get(_)).getOrElse(player.team)
-    player.copy(team = newTeam, opponent = newOpponent,
-      fanduel = fd.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.battingOrder.map(_ > 0).orElse(p.probablePitcher), p.battingOrder)),
-      draftkings = dk.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
+    val fanduel = fanduelPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
+    val draftkings = draftkingsPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
+    val (newName, newPosition) = fanduel match {
+      case Some(fd) => (fd.nickname, fd.position: Position)
+      case None => draftkings match {
+        case Some(dk) => (dk.name, dk.position: Position)
+        case None     => (player.name, player.position)
+      }
+    }
+    val newTeam = draftkings.map(_.team).orElse(fanduel.map(_.team)).getOrElse(player.team)
+    val newOpponent = draftkings.map(_.opponent).orElse(fanduel.map(_.opponent))
+    player.copy(name = newName, position = newPosition, team = newTeam, opponent = newOpponent,
+      fanduel = fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.battingOrder.map(_ > 0).orElse(p.probablePitcher), p.battingOrder)),
+      draftkings = draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
   }
 
   val startingPlayers = allPlayers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))

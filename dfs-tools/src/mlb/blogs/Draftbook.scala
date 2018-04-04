@@ -154,7 +154,7 @@ object Draftbook extends App {
         }
         val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
         (p, value)
-    }.sortBy(_._2).reverse.take(10).map {
+    }.sortBy(_._2).reverse.take(20).map {
       case (p, value) =>
         List(p, p.fanduel.map(fd => "$" + fd.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
     }))
@@ -172,7 +172,7 @@ object Draftbook extends App {
         }
         val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.fanduel.map(_.salary).get
         (p, value)
-    }.sortBy(_._2).reverse.take(10).map {
+    }.sortBy(_._2).reverse.take(20).map {
       case (p, value) =>
         List(p, p.fanduel.map(fd => "$" + fd.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
     }))
@@ -194,7 +194,7 @@ object Draftbook extends App {
         }
         val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
         (p, value)
-    }.sortBy(_._2).reverse.take(10).map {
+    }.sortBy(_._2).reverse.take(20).map {
       case (p, value) =>
         List(p, p.draftkings.map(dk => "$" + dk.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
     }))
@@ -212,7 +212,7 @@ object Draftbook extends App {
         }
         val value = mean(List(hitterFptsPerAB, pitcherFptsPerAtBatAgainst)) / p.draftkings.map(_.salary).get
         (p, value)
-    }.sortBy(_._2).reverse.take(10).map {
+    }.sortBy(_._2).reverse.take(20).map {
       case (p, value) =>
         List(p, p.draftkings.map(dk => "$" + dk.salary).getOrElse("Unknown"), p.opposingPitcher(startingPitchers), (value * 1000).rounded(2))
     }))

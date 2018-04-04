@@ -29,6 +29,16 @@ object StringUtils {
       else s
     }
 
+    def substringBefore(delim: String): String = s.indexOf(delim) match {
+      case -1 => s // delim not found
+      case i  => s.substring(0, i)
+    }
+
+    def substringAfter(delim: String): String = s.indexOf(delim) match {
+      case -1 => s // delim not found
+      case i  => s.substring(i + delim.length)
+    }
+
     /**
      * Returns a list of all substrings enclosed by the specified `prefix` and `suffix`.
      * @example {{{

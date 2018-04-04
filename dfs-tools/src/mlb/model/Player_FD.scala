@@ -31,7 +31,7 @@ case class Player_FD(
           Players.newPlayers.find(_.id == mapping.retrosheetID)
         }
       case None =>
-        Players.retrosheetPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase).orElse {// && p.team == team).orElse {
+        Players.retrosheetPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase).orElse { // && p.team == team).orElse {
           Players.newPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase && p.team == team)
         }
     }
@@ -72,7 +72,7 @@ object Player_FD {
           battingOrder) = nextLine.splitCSV()
 
         Player_FD(
-          id,
+          id.substringAfter("-"),
           position,
           firstName,
           lastName,

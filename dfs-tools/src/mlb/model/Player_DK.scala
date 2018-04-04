@@ -9,6 +9,7 @@ import utils.Logger._
  * DraftKings player data for a given slate
  */
 case class Player_DK(
+    id: String,
     position: String,
     name: String,
     salary: Int,
@@ -16,24 +17,22 @@ case class Player_DK(
     fptsPerGame: Double,
     team: Team) {
 
-  val id: String = s"$name-$team" // is this unique?
-  
   val opponent: Team = {
     val atIndex = game.indexOf('@')
     if (atIndex <= 0) log(s"WARNING: Unexpected format for DK game info: $game")
-    val awayTeam = Teams.get(game.substring(0,atIndex))
+    val awayTeam = Teams.get(game.substring(0, atIndex))
     val homeTeam = Teams.get(game.substringsBetween("@", " ").head)
     if (awayTeam == team) homeTeam else awayTeam
   }
 
   val player: Option[Player] = {
-    Players.playerMappings.find(_.dkNameAndTeam == id) match {
+    Players.playerMappings.find(_.dkPlayerID == id) match {
       case Some(mapping) =>
         Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
           Players.newPlayers.find(_.id == mapping.retrosheetID)
         }
       case None =>
-        Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse {// && p.team == team).orElse {
+        Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse { // && p.team == team).orElse {
           Players.newPlayers.find(p => p.name.toUpperCase == name.toUpperCase && p.team == team)
         }
     }
@@ -55,13 +54,17 @@ object Player_DK {
       case nextLine =>
 
         val Array(position,
+          namePlusID,
           name,
+          id,
+          rosterPosition,
           salary,
           game,
-          fptsPerGame,
-          team) = nextLine.splitCSV()
+          team,
+          fptsPerGame) = nextLine.splitCSV()
 
         Player_DK(
+          id,
           position,
           name,
           salary.toInt,
