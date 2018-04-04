@@ -22,6 +22,14 @@ object Configs {
     val baseURL: String = conf.getString("base_url")
   }
   
+  object Rotogrinders {
+    private val conf = Configs.conf.getConfig("rotogrinders")
+    
+    val projectedStartersFile: String = conf.getString("projected_starters_file")
+    
+    val playerMappingsFile: String = conf.getString("player_mappings_file")
+  }
+  
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {

@@ -80,13 +80,13 @@ object Players {
 
   val startingPlayers = allPlayers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
 
-//  println("Starters: \n" + startingPlayers.sortBy(p => p.team.id + p.fanduel.flatMap(_.battingPosition).getOrElse(0)).map { p =>
-//    p.fanduel.flatMap(_.battingPosition).getOrElse(0) + ") " + p
-//  }.mkString("\n"))
+  //  println("Starters: \n" + startingPlayers.sortBy(p => p.team.id + p.fanduel.flatMap(_.battingPosition).getOrElse(0)).map { p =>
+  //    p.fanduel.flatMap(_.battingPosition).getOrElse(0) + ") " + p
+  //  }.mkString("\n"))
 
   val playersByID: Map[PlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
 
-  val playersByName: Map[String, Player] = allPlayers.map { p => (p.name, p) }.toMap
+  val playersByTeam: Map[Team, List[Player]] = allPlayers.groupBy(_.team)
 
   def get(playerID: String): Player = playersByID.get(playerID).get // throws exception if playerID is invalid
 }

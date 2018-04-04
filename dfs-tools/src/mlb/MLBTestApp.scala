@@ -22,8 +22,10 @@ object MLBTestApp extends App {
   //    if (p.fanduel.isEmpty || p.draftkings.isEmpty) println(s"$p ${p.id} --> ${p.fanduel} / ${p.draftkings}")
   //  }
 
-  val gameURLs = MLBWebsiteParser.getGameURLs("2017-06-01".toDate())
-  println("Loading "+gameURLs.head)
-  println(MLBWebsiteParser.getPlayerURLs(gameURLs.head).mkString("\n"))
+//  val gameURLs = MLBWebsiteParser.getGameURLs("2017-06-01".toDate())
+//  println("Loading "+gameURLs.head)
+//  println(MLBWebsiteParser.getPlayerURLs(gameURLs.head).mkString("\n"))
+  
+  rg.StartingLineups.all.foreach(println(_))
 
 }
