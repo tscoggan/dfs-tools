@@ -16,10 +16,13 @@ case class Player(
     opponent: Option[Team] = None,
     fanduel: Option[PlayerSiteInfo] = None,
     draftkings: Option[PlayerSiteInfo] = None) {
-  
+
   // for a given DFS game slate:
   def opposingPitcher(allStartingPitchers: List[Player]): Player = allStartingPitchers.find(_.team == opponent.get).get
-  def opposingHitters(allHitters: List[Player]): List[Player] = allHitters.filter(_.team == opponent.get)
+  def opposingHitters(allHitters: List[Player], startersOnly: Boolean = false): List[Player] = startersOnly match {
+    case true  => allHitters.filter(p => p.team == opponent.get && p.fanduel.flatMap(_.starter).getOrElse(false))
+    case false => allHitters.filter(_.team == opponent.get)
+  }
 
   override def toString: String = s"$name ($position, $team)"
 }
