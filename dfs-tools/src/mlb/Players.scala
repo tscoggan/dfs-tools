@@ -79,20 +79,34 @@ object Players {
     }
     val newTeam = draftkings.map(_.team).orElse(fanduel.map(_.team)).getOrElse(player.team)
     val newOpponent = draftkings.map(_.opponent).orElse(fanduel.map(_.opponent))
+    val newBattingPosition = fanduel.flatMap(_.battingOrder) match {
+      case None if (fanduel.flatMap(_.probablePitcher).getOrElse(false) == true) =>
+        val filledSpots = fanduelPlayers.filter(_.team == player.team).flatMap(_.battingOrder).filterNot(_ == 0)
+        val unfilledSpots = (1 to 9).toList.diff(filledSpots)
+        //println(s"$player --> ${filledSpots.length} filled lineup spots: ${filledSpots.sorted.mkString(",")}\n\tunfilled: ${unfilledSpots.sorted.mkString(",")}")
+        if (unfilledSpots.length == 1) Some(unfilledSpots.head)
+        else None
+      case bp => bp
+    }
     player.copy(name = newName, position = newPosition, team = newTeam, opponent = newOpponent,
-      fanduel = fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.battingOrder.map(_ > 0).orElse(p.probablePitcher), p.battingOrder)),
+      fanduel = fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary,
+        p.probablePitcher.orElse(p.battingOrder.map(_ > 0)), newBattingPosition)),
       draftkings = draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
   }
-
-  val startingPlayers = allPlayers.filter(_.fanduel.flatMap(_.starter).getOrElse(false))
-
-  //  println("Starters: \n" + startingPlayers.sortBy(p => p.team.id + p.fanduel.flatMap(_.battingPosition).getOrElse(0)).map { p =>
-  //    p.fanduel.flatMap(_.battingPosition).getOrElse(0) + ") " + p
-  //  }.mkString("\n"))
 
   val playersByID: Map[PlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
 
   val playersByTeam: Map[Team, List[Player]] = allPlayers.groupBy(_.team)
+
+  val startingPlayers: List[Player] = allPlayers.filter(_.isStarting)
+
+  val startingPlayersByTeam: Map[Team, List[Player]] = startingPlayers.groupBy(_.team)
+
+  println("\nStarters: \n" + startingPlayersByTeam.map {
+    case (team, players) =>
+      s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
+        .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
+  }.mkString("\n"))
 
   def get(playerID: String): Player = playersByID.get(playerID).get // throws exception if playerID is invalid
 }

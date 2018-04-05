@@ -14,7 +14,7 @@ object StartingLineups {
   case class PlayerMapping(retrosheetID: PlayerID, rgPlayerName: String)
 
   private val playerMappings: List[PlayerMapping] = Source.fromFile(Configs.Rotogrinders.playerMappingsFile).getLines.toList.tail
-    .map(_.trim)
+    .map(_.substringBefore("//").trim)
     .filter(_.nonEmpty)
     .map {
       case nextLine =>
@@ -24,8 +24,8 @@ object StartingLineups {
   log(s"Found ${playerMappings.length} Retrosheet-to-RG player mappings")
 
   lazy val battingOrderByTeam: Map[Team, BattingOrder] = {
-    val lines = Source.fromFile(Configs.Rotogrinders.projectedStartersFile).getLines.toList.map(_.trim).filter(_.nonEmpty)
-    if (lines.length % 20 != 0) throw new Exception("Configs.Rotogrinders.projectedStartersFile has invalid # of lines: " + lines.length)
+    val lines = Source.fromFile(Configs.Rotogrinders.projectedStartersFile).getLines.toList.map(_.substringBefore("//").trim).filter(_.nonEmpty)
+    if (lines.length % 10 != 0) throw new Exception("Configs.Rotogrinders.projectedStartersFile has invalid # of lines: " + lines.length)
 
     @tailrec
     def parseNext(remaining: List[String], result: List[BattingOrder]): List[BattingOrder] = remaining match {
@@ -48,7 +48,7 @@ object StartingLineups {
             }
           } match {
             case Some(player) => player
-            case None         => throw new Exception(s"Couldn't find player named $first $last on $team")
+            case None         => throw new Exception(s"Couldn't find player named $first $last on $team --> please add to ${Configs.Rotogrinders.playerMappingsFile}")
           }
         }
         parseNext(lines.drop(9), BattingOrder(team, batters) :: result)
@@ -58,6 +58,16 @@ object StartingLineups {
   }
 
   lazy val all: List[BattingOrder] = battingOrderByTeam.values.toList
+
+  def isStarting(player: Player): Boolean = battingOrderByTeam.get(player.team) match {
+    case Some(battingOrder) => battingOrder.contains(player)
+    case None               => false
+  }
+
+  def battingPositionOf(player: Player): Option[Int] = battingOrderByTeam.get(player.team) match {
+    case Some(battingOrder) => battingOrder.positionOf(player)
+    case None               => None
+  }
 
 }
 
