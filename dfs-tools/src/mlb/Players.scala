@@ -100,7 +100,11 @@ object Players {
 
   val startingPlayers: List[Player] = allPlayers.filter(_.isStarting)
 
+  val (startingPitchers: List[Player], startingHitters: List[Player]) = startingPlayers.partition(_.position == Pitcher)
+
   val startingPlayersByTeam: Map[Team, List[Player]] = startingPlayers.groupBy(_.team)
+
+  val startingHittersByTeam: Map[Team, List[Player]] = startingHitters.groupBy(_.team).map { case (team, hitters) => (team, hitters.sortBy(_.battingPosition.getOrElse(10))) }
 
   println("\nStarters: \n" + startingPlayersByTeam.map {
     case (team, players) =>
