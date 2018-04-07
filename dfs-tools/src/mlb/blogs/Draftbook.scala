@@ -85,7 +85,7 @@ object Draftbook extends App {
 
     val opposingPitcher: Player = p.opposingPitcher(startingPitchers)
 
-    val hitterTotalAtBats: Int = season.statsByPlayer.get(p.id).map(_.atBats).getOrElse(0)
+    val hitterTotalAtBats: Int = season.hitterStatsAgainstPitcherType(opposingPitcher.throws, p).map(_.atBats).sum
     val pitcherTotalAtBats: Int = p.bats match {
       case Left   => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.atBatsAgainst).getOrElse(0)
       case Right  => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.atBatsAgainst).getOrElse(0)
@@ -94,7 +94,7 @@ object Draftbook extends App {
 
     val hitterSeasonStatsFD: Option[PlayerSeasonStats] = hitter2017Stats_FD.get(p).map(_._1)
     val hitterDeviationStatsFD: Option[DeviationStats] = hitter2017Stats_FD.get(p).map(_._2)
-    val hitterFptsPerAtBatFD: Option[Double] = hitterSeasonStatsFD.map(_.fptsPerAtBat(FanDuelMLB).toDouble)
+    val hitterFptsPerAtBatFD: Option[Double] = season.hitterFptsPerAB_vs_PitcherType(opposingPitcher.throws, p, FanDuelMLB).map(_.fptsPerAB)
     val hitterVsPitcherStatsFD: Option[BatterVsPitcherStats] = season.hitterFptsPerAB_vs_Pitcher(opposingPitcher, p, FanDuelMLB)
     val pitcherFptsPerAtBatAllowedFD: Option[Double] = p.bats match {
       case Left   => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
@@ -109,14 +109,14 @@ object Draftbook extends App {
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       mean(combinedWeightedFptsPerAB) * projAtBats
     }
-    val projValueFD: Option[Double] = projFptsFD.map(projFpts => (projFpts / p.fanduel.map(_.salary).get) * 1000)
+    val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
 
-    println(s"$p - FanDuel - FPTS/PA: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
-      s"Projected FPTS: ${projFptsFD.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueFD.map(_.rounded(2)).getOrElse("-")}")
+    //    println(s"$p - FanDuel - FPTS/PA: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
+    //      s"Projected FPTS: ${projFptsFD.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueFD.map(_.rounded(2)).getOrElse("-")}")
 
     val hitterSeasonStatsDK: Option[PlayerSeasonStats] = hitter2017Stats_DK.get(p).map(_._1)
     val hitterDeviationStatsDK: Option[DeviationStats] = hitter2017Stats_DK.get(p).map(_._2)
-    val hitterFptsPerAtBatDK: Option[Double] = hitterSeasonStatsDK.map(_.fptsPerAtBat(DraftKingsMLB).toDouble)
+    val hitterFptsPerAtBatDK: Option[Double] = season.hitterFptsPerAB_vs_PitcherType(opposingPitcher.throws, p, DraftKingsMLB).map(_.fptsPerAB)
     val hitterVsPitcherStatsDK: Option[BatterVsPitcherStats] = season.hitterFptsPerAB_vs_Pitcher(opposingPitcher, p, DraftKingsMLB)
     val pitcherFptsPerAtBatAllowedDK: Option[Double] = p.bats match {
       case Left   => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
@@ -131,10 +131,10 @@ object Draftbook extends App {
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       mean(combinedWeightedFptsPerAB) * projAtBats
     }
-    val projValueDK: Option[Double] = projFptsDK.map(projFpts => (projFpts / p.draftkings.map(_.salary).get) * 1000)
+    val projValueDK: Option[Double] = p.draftkings.map(_.salary).map(salary => (projFptsDK.getOrElse(0.0) / salary) * 1000)
 
-    println(s"$p - DraftKings - FPTS/PA: ${hitterFptsPerAtBatDK.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedDK.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
-      s"Projected FPTS: ${projFptsDK.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueDK.map(_.rounded(2)).getOrElse("-")}")
+    //    println(s"$p - DraftKings - FPTS/PA: ${hitterFptsPerAtBatDK.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedDK.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
+    //      s"Projected FPTS: ${projFptsDK.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueDK.map(_.rounded(2)).getOrElse("-")}")
   }
 
   val startingHitterStats: Map[Player, HitterStats] = startingHitters.map { p => (p, HitterStats(p)) }.toMap
