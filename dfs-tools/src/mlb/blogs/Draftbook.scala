@@ -145,9 +145,9 @@ object Draftbook extends App {
         startingHittersByTeam(pitcher.opponent.get).map { hitter =>
           val stats = startingHitterStats.get(hitter).get
           s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - " +
-            s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} projected FPTS & " +
+            s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
             s"${stats.projValueFD.map(_.rounded(2)).getOrElse("???")} value on FD ${hitter.fanduel.map("($" + _.salary + ")").getOrElse("???")}, " +
-            s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} projected FPTS & " +
+            s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
             s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")} "
         }.mkString("\n\t")
       }"
