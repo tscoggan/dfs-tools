@@ -68,8 +68,10 @@ object Players {
   }
 
   val allPlayers: List[Player] = (retrosheetPlayers ++ newPlayers) map { player =>
+    val retrosheet = PlayerSiteInfo(player.name, player.team, player.position, 0, None, None)
     val fanduel = fanduelPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
     val draftkings = draftkingsPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
+
     val (newName, newPosition) = fanduel match {
       case Some(fd) => (fd.nickname, fd.position: Position)
       case None => draftkings match {
@@ -77,8 +79,11 @@ object Players {
         case None     => (player.name, player.position)
       }
     }
+
     val newTeam = draftkings.map(_.team).orElse(fanduel.map(_.team)).getOrElse(player.team)
+
     val newOpponent = draftkings.map(_.opponent).orElse(fanduel.map(_.opponent))
+
     val newBattingPosition = fanduel.flatMap(_.battingOrder) match {
       case None if (fanduel.flatMap(_.probablePitcher).getOrElse(false) == true) =>
         val filledSpots = fanduelPlayers.filter(_.team == player.team).flatMap(_.battingOrder).filterNot(_ == 0)
@@ -88,10 +93,39 @@ object Players {
         else None
       case bp => bp
     }
+
+    val visitingOrHomeTeam: Option[VisitingOrHomeTeam] = fanduel.map(_.game) match {
+      case Some(gameInfo) =>
+        val visitingTeam = Teams.get(gameInfo.trim.take(3))
+        val homeTeam = Teams.get(gameInfo.trim.drop(4).take(3))
+        fanduel.map(_.team) match {
+          case Some(team) =>
+            if (team == visitingTeam) Some(Visiting)
+            else if (team == homeTeam) Some(Home)
+            else None
+          case None => throw new Exception(player + " has no FD team!")
+        }
+      case None => draftkings.map(_.game) match {
+        case Some(gameInfo) =>
+          val visitingTeam = Teams.get(gameInfo.trim.take(3))
+          val homeTeam = Teams.get(gameInfo.trim.drop(4).take(3))
+          draftkings.map(_.team) match {
+            case Some(team) =>
+              if (team == visitingTeam) Some(Visiting)
+              else if (team == homeTeam) Some(Home)
+              else None
+            case None => throw new Exception(player + " has no DK team!")
+          }
+        case None => None
+      }
+    }
+
     player.copy(name = newName, position = newPosition, team = newTeam, opponent = newOpponent,
       fanduel = fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary,
         p.probablePitcher.orElse(p.battingOrder.map(_ > 0)), newBattingPosition)),
-      draftkings = draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
+      draftkings = draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)),
+      retrosheet = Some(retrosheet),
+      visitingOrHomeTeam = visitingOrHomeTeam)
   }
 
   val playersByID: Map[PlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
@@ -106,11 +140,11 @@ object Players {
 
   val startingHittersByTeam: Map[Team, List[Player]] = startingHitters.groupBy(_.team).map { case (team, hitters) => (team, hitters.sortBy(_.battingPosition.getOrElse(10))) }
 
-  println("\nStarters: \n" + startingPlayersByTeam.map {
-    case (team, players) =>
-      s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
-        .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
-  }.mkString("\n"))
+  //  println("\nStarters: \n" + startingPlayersByTeam.map {
+  //    case (team, players) =>
+  //      s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
+  //        .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
+  //  }.mkString("\n"))
 
   def get(playerID: String): Player = playersByID.get(playerID).get // throws exception if playerID is invalid
 }

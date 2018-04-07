@@ -108,10 +108,7 @@ case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolea
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this.hittingStats)
 
-  override def printStats: String = battingPosition + ") " + this.toString +
-    s" - AB: ${hittingStats.atBats}, 1B: ${hittingStats.singles}, 2B: ${hittingStats.doubles}, 3B: ${hittingStats.triples}, " +
-    s"HR: ${hittingStats.homeRuns}, RBI: ${hittingStats.rbi}, R: ${hittingStats.runs}, SB: ${hittingStats.stolenBases}, W: ${hittingStats.walks} " +
-    s"[FPTS: ${fantasyPoints()}]"
+  override def printStats: String = battingPosition + ") " + this.toString + " - " + hittingStats
 
 }
 
@@ -194,10 +191,7 @@ case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boole
     case None    => hittingStatsAllowedByHitter.values.map(_.walks).sum
   }
 
-  override def printStats: String = "P) " + this.toString +
-    s" - Outs: ${pitchingStats.outs}, H: ${pitchingStats.hitsAgainst}, W: ${pitchingStats.walksAgainst}, ER: ${pitchingStats.earnedRuns}, " +
-    s"K: ${pitchingStats.strikeouts}" + { if (pitchingStats.win > 0) ", Win" else "" } + { if (pitchingStats.loss > 0) ", Loss" else "" } +
-    { if (pitchingStats.save > 0) ", Save" else "" } + { if (pitchingStats.qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
+  override def printStats: String = "P) " + this.toString + " - " + pitchingStats
 
   def addEarnedRuns(runs: Int) = {
     pitchingStats.addEarnedRuns(runs)
@@ -258,6 +252,9 @@ class HittingStats extends PlayerStats {
     walks += 1
   }
 
+  override def toString: String = s"AB: ${atBats}, 1B: ${singles}, 2B: ${doubles}, 3B: ${triples}, " +
+    s"HR: ${homeRuns}, RBI: ${rbi}, R: ${runs}, SB: ${stolenBases}, W: ${walks} [FPTS: ${fantasyPoints()}]"
+
 }
 
 class PitchingStats extends PlayerStats {
@@ -298,4 +295,8 @@ class PitchingStats extends PlayerStats {
   var loss = 0
   var save = 0
   var completeGame = 0
+
+  override def toString: String = s"Outs: ${outs}, H: ${hitsAgainst}, W: ${walksAgainst}, ER: ${earnedRuns}, " +
+    s"K: ${strikeouts}" + { if (win > 0) ", Win" else "" } + { if (loss > 0) ", Loss" else "" } +
+    { if (save > 0) ", Save" else "" } + { if (qStart > 0) ", Q-Start" else "" } + s" [FPTS: ${fantasyPoints()}]"
 }

@@ -11,6 +11,7 @@ object CustomTypes {
   type Play = String
   type Modifier = String
   type Advance = String
+  type BattingPosition = Int
 
   implicit def playerIDToPlayer(playerID: PlayerID): Player = Players.get(playerID)
 }

@@ -2,6 +2,7 @@ package mlb
 
 import mlb._
 import mlb.model._
+import mlb.model.CustomTypes._
 import mlb.retrosheet._
 import utils.FileUtils
 import utils.Logger._
@@ -37,10 +38,10 @@ object Season2017Stats {
   val pitcherLeagueAvgPointsPerGameStarted_DK = mean(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints(DraftKingsMLB)))
   val pitcherLeaguePointsPerGameStartedStdDev_DK = stdDev(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints(DraftKingsMLB)))
 
-  case class Stats(stdDev: Double, downsideDev: Double, upsideDev: Double) {
+  case class DeviationStats(stdDev: Double, downsideDev: Double, upsideDev: Double) {
     val netUpsideDev: Double = upsideDev - downsideDev
   }
-  
+
   val pitcherStatsAllowedToAllHitters: Map[Player, HittingStatsAllowed] = {
     season.allPitchers.map(_.player).map { pitcher =>
       val gamesPitched = season.games.flatMap(_.statsFor(pitcher)).flatMap {
@@ -108,6 +109,41 @@ object Season2017Stats {
       (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Switch)))
     }.toMap
   }
+
+  case class BattingPositionStats(totalAtBats: Int, atBatsPerGame: Double, fptsPerAtBat: Double, fptsPerGame: Double)
+
+  val numberOfGames = season.games.length
+
+  val leagueAvgStatsByBattingPosition: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games).groupBy(_.battingPosition).map {
+    case (bp, games) =>
+      (bp ->
+        BattingPositionStats(games.map(_.hittingStats.atBats).sum,
+          games.map(_.hittingStats.atBats.toDouble).sum / (numberOfGames * 2),
+          games.map(_.hittingStats.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum,
+          games.map(_.hittingStats.fantasyPoints().toDouble).sum / (numberOfGames * 2)))
+  }
+
+  val leagueAvgStatsByBattingPosition_VisitingTeam: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games)
+    .filter(pgs => pgs.game.get.visitingTeamPlayerStats.contains(pgs))
+    .groupBy(_.battingPosition).map {
+      case (bp, games) =>
+        (bp ->
+          BattingPositionStats(games.map(_.hittingStats.atBats).sum,
+            games.map(_.hittingStats.atBats.toDouble).sum / numberOfGames,
+            games.map(_.hittingStats.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum,
+            games.map(_.hittingStats.fantasyPoints().toDouble).sum / numberOfGames))
+    }
+
+  val leagueAvgStatsByBattingPosition_HomeTeam: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games)
+    .filter(pgs => pgs.game.get.homeTeamPlayerStats.contains(pgs))
+    .groupBy(_.battingPosition).map {
+      case (bp, games) =>
+        (bp ->
+          BattingPositionStats(games.map(_.hittingStats.atBats).sum,
+            games.map(_.hittingStats.atBats.toDouble).sum / numberOfGames,
+            games.map(_.hittingStats.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum,
+            games.map(_.hittingStats.fantasyPoints().toDouble).sum / numberOfGames))
+    }
 
   def logSummary: Unit = {
     log("*************** 2017 Season Summary --- All players ***************")

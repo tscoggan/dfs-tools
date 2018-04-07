@@ -2,6 +2,7 @@ package mlb.model
 
 import CustomTypes._
 import mlb._
+import mlb.model._
 
 /**
  * Static data about a player
@@ -15,8 +16,10 @@ case class Player(
     team: Team,
     position: Position,
     opponent: Option[Team] = None,
+    visitingOrHomeTeam: Option[VisitingOrHomeTeam] = None, // for the upcoming game
     fanduel: Option[PlayerSiteInfo] = None,
-    draftkings: Option[PlayerSiteInfo] = None) {
+    draftkings: Option[PlayerSiteInfo] = None,
+    retrosheet: Option[PlayerSiteInfo] = None) {
 
   lazy val battingPosition: Option[Int] = fanduel.flatMap(_.battingPosition).orElse(rg.StartingLineups.battingPositionOf(this))
 

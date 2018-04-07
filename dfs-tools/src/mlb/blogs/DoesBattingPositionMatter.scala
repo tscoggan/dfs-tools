@@ -2,6 +2,7 @@ package mlb.blogs
 
 import mlb._
 import mlb.model._
+import mlb.model.CustomTypes._
 import mlb.retrosheet._
 import utils.FileUtils
 import utils.Logger._
@@ -9,62 +10,59 @@ import utils.FloatUtils._
 import utils.DoubleUtils._
 import utils.MathUtils._
 import utils.StringUtils._
+import mlb.Season2017Stats._
 
 object DoesBattingPositionMatter extends App {
 
-  val allStarGameDate = "2017-07-11".toDate("yyyy-MM-dd")
+  //  leagueAvgFptsPerAtBatByBattingPosition.toList.sortBy(_._1).tail.foreach {
+  //    case (battingPosition, (atBats, avgFptsPerAB)) =>
+  //      println(s"$battingPosition) ${avgFptsPerAB.rounded(2)} FPTS per plate appearance ($atBats plates appearances)")
+  //  }
 
-  val games = FileUtils.getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
+  log("\n*************************************************************")
+  log("***2017 league-average FPTS per game by batting position  ***")
+  log("*************************************************************\n")
 
-  val season = Season(2017, games)
-
-  val season1stHalf = Season(2017, games.filter(_.date.before(allStarGameDate)))
-
-  val season2ndHalf = Season(2017, games.filter(_.date.after(allStarGameDate)))
-
-  log(s"Finished loading ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
-
-  val hitterLeagueAvgPointsPerGameStarted = mean(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  val hitterLeaguePointsPerGameStartedStdDev = stdDev(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  log(s"League avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${hitterLeaguePointsPerGameStartedStdDev.rounded(2)}")
-
-  val pitcherLeagueAvgPointsPerGameStarted = mean(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  val pitcherLeaguePointsPerGameStartedStdDev = stdDev(season.allPitchers.flatMap(_.gamesStarted).map(_.fantasyPoints()))
-  log(s"League avg PPG for pitchers: ${pitcherLeagueAvgPointsPerGameStarted.rounded(2)}, std deviation: ${pitcherLeaguePointsPerGameStartedStdDev.rounded(2)}")
-
-  case class Stats(stdDev: Double, downsideDev: Double, upsideDev: Double) {
-    val netUpsideDev: Double = upsideDev - downsideDev
-  }
-
-  type BattingPosition = Int
-  type AtBats = Int
-  type AvgFpts = Double
-
-  log("\n***************************************************************************************")
-  log("***2017 league-average FPTS per plate appearance by batting position (hitters only) ***")
-  log("***************************************************************************************\n")
-
-  val leagueAvgFptsPerAtBatByBattingPosition: Map[BattingPosition, (AtBats, AvgFpts)] = season.allHitters.flatMap(_.games).groupBy(_.battingPosition).map {
-    case (bp, games) => (bp -> (games.map(_.hittingStats.atBats).sum, games.map(_.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum))
-  }
-
-  leagueAvgFptsPerAtBatByBattingPosition.toList.sortBy(_._1).tail.foreach {
-    case (battingPosition, (atBats, avgFptsPerAB)) =>
-      println(s"$battingPosition) ${avgFptsPerAB.rounded(2)} FPTS per plate appearance ($atBats plates appearances)")
-  }
-
-  log("\n### 2017 league-average FPTS per plate appearance by batting position (hitters only): ###\n")
+  log("\n### 2017 league-average FPTS per game by batting position: ###\n")
   log(toHtmlTable(
-    List("Batting position", "Avg FPTS per plate appearance (FD)", "Total # of plate appearances"),
-    leagueAvgFptsPerAtBatByBattingPosition.toList.sortBy(_._1).tail.map {
-      case (battingPosition, (atBats, avgFptsPerAB)) =>
+    List("Batting position", "Total # of plate appearances", "Avg FPTS / plate appearance (FD)", "Avg plate appearances / game", "Avg FPTS / game"),
+    leagueAvgStatsByBattingPosition.toList.sortBy(_._1).tail.map {
+      case (battingPosition, stats) =>
         List(battingPosition,
-          avgFptsPerAB.rounded(2),
-          atBats)
+          stats.totalAtBats,
+          stats.fptsPerAtBat.rounded(2),
+          stats.atBatsPerGame.rounded(2),
+          stats.fptsPerGame.rounded(2))
+    }))
+
+  log("\n### 2017 league-average FPTS per game by batting position (visiting team): ###\n")
+  log(toHtmlTable(
+    List("Batting position", "Total # of plate appearances", "Avg FPTS / PA (FD)", "Avg plate appearances / game", "Avg FPTS / game"),
+    leagueAvgStatsByBattingPosition_VisitingTeam.toList.sortBy(_._1).tail.map {
+      case (battingPosition, stats) =>
+        List(battingPosition,
+          stats.totalAtBats,
+          stats.fptsPerAtBat.rounded(2),
+          stats.atBatsPerGame.rounded(2),
+          stats.fptsPerGame.rounded(2))
+    }))
+
+  log("\n### 2017 league-average FPTS per game by batting position (home team): ###\n")
+  log(toHtmlTable(
+    List("Batting position", "Total # of plate appearances", "Avg FPTS / PA (FD)", "Avg plate appearances / game", "Avg FPTS / game"),
+    leagueAvgStatsByBattingPosition_HomeTeam.toList.sortBy(_._1).tail.map {
+      case (battingPosition, stats) =>
+        List(battingPosition,
+          stats.totalAtBats,
+          stats.fptsPerAtBat.rounded(2),
+          stats.atBatsPerGame.rounded(2),
+          stats.fptsPerGame.rounded(2))
     }))
 
   log("\n*********************************************************************************************************************")
   log("***+/- FPTS/PA in each batting position compared to each player's avg across all batting positions (hitters only) ***")
   log("*********************************************************************************************************************\n")
+  
+  
 
 }
