@@ -148,7 +148,7 @@ object Draftbook extends App {
             s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} projected FPTS & " +
             s"${stats.projValueFD.map(_.rounded(2)).getOrElse("???")} value on FD ${hitter.fanduel.map("($" + _.salary + ")").getOrElse("???")}, " +
             s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} projected FPTS & " +
-            s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")}, "
+            s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")} "
         }.mkString("\n\t")
       }"
   }.mkString("\n"))
@@ -179,7 +179,7 @@ object Draftbook extends App {
         List(pitcherStatsAllowedToLefties.get(pitcher), pitcherStatsAllowedToRighties.get(pitcher), pitcherStatsAllowedToSwitchHitters.get(pitcher)).flatten
       }
       .sortBy(_.fptsPerAtBatAgainst_FD).reverse
-      //.take(10)
+      .take(10)
       .map { stats =>
         List(stats.pitcher,
           stats.pitcher.opponent.get,
@@ -195,35 +195,35 @@ object Draftbook extends App {
 
   log("\n### Top 10 expensive hitters ranked by value (FanDuel): ###\n")
   log(toHtmlTable(
-    List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
+    List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
       .sortBy(_._2.projValueFD.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projValueFD.get.rounded(2))
+          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n### Top 10 mid-range hitters ranked by value (FanDuel): ###\n")
   log(toHtmlTable(
-    List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
+    List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
       .sortBy(_._2.projValueFD.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projValueFD.get.rounded(2))
+          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n### Top 10 cheap hitters ranked by value (FanDuel): ###\n")
   log(toHtmlTable(
-    List("Hitter", "FD Salary", "Opposing Pitcher", "Value"),
+    List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
       .sortBy(_._2.projValueFD.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projValueFD.get.rounded(2))
+          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n**************************************************")
@@ -232,35 +232,35 @@ object Draftbook extends App {
 
   log("\n### Top 10 expensive hitters ranked by value (DraftKings): ###\n")
   log(toHtmlTable(
-    List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
+    List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
       .sortBy(_._2.projValueDK.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projValueDK.get.rounded(2))
+          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n### Top 10 mid-range hitters ranked by value (DraftKings): ###\n")
   log(toHtmlTable(
-    List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
+    List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
       .sortBy(_._2.projValueDK.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projValueDK.get.rounded(2))
+          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n### Top 10 cheap hitters ranked by value (DraftKings): ###\n")
   log(toHtmlTable(
-    List("Hitter", "DK Salary", "Opposing Pitcher", "Value"),
+    List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
       .sortBy(_._2.projValueDK.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projValueDK.get.rounded(2))
+          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n**************************************************")
