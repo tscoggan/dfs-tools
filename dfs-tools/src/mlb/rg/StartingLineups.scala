@@ -9,6 +9,32 @@ import mlb._
 import scala.io.Source
 import scala.annotation.tailrec
 
+/**
+ * rg_starting_lineups.txt syntax example:
+ *
+ * MIL
+ * 1 Lorenzo Cain OF R  0
+ * 2 Christian Yelich OF L  0
+ * 3 Ryan Braun 1B R  0
+ * 4 Travis Shaw 3B L  0
+ * 5 Eric Thames 1B L  0
+ * 6 Manuel Pina C R  0
+ * 7 Jonathan Villar 2B S  0
+ * 8 Orlando Arcia SS R  0
+ * 9 Zach Davies SP R  0
+ *
+ * KAN
+ * 1 Jon Jay OF L  0
+ * 2 Whit Merrifield 2B R  0
+ * 3 Mike Moustakas 3B L  0
+ * 4 Lucas Duda 1B L  0
+ * 5 Paulo Orlando OF R  0
+ * 6 Jorge Soler OF R  0
+ * 7 Alex Gordon OF L  0
+ * 8 Alcides Escobar SS R  0
+ * 9 Drew Butera C R  0
+ * P Ian Kennedy                  <--- Add this line if pitcher isn't found because he's only on DK and isn't batting
+ */
 object StartingLineups {
 
   case class PlayerMapping(retrosheetID: PlayerID, rgPlayerName: String)
@@ -24,15 +50,15 @@ object StartingLineups {
   log(s"Found ${playerMappings.length} Retrosheet-to-RG player mappings")
 
   lazy val battingOrderByTeam: Map[Team, BattingOrder] = {
-    val lines = Source.fromFile(Configs.Rotogrinders.projectedStartersFile).getLines.toList.map(_.substringBefore("//").trim).filter(_.nonEmpty)
-    if (lines.length % 10 != 0) throw new Exception("Configs.Rotogrinders.projectedStartersFile has invalid # of lines: " + lines.length)
+    val lines = Source.fromFile(Configs.Rotogrinders.projectedStartersFile).getLines.toList.map(_.substringBefore("//").trim)
+    if (lines.filter(l => l.nonEmpty && !l.startsWith("P ")).length % 10 != 0) throw new Exception("Configs.Rotogrinders.projectedStartersFile has invalid # of lines: " + lines.length)
 
     @tailrec
     def parseNext(remaining: List[String], result: List[BattingOrder]): List[BattingOrder] = remaining match {
       case Nil => result
       case teamID :: lines =>
         val team = Teams.get(teamID)
-        val batters = lines.take(9).map { line =>
+        val batters = lines.takeWhile(_.nonEmpty).map { line =>
           val position :: first :: last :: otherStuff = line.split(" ").toList
           Players.playersByTeam(team).find { p =>
             playerMappings.find(_.rgPlayerName.toUpperCase == s"$first $last".toUpperCase) match {
@@ -51,7 +77,7 @@ object StartingLineups {
             case None         => throw new Exception(s"Couldn't find player named $first $last on $team --> please add to ${Configs.Rotogrinders.playerMappingsFile}")
           }
         }
-        parseNext(lines.drop(9), BattingOrder(team, batters) :: result)
+        parseNext(lines.drop(batters.length).dropWhile(_.isEmpty), BattingOrder(team, batters) :: result)
     }
 
     parseNext(lines, Nil).map(bo => (bo.team, bo)).toMap
@@ -85,6 +111,6 @@ case class BattingOrder(team: Team, batters: List[Player]) {
     case position => Some(position + 1)
   }
 
-  override def toString: String = team + " batting order:\n\t" + batters.map(p => positionOf(p).get + ") " + p).mkString("\n\t")
+  override def toString: String = team + " batting order:\n\t" + batters.take(9).map(p => positionOf(p).get + ") " + p).mkString("\n\t")
 
 }

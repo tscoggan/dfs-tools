@@ -96,8 +96,8 @@ object Players {
 
     val visitingOrHomeTeam: Option[VisitingOrHomeTeam] = fanduel.map(_.game) match {
       case Some(gameInfo) =>
-        val visitingTeam = Teams.get(gameInfo.trim.take(3))
-        val homeTeam = Teams.get(gameInfo.trim.drop(4).take(3))
+        val visitingTeam = Teams.get(gameInfo.trim.substringBefore("@"))
+        val homeTeam = Teams.get(gameInfo.trim.substringAfter("@"))
         fanduel.map(_.team) match {
           case Some(team) =>
             if (team == visitingTeam) Some(Visiting)
@@ -107,8 +107,8 @@ object Players {
         }
       case None => draftkings.map(_.game) match {
         case Some(gameInfo) =>
-          val visitingTeam = Teams.get(gameInfo.trim.take(3))
-          val homeTeam = Teams.get(gameInfo.trim.drop(4).take(3))
+          val visitingTeam = Teams.get(gameInfo.trim.substringBefore("@"))
+          val homeTeam = Teams.get(gameInfo.trim.substringsBetween("@", " ").head)
           draftkings.map(_.team) match {
             case Some(team) =>
               if (team == visitingTeam) Some(Visiting)

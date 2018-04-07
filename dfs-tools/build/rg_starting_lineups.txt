@@ -1,87 +1,177 @@
+TAM
+1 Denard Span OF L  0
+2 Kevin Kiermaier OF L  0
+3 Carlos Gomez OF R  0
+4 Brad Miller 1B L  0
+5 Matt Duffy 3B R  0
+6 Joseph Wendle 2B L  0
+7 Wilson Ramos C R  0
+8 Mallex Smith OF L  0
+9 Adeiny Hechavarria SS R  0
+
+BOS
+1 Mookie Betts OF R  0
+2 Andrew Benintendi OF L  0
+3 Hanley Ramirez 1B R  0
+4 J.D. Martinez DH R  0
+5 Xander Bogaerts SS R  0
+6 Rafael Devers 3B L  0
+7 Eduardo Nunez 2B R  0
+8 Jackie Bradley OF L  0
+9 Christian Vazquez C R  
+
+NYM
+1 Michael Conforto OF L  0
+2 Asdrubal Cabrera 2B S  0
+3 Yoenis Cespedes OF R  0
+4 Jay Bruce OF L  0
+5 Todd Frazier 3B R  0
+6 Wilmer Flores 3B R  0
+7 Travis d'Arnaud C R  0
+8 Amed Rosario SS R  0
+9 Steven Matz SP L  0
+
+WAS
+1 Trea Turner SS R  0
+2 Anthony Rendon 3B R  0
+3 Bryce Harper OF L  0
+4 Ryan Zimmerman 1B R  0
+5 Howie Kendrick 2B R  0
+6 Michael Taylor OF R  0
+7 Wilmer Difo SS S  0
+8 Pedro Severino C R  0
+9 Gio Gonzalez SP L  0
+
 BAL
-1 Chris Davis C-1B L  $2.1K 7.76
-2 Manny Machado SS R  $3.5K 9.93
-3 Jonathan Schoop 2B R  $2.9K 9.01
-4 Adam Jones OF R  $3.0K 8.25
-5 Trey Mancini OF R  $2.4K 7.94
-6 Colby Rasmus OF L  $2.0K 6.83
-7 Tim Beckham 3B R  $2.4K 7.3
-8 Pedro Alvarez OF L  $2.0K 6.69
-9 Caleb Joseph C-1B R  $2.1K 5.49
+1 Trey Mancini OF R  0
+2 Manny Machado SS R  0
+3 Jonathan Schoop 2B R  0
+4 Adam Jones OF R  0
+5 Chris Davis 1B L  0
+6 Colby Rasmus OF L  0
+7 Tim Beckham 3B R  0
+8 Anthony Santander OF S  0
+9 Caleb Joseph C R  0
 
 NYY
-1 Brett Gardner OF L  $3.1K 9.98
-2 Aaron Judge OF R  $4.0K 12.21
-3 Giancarlo Stanton OF R  $4.5K 12.66
-4 Didi Gregorius SS L  $4.0K 11.25
-5 Gary Sanchez C-1B R  $3.1K 10.93
-6 Neil Walker 2B S  $2.9K 7.36
-7 Brandon Drury 3B R  $3.0K 7.73
-8 Tyler Wade 2B L  $2.3K 6.63
-9 Tyler Austin C-1B R  $2.9K 7.42
+1 Brett Gardner OF L  0
+2 Aaron Judge OF R  0
+3 Giancarlo Stanton OF R  0
+4 Didi Gregorius SS L  0
+5 Gary Sanchez C R  0
+6 Neil Walker 1B S  0
+7 Brandon Drury 3B R  0
+8 Tyler Austin 1B R  0
+9 Tyler Wade 2B L  0
 
-CIN
-1 Billy Hamilton OF S  $2.8K 7.72
-2 Eugenio Suarez 3B R  $3.2K 7.79
-3 Joey Votto C-1B L  $3.7K 8.58
-4 Adam Duvall OF R  $2.8K 9.14
-5 Scooter Gennett 2B L  $2.8K 6.93
-6 Devin Mesoraco C-1B R  $2.0K 6.14
-7 Scott Schebler OF L  $2.9K 6.66
-8 Jose Peraza SS R  $2.0K 5.76
-9 Homer Bailey P R  $5.7K 23.85
+SEA
+1 Dee Gordon OF L  0
+2 Jean Segura SS R  0
+3 Robinson Cano 2B L  0
+4 Mitch Haniger OF R  0
+5 Kyle Seager 3B L  0
+6 Daniel Vogelbach DH L  0
+7 Ryon Healy 1B R  0
+8 Michael Marjama C R  0
+9 Ichiro Suzuki OF L  0
 
-PIT
-1 Josh Harrison 2B R  $3.1K 9.02
-2 Gregory Polanco OF L  $3.7K 10.88
-3 Starling Marte OF R  $3.4K 9.8
-4 Josh Bell C-1B S  $3.4K 10.96
-5 Corey Dickerson OF L  $2.5K 9.32
-6 Francisco Cervelli C-1B R  $2.5K 6.87
-7 Colin Moran 3B L  $2.6K 7.06
-8 Sean Rodriguez 2B R  $2.1K 6.47
-9 Steven Brault P L  $5.5K 24.51
+MIN
+1 Brian Dozier 2B R  0
+2 Joe Mauer 1B L  0
+3 Miguel Sano 3B R  0
+4 Logan Morrison DH L  0
+5 Eddie Rosario OF L  0
+6 Eduardo Escobar SS S  0
+7 Max Kepler OF L  0
+8 Byron Buxton OF R  0
+9 Jason Castro C L  0
+
+DET
+1 Leonys Martin OF L  0
+2 Jeimer Candelario 3B S  0
+3 Miguel Cabrera 1B R  0
+4 Nick Castellanos OF R  0
+5 Victor Martinez DH S  0
+6 James McCann C R  0
+7 Mikie Mahtook OF R  0
+8 Jose Iglesias SS R  0
+9 Dixon Machado 2B R  0
+
+CWS
+1 Yoan Moncada 2B S  0
+2 Avisail Garcia OF R  0
+3 Jose Abreu 1B R  0
+4 Matt Davidson DH R  0
+5 Nick Delmonico OF L  0
+6 Welington Castillo C R  0
+7 Tim Anderson SS R  0
+8 Yolmer Sanchez 3B S  0
+9 Adam Engel OF R  0
 
 ARI
-1 David Peralta OF L  $3.2K 9.7
-2 A.J. Pollock OF R  $3.6K 10.49
-3 Paul Goldschmidt C-1B R  $4.1K 11.6
-4 Alex Avila C-1B L  $2.3K 7.73
-5 Ketel Marte SS S  $2.3K 8.24
-6 Daniel Descalso 2B L  $2.3K 7.1
-7 Nick Ahmed SS R  $3.2K 7.56
-8 Jarrod Dyson OF L  $2.4K 7.21
-9 Robbie Ray P L  $9.6K 34.9
+1 David Peralta OF L  0
+2 Ketel Marte 2B S  0
+3 Paul Goldschmidt 1B R  0
+4 A.J. Pollock OF R  0
+5 Daniel Descalso 3B L  0
+6 Chris Owings OF R  0
+7 Jarrod Dyson OF L  0
+8 Jeff Mathis C R  0
+9 Zack Greinke SP R  0
 
 STL
-1 Dexter Fowler OF S  $2.5K 8.1
-2 Thomas Pham OF R  $3.5K 9.08
-3 Matt Carpenter 3B L  $3.3K 7.7
-4 Marcell Ozuna OF R  $3.6K 8.82
-5 Jose Martinez C-1B R  $3.1K 7.51
-6 Yadier Molina C-1B R  $3.3K 7.66
-7 Paul DeJong SS R  $3.7K 7.02
-8 Kolten Wong 2B L  $2.0K 6.16
-9 Michael Wacha P R  $7.7K 2
+1 Dexter Fowler OF S  0
+2 Thomas Pham OF R  0
+3 Matt Carpenter 3B L  0
+4 Marcell Ozuna OF R  0
+5 Jose Martinez 1B R  0
+6 Yadier Molina C R  0
+7 Paul DeJong SS R  0
+8 Kolten Wong 2B L  0
+9 Michael Wacha SP R  
 
 CHC
-1 Ben Zobrist 2B S  $2.4K 7.97
-2 Kris Bryant 3B R  $4.2K 12.71
-3 Anthony Rizzo C-1B L  $4.0K 8.2
-4 Willson Contreras C-1B R  $3.2K 9.78
-5 Addison Russell SS R  $3.2K 8.68
-6 Albert Almora OF R  $2.1K 7.75
-7 Javier Baez 2B R  $3.0K 8.6
-8 Jason Heyward OF L  $2.6K 7.04
-9 Jon Lester P L  $8.9K 35.3
+1 Ian Happ OF S  0
+2 Kris Bryant 3B R  0
+3 Anthony Rizzo 1B L  0
+4 Willson Contreras C R  0
+5 Kyle Schwarber OF L  0
+6 Addison Russell SS R  0
+7 Jason Heyward OF L  0
+8 Javier Baez 2B R  0
+9 Yu Darvish SP R  0
 
 MIL
-1 Lorenzo Cain OF R  $3.9K 9.03
-2 Hernan Perez OF R  $2.0K 7.48
-3 Ryan Braun C-1B R  $3.3K 9.04
-4 Travis Shaw 3B L  $3.9K 7.42
-5 Domingo Santana OF R  $3.0K 9.04
-6 Manuel Pina C-1B R  $2.6K 6.72
-7 Jonathan Villar 2B S  $2.6K 7.1
-8 Orlando Arcia SS R  $2.2K 6.57
-9 Brent Suter P L  $6.5K 24.5
+1 Lorenzo Cain OF R  0
+2 Christian Yelich OF L  0
+3 Ryan Braun 1B R  0
+4 Travis Shaw 3B L  0
+5 Eric Thames 1B L  0
+6 Manuel Pina C R  0
+7 Jonathan Villar 2B S  0
+8 Orlando Arcia SS R  0
+9 Zach Davies SP R  0
+
+KAN
+1 Jon Jay OF L  0
+2 Whit Merrifield 2B R  0
+3 Mike Moustakas 3B L  0
+4 Lucas Duda 1B L  0
+5 Paulo Orlando OF R  0
+6 Jorge Soler OF R  0
+7 Alex Gordon OF L  0
+8 Alcides Escobar SS R  0
+9 Drew Butera C R  0
+P Ian Kennedy
+
+CLE
+1 Francisco Lindor SS S  0
+2 Jason Kipnis 2B L  0
+3 Jose Ramirez 3B S  0
+4 Yonder Alonso 1B L  0
+5 Edwin Encarnacion DH R  0
+6 Michael Brantley OF L  0
+7 Yan Gomes C R  0
+8 Lonnie Chisenhall OF L  0
+9 Bradley Zimmer OF L  0
+P Trevor Bauer
