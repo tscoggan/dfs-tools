@@ -102,8 +102,8 @@ object Draftbook extends App {
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
     }
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
-      val hitterWeight = List(100, hitterTotalAtBats).min
-      val pitcherWeight = List(100, pitcherTotalAtBats).min
+      val hitterWeight = List(200, hitterTotalAtBats).min
+      val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB)
       val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get)
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
@@ -124,8 +124,8 @@ object Draftbook extends App {
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
     }
     val projFptsDK: Option[Double] = hitterFptsPerAtBatDK.map { fptsPerAB =>
-      val hitterWeight = List(100, hitterTotalAtBats).min
-      val pitcherWeight = List(100, pitcherTotalAtBats).min
+      val hitterWeight = List(200, hitterTotalAtBats).min
+      val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB)
       val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get)
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
