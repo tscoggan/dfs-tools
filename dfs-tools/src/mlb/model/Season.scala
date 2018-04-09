@@ -45,10 +45,13 @@ case class Season(year: Int, games: List[Game]) {
     if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
   }
 
-  def pitcherStatsAllowedToHitter(pitcher: Player, hitter: Player): List[HittingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
-    gameStats match {
-      case pgs: PitcherGameStats => pgs.hittingStatsAllowedTo(hitter)
+  def pitcherStatsAllowedToHitter(pitcher: Player, hitter: Player): List[HittingStats] = statsByPlayer.get(pitcher.id) match {
+    case Some(stats) => stats.games.collect { gameStats =>
+      gameStats match {
+        case pgs: PitcherGameStats => pgs.hittingStatsAllowedTo(hitter)
+      }
     }
+    case None => Nil
   }
 
   def hitterFptsPerAB_vs_Pitcher(pitcher: Player, hitter: Player, scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {

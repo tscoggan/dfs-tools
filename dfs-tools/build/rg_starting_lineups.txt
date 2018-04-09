@@ -2,100 +2,12 @@ TAM
 1 Denard Span OF L  0
 2 Kevin Kiermaier OF L  0
 3 Carlos Gomez OF R  0
-4 Brad Miller 1B L  0
-5 Matt Duffy 3B R  0
-6 Joseph Wendle 2B L  0
-7 Wilson Ramos C R  0
-8 Mallex Smith OF L  0
+4 Matt Duffy 3B R  0
+5 C.J. Cron 1B R  0
+6 Wilson Ramos C R  0
+7 Mallex Smith OF L  0
+8 Joseph Wendle 2B L  0
 9 Adeiny Hechavarria SS R  0
-
-BOS
-1 Mookie Betts OF R  0
-2 Andrew Benintendi OF L  0
-3 Hanley Ramirez 1B R  0
-4 J.D. Martinez DH R  0
-5 Xander Bogaerts SS R  0
-6 Rafael Devers 3B L  0
-7 Eduardo Nunez 2B R  0
-8 Jackie Bradley OF L  0
-9 Christian Vazquez C R  
-
-NYM
-1 Michael Conforto OF L  0
-2 Asdrubal Cabrera 2B S  0
-3 Yoenis Cespedes OF R  0
-4 Jay Bruce OF L  0
-5 Todd Frazier 3B R  0
-6 Wilmer Flores 3B R  0
-7 Travis d'Arnaud C R  0
-8 Amed Rosario SS R  0
-9 Steven Matz SP L  0
-
-WAS
-1 Trea Turner SS R  0
-2 Anthony Rendon 3B R  0
-3 Bryce Harper OF L  0
-4 Ryan Zimmerman 1B R  0
-5 Howie Kendrick 2B R  0
-6 Michael Taylor OF R  0
-7 Wilmer Difo SS S  0
-8 Pedro Severino C R  0
-9 Gio Gonzalez SP L  0
-
-BAL
-1 Trey Mancini OF R  0
-2 Manny Machado SS R  0
-3 Jonathan Schoop 2B R  0
-4 Adam Jones OF R  0
-5 Chris Davis 1B L  0
-6 Colby Rasmus OF L  0
-7 Tim Beckham 3B R  0
-8 Anthony Santander OF S  0
-9 Caleb Joseph C R  0
-
-NYY
-1 Brett Gardner OF L  0
-2 Aaron Judge OF R  0
-3 Giancarlo Stanton OF R  0
-4 Didi Gregorius SS L  0
-5 Gary Sanchez C R  0
-6 Neil Walker 1B S  0
-7 Brandon Drury 3B R  0
-8 Tyler Austin 1B R  0
-9 Tyler Wade 2B L  0
-
-SEA
-1 Dee Gordon OF L  0
-2 Jean Segura SS R  0
-3 Robinson Cano 2B L  0
-4 Mitch Haniger OF R  0
-5 Kyle Seager 3B L  0
-6 Daniel Vogelbach DH L  0
-7 Ryon Healy 1B R  0
-8 Michael Marjama C R  0
-9 Ichiro Suzuki OF L  0
-
-MIN
-1 Brian Dozier 2B R  0
-2 Joe Mauer 1B L  0
-3 Miguel Sano 3B R  0
-4 Logan Morrison DH L  0
-5 Eddie Rosario OF L  0
-6 Eduardo Escobar SS S  0
-7 Max Kepler OF L  0
-8 Byron Buxton OF R  0
-9 Jason Castro C L  0
-
-DET
-1 Leonys Martin OF L  0
-2 Jeimer Candelario 3B S  0
-3 Miguel Cabrera 1B R  0
-4 Nick Castellanos OF R  0
-5 Victor Martinez DH S  0
-6 James McCann C R  0
-7 Mikie Mahtook OF R  0
-8 Jose Iglesias SS R  0
-9 Dixon Machado 2B R  0
 
 CWS
 1 Yoan Moncada 2B S  0
@@ -108,27 +20,16 @@ CWS
 8 Yolmer Sanchez 3B S  0
 9 Adam Engel OF R  0
 
-ARI
-1 David Peralta OF L  0
-2 Ketel Marte 2B S  0
-3 Paul Goldschmidt 1B R  0
-4 A.J. Pollock OF R  0
-5 Daniel Descalso 3B L  0
-6 Chris Owings OF R  0
-7 Jarrod Dyson OF L  0
-8 Jeff Mathis C R  0
-9 Zack Greinke SP R  0
-
-STL
-1 Dexter Fowler OF S  0
-2 Thomas Pham OF R  0
-3 Matt Carpenter 3B L  0
-4 Marcell Ozuna OF R  0
-5 Jose Martinez 1B R  0
-6 Yadier Molina C R  0
-7 Paul DeJong SS R  0
-8 Kolten Wong 2B L  0
-9 Michael Wacha SP R  
+PIT
+1 Josh Harrison 2B R  0
+2 Gregory Polanco OF L  0
+3 Starling Marte OF R  0
+4 Josh Bell 1B S  0
+5 Corey Dickerson OF L  0
+6 Francisco Cervelli C R  0
+7 Colin Moran 3B L  0
+8 Jordy Mercer SS R  0
+9 Ivan Nova SP R  0
 
 CHC
 1 Ian Happ OF S  0
@@ -139,39 +40,246 @@ CHC
 6 Addison Russell SS R  0
 7 Jason Heyward OF L  0
 8 Javier Baez 2B R  0
-9 Yu Darvish SP R  0
+9 Tyler Chatwood SP R  
+
+DET
+1 Leonys Martin OF L  0
+2 Jeimer Candelario 3B S  0
+3 Miguel Cabrera 1B R  0
+4 Nick Castellanos OF R  0
+5 Victor Martinez DH S  0
+6 James McCann C R  0
+7 Mikie Mahtook OF R  0
+8 Jose Iglesias SS R  0
+9 Dixon Machado 2B R  0
+
+CLE
+1 Francisco Lindor SS S  0
+2 Jason Kipnis 2B L  0
+3 Jose Ramirez 3B S  0
+4 Edwin Encarnacion DH R  0
+5 Michael Brantley OF L  0
+6 Brandon Guyer OF R  0
+7 Yonder Alonso 1B L  0
+8 Yan Gomes C R  0
+9 Rajai Davis OF R  0
+
+CIN
+1 Jesse Winker OF L  0
+2 Eugenio Suarez 3B R  0
+3 Joey Votto 1B L  0
+4 Scooter Gennett 2B L  0
+5 Adam Duvall OF R  0
+6 Tucker Barnhart C S  0
+7 Jose Peraza SS R  0
+8 Cody Reed SP L  0
+9 Billy Hamilton OF S  0
+
+PHI
+1 Cesar Hernandez 2B S  0
+2 Carlos Santana 1B S  0
+3 Scott Kingery 2B R  0
+4 Rhys Hoskins OF R  0
+5 Maikel Franco 3B R  0
+6 Aaron Altherr OF R  0
+7 Jorge Alfaro C R  0
+8 Ben Lively SP R  0
+9 J.P. Crawford SS L  0
+
+ATL
+1 Ender Inciarte OF L  0
+2 Ozzie Albies 2B S  0
+3 Freddie Freeman 1B L  0
+4 Nick Markakis OF L  0
+5 Preston Tucker OF L  0
+6 Kurt Suzuki C R  0
+7 Dansby Swanson SS R  0
+8 Ryan Flaherty 3B L  0
+9 Julio Teheran SP R  0
+
+WAS
+1 Adam Eaton OF L  0
+2 Anthony Rendon 3B R  0
+3 Bryce Harper OF L  0
+4 Ryan Zimmerman 1B R  0
+5 Howie Kendrick 2B R  0
+6 Trea Turner SS R  0
+7 Pedro Severino C R  0
+8 Max Scherzer SP R  0
+9 Michael Taylor OF R  0
+
+TOR
+1 Devon Travis 2B R  0
+2 Josh Donaldson 3B R  0
+3 Justin Smoak 1B S  0
+4 Yangervis Solarte 2B S  0
+5 Curtis Granderson OF L  0
+6 Randal Grichuk OF R  0
+7 Russell Martin C R  0
+8 Kevin Pillar OF R  0
+9 Aledmys Diaz SS R  0
+
+BAL
+1 Trey Mancini OF R  0
+2 Manny Machado SS R  0
+3 Jonathan Schoop 2B R  0
+4 Adam Jones OF R  0
+5 Danny Valencia 1B R  0
+6 Chris Davis 1B L  0
+7 Tim Beckham 3B R  0
+8 Anthony Santander OF S  0
+9 Caleb Joseph C R  
 
 MIL
 1 Lorenzo Cain OF R  0
-2 Christian Yelich OF L  0
+2 Eric Thames 1B L  0
 3 Ryan Braun 1B R  0
 4 Travis Shaw 3B L  0
-5 Eric Thames 1B L  0
+5 Domingo Santana OF R  0
 6 Manuel Pina C R  0
 7 Jonathan Villar 2B S  0
 8 Orlando Arcia SS R  0
-9 Zach Davies SP R  0
+9 Jhoulys Chacin SP R  0
+
+STL
+1 Dexter Fowler OF S  0
+2 Thomas Pham OF R  0
+3 Matt Carpenter 3B L  0
+4 Marcell Ozuna OF R  0
+5 Jose Martinez 1B R  0
+6 Yadier Molina C R  0
+7 Paul DeJong SS R  0
+8 Kolten Wong 2B L  0
+9 Miles Mikolas SP R  0
+
+NYM
+1 Michael Conforto OF L  0
+2 Asdrubal Cabrera 2B S  0
+3 Yoenis Cespedes OF R  0
+4 Jay Bruce OF L  0
+5 Todd Frazier 3B R  0
+6 Adrian Gonzalez 1B L  0
+7 Kevin Plawecki C R  0
+8 Noah Syndergaard SP R  0
+9 Amed Rosario SS R  0
+
+MIA
+1 Derek Dietrich OF L  0
+2 Lewis Brinson OF R  0
+3 Starlin Castro 2B R  0
+4 Justin Bour 1B L  0
+5 Brian Anderson 3B R  0
+6 Cameron Maybin OF R  0
+7 Miguel Rojas SS R  0
+8 Chad Wallach C R  0
+9 Jose Urena SP R  0
+
+LAA
+1 Zack Cozart 2B R  0
+2 Mike Trout OF R  0
+3 Justin Upton OF R  0
+4 Albert Pujols DH R  0
+5 Kole Calhoun OF L  0
+6 Andrelton Simmons SS R  0
+7 Luis Valbuena 3B L  0
+8 Jefry Marte 1B R  0
+9 Martin Maldonado C R  
+
+TEX
+1 Shin-Soo Choo DH L  0
+2 Joey Gallo 1B L  0
+3 Elvis Andrus SS R  0
+4 Adrian Beltre 3B R  0
+5 Nomar Mazara OF L  0
+6 Rougned Odor 2B L  0
+7 Robinson Chirinos C R  0
+8 Ryan Rua OF R  0
+9 Drew Robinson OF L  0
+
+HOU
+1 George Springer OF R  0
+2 Alex Bregman 3B R  0
+3 Jose Altuve 2B R  0
+4 Carlos Correa SS R  0
+5 Josh Reddick OF L  0
+6 Marwin Gonzalez 1B S  0
+7 Jake Marisnick OF R  0
+8 Brian McCann C L  0
+9 Derek Fisher OF L  0
+
+MIN
+1 Brian Dozier 2B R  0
+2 Joe Mauer 1B L  0
+3 Miguel Sano 3B R  0
+4 Eddie Rosario OF L  0
+5 Logan Morrison DH L  0
+6 Eduardo Escobar SS S  0
+7 Max Kepler OF L  0
+8 Byron Buxton OF R  0
+9 Jason Castro C L  0
+
+SEA
+1 Dee Gordon OF L  0
+2 Jean Segura SS R  0
+3 Robinson Cano 2B L  0
+4 Mitch Haniger OF R  0
+5 Kyle Seager 3B L  0
+6 Daniel Vogelbach DH L  0
+7 Ryon Healy 1B R  0
+8 Ichiro Suzuki OF L  0
+9 Michael Marjama C R  0
 
 KAN
 1 Jon Jay OF L  0
 2 Whit Merrifield 2B R  0
 3 Mike Moustakas 3B L  0
 4 Lucas Duda 1B L  0
-5 Paulo Orlando OF R  0
+5 Cheslor Cuthbert 3B R  0
 6 Jorge Soler OF R  0
 7 Alex Gordon OF L  0
 8 Alcides Escobar SS R  0
-9 Drew Butera C R  0
-P Ian Kennedy
+9 Drew Butera C R  
 
-CLE
-1 Francisco Lindor SS S  0
-2 Jason Kipnis 2B L  0
-3 Jose Ramirez 3B S  0
-4 Yonder Alonso 1B L  0
-5 Edwin Encarnacion DH R  0
-6 Michael Brantley OF L  0
-7 Yan Gomes C R  0
-8 Lonnie Chisenhall OF L  0
-9 Bradley Zimmer OF L  0
-P Trevor Bauer
+SDP
+1 Manuel Margot OF R  0
+2 Jose Pirela OF R  0
+3 Eric Hosmer 1B L  0
+4 Christian Villanueva 3B R  0
+5 Hunter Renfroe OF R  0
+6 Carlos Asuaje 2B L  0
+7 Freddy Galvis SS S  0
+8 Austin Hedges C R  0
+9 Clayton Richard SP L  0
+
+COL
+1 Charlie Blackmon OF L  0
+2 DJ LeMahieu 2B R  0
+3 Nolan Arenado 3B R  0
+4 Ian Desmond 1B R  0
+5 Carlos Gonzalez OF L  0
+6 Trevor Story SS R  0
+7 Chris Iannetta C R  0
+8 Gerardo Parra OF L  0
+9 Jon Gray SP R  
+
+ARI
+1 David Peralta OF L  0
+2 Ketel Marte 2B S  0
+3 Paul Goldschmidt 1B R  0
+4 A.J. Pollock OF R  0
+5 Chris Owings OF R  0
+6 Daniel Descalso 3B L  0
+7 Deven Marrero 3B R  0
+8 Jeff Mathis C R  0
+9 Zachary Godley SP R  0
+
+SFG
+1 Joe Panik 2B L  0
+2 Brandon Belt 1B L  0
+3 Andrew McCutchen OF R  0
+4 Buster Posey C R  0
+5 Evan Longoria 3B R  0
+6 Brandon Crawford SS L  0
+7 Hunter Pence OF R  0
+8 Gregor Blanco OF L  0
+9 Derek Holland SP L  0
