@@ -134,6 +134,11 @@ object Players {
 
   val startingPlayers: List[Player] = allPlayers.filter(_.isStarting)
 
+  startingPlayers.filter { p => p.fanduel.isEmpty && p.draftkings.isEmpty } match {
+    case Nil              => // OK
+    case unmatchedPlayers => throw new Exception("Starting players with no FD or DK matches: \n\t" + unmatchedPlayers.mkString("\n\t"))
+  }
+
   val (startingPitchers: List[Player], startingHitters: List[Player]) = startingPlayers.partition(_.position == Pitcher)
 
   val startingPlayersByTeam: Map[Team, List[Player]] = startingPlayers.groupBy(_.team)
