@@ -37,15 +37,15 @@ import scala.annotation.tailrec
  */
 object StartingLineups {
 
-  case class PlayerMapping(retrosheetID: PlayerID, rgPlayerName: String)
+  case class PlayerMapping(retrosheetID: PlayerID, rgPlayerName: String, team: Team)
 
   private val playerMappings: List[PlayerMapping] = Source.fromFile(Configs.Rotogrinders.playerMappingsFile).getLines.toList.tail
     .map(_.substringBefore("//").trim)
     .filter(_.nonEmpty)
     .map {
       case nextLine =>
-        val Array(retrosheetID, rgPlayerName) = nextLine.splitCSV()
-        PlayerMapping(retrosheetID, rgPlayerName)
+        val Array(retrosheetID, rgPlayerName, teamID) = nextLine.splitCSV()
+        PlayerMapping(retrosheetID, rgPlayerName, Teams.get(teamID))
     }
   log(s"Found ${playerMappings.length} Retrosheet-to-RG player mappings")
 
@@ -61,15 +61,15 @@ object StartingLineups {
         val batters = lines.takeWhile(_.nonEmpty).map { line =>
           val position :: first :: last :: otherStuff = line.split(" ").toList
           Players.playersByTeam(team).find { p =>
-            playerMappings.find(_.rgPlayerName.toUpperCase == s"$first $last".toUpperCase) match {
+            playerMappings.find(m => m.rgPlayerName.toUpperCase == s"$first $last".toUpperCase && m.team == team) match {
               case Some(mapping) =>
                 // mapping found --> use it
                 p.id == mapping.retrosheetID
               case None => {
-                // no Retrosheet-to-RG mapping found --> try to match a player by name
-                p.name.toUpperCase == s"$first $last".toUpperCase ||
+                // no Retrosheet-to-RG mapping found --> try to match a player by name & team
+                (p.team == team) && (p.name.toUpperCase == s"$first $last".toUpperCase ||
                   p.fanduel.map(_.name.toUpperCase).getOrElse("") == s"$first $last".toUpperCase ||
-                  p.draftkings.map(_.name.toUpperCase).getOrElse("") == s"$first $last".toUpperCase
+                  p.draftkings.map(_.name.toUpperCase).getOrElse("") == s"$first $last".toUpperCase)
               }
             }
           } match {

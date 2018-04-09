@@ -80,7 +80,7 @@ object Players {
       }
     }
 
-    val newTeam = draftkings.map(_.team).orElse(fanduel.map(_.team)).getOrElse(player.team)
+    val newTeam = fanduel.map(_.team).orElse(draftkings.map(_.team)).getOrElse(player.team)
 
     val newOpponent = draftkings.map(_.opponent).orElse(fanduel.map(_.opponent))
 
@@ -145,11 +145,11 @@ object Players {
 
   val startingHittersByTeam: Map[Team, List[Player]] = startingHitters.groupBy(_.team).map { case (team, hitters) => (team, hitters.sortBy(_.battingPosition.getOrElse(10))) }
 
-  //  println("\nStarters: \n" + startingPlayersByTeam.map {
-  //    case (team, players) =>
-  //      s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
-  //        .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
-  //  }.mkString("\n"))
+//    println("\nStarters: \n" + startingPlayersByTeam.map {
+//      case (team, players) =>
+//        s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
+//          .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
+//    }.mkString("\n"))
 
   def get(playerID: String): Player = playersByID.get(playerID).get // throws exception if playerID is invalid
 }
