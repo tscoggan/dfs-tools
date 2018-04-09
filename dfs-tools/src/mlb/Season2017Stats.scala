@@ -145,6 +145,68 @@ object Season2017Stats {
             games.map(_.hittingStats.fantasyPoints().toDouble).sum / numberOfGames))
     }
 
+  case class BallparkStats(homeTeam: Team, totalAtBats_Visitors: Int, totalFpts_Visitors: Double, totalAtBats_Home: Int, totalFpts_Home: Double,
+                           pitchingFptsPerGame_Visitors: Double, pitchingFptsPerGame_Home: Double) {
+    val fptsPerAtBat_Visitors: Double = totalFpts_Visitors / totalAtBats_Visitors
+    val fptsPerAtBat_Home: Double = totalFpts_Home / totalAtBats_Home
+  }
+
+  // key is home team, which is a proxy for ballpark
+  val leagueAvgStatsByBallpark: Map[Team, BallparkStats] = season.games.groupBy(_.homeTeam).map {
+    case (homeTeam, games) =>
+      val visitorStats = games.flatMap(_.visitingTeamPlayerStats)
+      val homeStats = games.flatMap(_.homeTeamPlayerStats)
+      val ballparkStats = BallparkStats(homeTeam,
+        visitorStats.filter(_.isInstanceOf[HitterGameStats]).map(_.hittingStats.atBats).sum, visitorStats.filter(_.isInstanceOf[HitterGameStats]).map(_.fantasyPoints()).sum,
+        homeStats.filter(_.isInstanceOf[HitterGameStats]).map(_.hittingStats.atBats).sum, homeStats.filter(_.isInstanceOf[HitterGameStats]).map(_.fantasyPoints()).sum,
+        visitorStats.filter(_.isInstanceOf[PitcherGameStats]).map(_.fantasyPoints()).sum / games.length,
+        homeStats.filter(_.isInstanceOf[PitcherGameStats]).map(_.fantasyPoints()).sum / games.length)
+      (homeTeam, ballparkStats)
+  }
+
+  // FPTS/PA projection for visiting team hitters should be multipled by this number --- key is home team, which is a proxy for ballpark
+  val hitterBallparkFactor_VisitingTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
+    case (homeTeam, games) =>
+      val hittingStatsAllowedInThisPark = games.flatMap(_.visitingTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats])
+      val thisParkFptsPerAB = hittingStatsAllowedInThisPark.map(_.fantasyPoints().toDouble).sum / hittingStatsAllowedInThisPark.map(_.hittingStats.atBats).sum
+
+      val homeTeamPitchers = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[PitcherGameStats]).map(_.player).distinct
+      val hittingStatsAllowedInAllParks = homeTeamPitchers.flatMap { pitcher =>
+        season.statsByPlayer(pitcher.id).games.flatMap {
+          _ match {
+            case pitcherStats: PitcherGameStats => pitcherStats.hittingStatsAllowed
+            case _                              => Nil
+          }
+        }
+      }
+      val allParksFptsPerAB = hittingStatsAllowedInAllParks.map(_.fantasyPoints().toDouble).sum / hittingStatsAllowedInAllParks.map(_.atBats).sum
+
+      (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
+  }
+
+  // FPTS/PA projection for home team hitters should be multipled by this number --- key is home team, which is a proxy for ballpark
+  val hitterBallparkFactor_HomeTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
+    case (homeTeam, games) =>
+      val hittingStatsInThisPark = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats])
+      val thisParkFptsPerAB = hittingStatsInThisPark.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisPark.map(_.hittingStats.atBats).sum
+
+      val homeTeamHitters = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats]).map(_.player).distinct
+      val hittingStatsInAllParks = homeTeamHitters.flatMap { hitter =>
+        season.statsByPlayer(hitter.id).games.collect {
+          _ match {
+            case hitterStats: HitterGameStats => hitterStats.hittingStats
+          }
+        }
+      }
+      val allParksFptsPerAB = hittingStatsInAllParks.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParks.map(_.atBats).sum
+
+      (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
+  }
+
+  //  log("\nBallpark factors:\n\t" + hitterBallparkFactor_VisitingTeam.toList.sortBy(_._2).reverse.map {
+  //    case (homeTeam, factor) => s"$homeTeam ballpark\t - ${factor.rounded(2)} for visiting hitters\t${hitterBallparkFactor_HomeTeam(homeTeam).rounded(2)} for home team hitters"
+  //  }.mkString("\n\t"))
+
   def logSummary: Unit = {
     log("*************** 2017 Season Summary --- All players ***************")
     log(s"FanDuel - \n\tLeague avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted_FD.rounded(2)}, \n\t" +

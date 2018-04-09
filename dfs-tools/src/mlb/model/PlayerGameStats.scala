@@ -137,6 +137,8 @@ case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boole
       stats
     }
   }
+  
+  lazy val hittingStatsAllowed: List[HittingStats] = hittingStatsAllowedByHitter.values.toList
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this.pitchingStats)
 

@@ -92,6 +92,13 @@ object Draftbook extends App {
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.atBatsAgainst).getOrElse(0)
     }
 
+    val ballparkFactor: Double = p.visitingOrHomeTeam match {
+      case Some(vOrH) =>
+        if (vOrH == Home) hitterBallparkFactor_HomeTeam(p.team)
+        else hitterBallparkFactor_VisitingTeam(p.opponent.get)
+      case None => 1.0
+    }
+
     val hitterSeasonStatsFD: Option[PlayerSeasonStats] = hitter2017Stats_FD.get(p).map(_._1)
     val hitterDeviationStatsFD: Option[DeviationStats] = hitter2017Stats_FD.get(p).map(_._2)
     val hitterFptsPerAtBatFD: Option[Double] = season.hitterFptsPerAB_vs_PitcherType(opposingPitcher.throws, p, FanDuelMLB).map(_.fptsPerAB)
@@ -104,7 +111,7 @@ object Draftbook extends App {
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
-      val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB)
+      val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
       val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get)
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       mean(combinedWeightedFptsPerAB) * projAtBats
@@ -126,7 +133,7 @@ object Draftbook extends App {
     val projFptsDK: Option[Double] = hitterFptsPerAtBatDK.map { fptsPerAB =>
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
-      val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB)
+      val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
       val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get)
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       mean(combinedWeightedFptsPerAB) * projAtBats
