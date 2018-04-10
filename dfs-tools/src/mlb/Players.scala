@@ -11,15 +11,15 @@ import scala.io.Source
 
 object Players {
 
-  case class PlayerMapping(retrosheetID: PlayerID, fdPlayerID: String, dkPlayerID: String)
+  case class PlayerMapping(retrosheetID: PlayerID, fdPlayerID: String, dkNameAndTeam: String)
 
   val playerMappings: List[PlayerMapping] = Source.fromFile(Configs.playerMappingsFile).getLines.toList.tail
     .map(_.substringBefore("//").trim)
     .filter(_.nonEmpty)
     .map {
       case nextLine =>
-        val Array(retrosheetID, fdPlayerID, dkPlayerID) = nextLine.splitCSV()
-        PlayerMapping(retrosheetID, fdPlayerID.substringAfter("-"), dkPlayerID)
+        val Array(retrosheetID, fdPlayerID, dkNameAndTeam) = nextLine.splitCSV()
+        PlayerMapping(retrosheetID, fdPlayerID.substringAfter("-"), dkNameAndTeam)
     }
   log(s"Found ${playerMappings.length} player mappings")
 

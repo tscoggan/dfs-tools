@@ -9,7 +9,6 @@ import utils.Logger._
  * DraftKings player data for a given slate
  */
 case class Player_DK(
-    id: String,
     position: String,
     name: String,
     salary: Int,
@@ -17,6 +16,8 @@ case class Player_DK(
     fptsPerGame: Double,
     team: Team) {
 
+  val id: String = s"$name-$team" // is this unique?
+  
   val opponent: Team = {
     val atIndex = game.indexOf('@')
     if (atIndex <= 0) log(s"WARNING: Unexpected format for DK game info: $game")
@@ -26,7 +27,7 @@ case class Player_DK(
   }
 
   val player: Option[Player] = {
-    Players.playerMappings.find(_.dkPlayerID == id) match {
+    Players.playerMappings.find(_.dkNameAndTeam == id) match {
       case Some(mapping) =>
         Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
           Players.newPlayers.find(_.id == mapping.retrosheetID)
@@ -64,7 +65,6 @@ object Player_DK {
           fptsPerGame) = nextLine.splitCSV()
 
         Player_DK(
-          id,
           position,
           name,
           salary.toInt,
