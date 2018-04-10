@@ -15,6 +15,8 @@ case class Season(year: Int, games: List[Game]) {
     }
   }
 
+  def hasStatsFor(p: Player): Boolean = statsByPlayer.contains(p.id)
+
   lazy val allPlayers: List[PlayerSeasonStats] = statsByPlayer.values.toList
   lazy val allHitters: List[PlayerSeasonStats] = allPlayers.filterNot(_.isPitcher)
   lazy val allPitchers: List[PlayerSeasonStats] = allPlayers.filter(_.isPitcher)

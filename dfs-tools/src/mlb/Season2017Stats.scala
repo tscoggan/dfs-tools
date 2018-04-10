@@ -164,7 +164,7 @@ object Season2017Stats {
       (homeTeam, ballparkStats)
   }
 
-  // FPTS/PA projection for visiting team hitters should be multipled by this number --- key is home team, which is a proxy for ballpark
+  // FPTS/PA projection for visiting team hitters should be multiplied by this number --- key is home team, which is a proxy for ballpark
   val hitterBallparkFactor_VisitingTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
     case (homeTeam, games) =>
       val hittingStatsAllowedInThisPark = games.flatMap(_.visitingTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats])
@@ -184,7 +184,7 @@ object Season2017Stats {
       (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
   }
 
-  // FPTS/PA projection for home team hitters should be multipled by this number --- key is home team, which is a proxy for ballpark
+  // FPTS/PA projection for home team hitters should be multiplied by this number --- key is home team, which is a proxy for ballpark
   val hitterBallparkFactor_HomeTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
     case (homeTeam, games) =>
       val hittingStatsInThisPark = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats])
@@ -202,6 +202,11 @@ object Season2017Stats {
 
       (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
   }
+
+//  // FPTS/game projection for visiting team pitchers should be multiplied by this number --- key is home team, which is a proxy for ballpark
+//  val pitcherBallparkFactor_VisitingTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
+//    ???
+//  }
 
   //  log("\nBallpark factors:\n\t" + hitterBallparkFactor_VisitingTeam.toList.sortBy(_._2).reverse.map {
   //    case (homeTeam, factor) => s"$homeTeam ballpark\t - ${factor.rounded(2)} for visiting hitters\t${hitterBallparkFactor_HomeTeam(homeTeam).rounded(2)} for home team hitters"

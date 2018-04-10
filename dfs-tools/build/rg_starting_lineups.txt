@@ -1,285 +1,263 @@
-TAM
-1 Denard Span OF L  0
-2 Kevin Kiermaier OF L  0
-3 Carlos Gomez OF R  0
-4 Matt Duffy 3B R  0
-5 C.J. Cron 1B R  0
-6 Wilson Ramos C R  0
-7 Mallex Smith OF L  0
-8 Joseph Wendle 2B L  0
-9 Adeiny Hechavarria SS R  0
-
-CWS
-1 Yoan Moncada 2B S  0
-2 Avisail Garcia OF R  0
-3 Jose Abreu 1B R  0
-4 Matt Davidson DH R  0
-5 Nick Delmonico OF L  0
-6 Welington Castillo C R  0
-7 Tim Anderson SS R  0
-8 Yolmer Sanchez 3B S  0
-9 Adam Engel OF R  0
-
-PIT
-1 Josh Harrison 2B R  0
-2 Gregory Polanco OF L  0
-3 Starling Marte OF R  0
-4 Josh Bell 1B S  0
-5 Corey Dickerson OF L  0
-6 Francisco Cervelli C R  0
-7 Colin Moran 3B L  0
-8 Jordy Mercer SS R  0
-9 Ivan Nova SP R  0
-
-CHC
-1 Ian Happ OF S  0
-2 Kris Bryant 3B R  0
-3 Anthony Rizzo 1B L  0
-4 Willson Contreras C R  0
-5 Kyle Schwarber OF L  0
-6 Addison Russell SS R  0
-7 Jason Heyward OF L  0
-8 Javier Baez 2B R  0
-9 Tyler Chatwood SP R  
-
-DET
-1 Leonys Martin OF L  0
-2 Jeimer Candelario 3B S  0
-3 Miguel Cabrera 1B R  0
-4 Nick Castellanos OF R  0
-5 Victor Martinez DH S  0
-6 James McCann C R  0
-7 Mikie Mahtook OF R  0
-8 Jose Iglesias SS R  0
-9 Dixon Machado 2B R  0
-
-CLE
-1 Francisco Lindor SS S  0
-2 Jason Kipnis 2B L  0
-3 Jose Ramirez 3B S  0
-4 Edwin Encarnacion DH R  0
-5 Michael Brantley OF L  0
-6 Brandon Guyer OF R  0
-7 Yonder Alonso 1B L  0
-8 Yan Gomes C R  0
-9 Rajai Davis OF R  0
-
-CIN
-1 Jesse Winker OF L  0
-2 Eugenio Suarez 3B R  0
-3 Joey Votto 1B L  0
-4 Scooter Gennett 2B L  0
-5 Adam Duvall OF R  0
-6 Tucker Barnhart C S  0
-7 Jose Peraza SS R  0
-8 Cody Reed SP L  0
-9 Billy Hamilton OF S  0
-
-PHI
-1 Cesar Hernandez 2B S  0
-2 Carlos Santana 1B S  0
-3 Scott Kingery 2B R  0
-4 Rhys Hoskins OF R  0
-5 Maikel Franco 3B R  0
-6 Aaron Altherr OF R  0
-7 Jorge Alfaro C R  0
-8 Ben Lively SP R  0
-9 J.P. Crawford SS L  0
-
 ATL
-1 Ender Inciarte OF L  0
-2 Ozzie Albies 2B S  0
-3 Freddie Freeman 1B L  0
-4 Nick Markakis OF L  0
-5 Preston Tucker OF L  0
-6 Kurt Suzuki C R  0
-7 Dansby Swanson SS R  0
-8 Ryan Flaherty 3B L  0
-9 Julio Teheran SP R  0
+1 Ender Inciarte OF L  $3.5K 7.87
+2 Ozzie Albies 2B S  $3.9K 6.83
+3 Freddie Freeman C-1B L  $4.1K 8.54
+4 Nick Markakis OF L  $3.0K 6.94
+5 Kurt Suzuki C-1B R  $2.3K 6.96
+6 Preston Tucker OF L  $2.8K 6.07
+7 Dansby Swanson SS R  $3.0K 4.79
+8 Ryan Flaherty 3B L  $3.0K 4.66
+9 Michael Foltynewicz P R  $7.0K 
 
 WAS
-1 Adam Eaton OF L  0
-2 Anthony Rendon 3B R  0
-3 Bryce Harper OF L  0
-4 Ryan Zimmerman 1B R  0
-5 Howie Kendrick 2B R  0
-6 Trea Turner SS R  0
-7 Pedro Severino C R  0
-8 Max Scherzer SP R  0
-9 Michael Taylor OF R  0
+1 Adam Eaton OF L  $4.1K 9.46
+2 Anthony Rendon 3B R  $4.0K 9.63
+3 Bryce Harper OF L  $5.4K 12.09
+4 Ryan Zimmerman C-1B R  $2.7K 8.76
+5 Howie Kendrick 2B R  $2.8K 8.52
+6 Trea Turner SS R  $4.5K 9.83
+7 Michael Taylor OF R  $3.0K 7.22
+8 Miguel Montero C-1B L  $2.0K 7.04
+9 Stephen Strasburg P R  $9.8K 43.8
+
+CIN
+1 Jesse Winker OF L  $2.7K 8.12
+2 Jose Peraza SS R  $2.3K 7.78
+3 Joey Votto C-1B L  $3.7K 10.55
+4 Scooter Gennett 2B L  $2.7K 8.98
+5 Adam Duvall OF R  $2.6K 7.16
+6 Tucker Barnhart C-1B S  $2.3K 6.79
+7 Cliff Pennington SS S  $2.0K 5.71
+8 Homer Bailey P R  $5.5K 24.94
+9 Billy Hamilton OF S  $2.9K 7.05
+
+PHI
+1 Cesar Hernandez 2B S  $3.6K 9.67
+2 Carlos Santana C-1B S  $3.9K 9.93
+3 Odubel Herrera OF L  $2.9K 9.3
+4 Rhys Hoskins OF R  $5.0K 10.84
+5 Nick Williams OF L  $2.4K 8.68
+6 Maikel Franco 3B R  $3.3K 7.78
+7 Andrew Knapp C-1B S  $2.1K 7.43
+8 J.P. Crawford SS L  $2.1K 7.1
+9 Aaron Nola P R  $8.5K 30.
 
 TOR
-1 Devon Travis 2B R  0
-2 Josh Donaldson 3B R  0
-3 Justin Smoak 1B S  0
-4 Yangervis Solarte 2B S  0
-5 Curtis Granderson OF L  0
-6 Randal Grichuk OF R  0
-7 Russell Martin C R  0
-8 Kevin Pillar OF R  0
-9 Aledmys Diaz SS R  0
+1 Devon Travis 2B R  $2.3K 9.01
+2 Josh Donaldson 3B R  $4.1K 11.3
+3 Justin Smoak C-1B S  $4.2K 9.64
+4 Yangervis Solarte 3B S  $3.5K 8.9
+5 Curtis Granderson OF L  $2.4K 9.33
+6 Randal Grichuk OF R  $2.2K 7.94
+7 Russell Martin C-1B R  $2.7K 7.72
+8 Kevin Pillar OF R  $3.1K 6.59
+9 Aledmys Diaz SS R  $2.5K 6.8
 
 BAL
-1 Trey Mancini OF R  0
-2 Manny Machado SS R  0
-3 Jonathan Schoop 2B R  0
-4 Adam Jones OF R  0
-5 Danny Valencia 1B R  0
-6 Chris Davis 1B L  0
-7 Tim Beckham 3B R  0
-8 Anthony Santander OF S  0
-9 Caleb Joseph C R  
-
-MIL
-1 Lorenzo Cain OF R  0
-2 Eric Thames 1B L  0
-3 Ryan Braun 1B R  0
-4 Travis Shaw 3B L  0
-5 Domingo Santana OF R  0
-6 Manuel Pina C R  0
-7 Jonathan Villar 2B S  0
-8 Orlando Arcia SS R  0
-9 Jhoulys Chacin SP R  0
-
-STL
-1 Dexter Fowler OF S  0
-2 Thomas Pham OF R  0
-3 Matt Carpenter 3B L  0
-4 Marcell Ozuna OF R  0
-5 Jose Martinez 1B R  0
-6 Yadier Molina C R  0
-7 Paul DeJong SS R  0
-8 Kolten Wong 2B L  0
-9 Miles Mikolas SP R  0
+1 Trey Mancini OF R  $2.8K 8.52
+2 Manny Machado SS R  $4.4K 10.21
+3 Jonathan Schoop 2B R  $3.1K 9.1
+4 Adam Jones OF R  $3.3K 8.64
+5 Chris Davis C-1B L  $2.3K 8.51
+6 Tim Beckham 3B R  $2.9K 7.67
+7 Pedro Alvarez OF L  $2.4K 7.76
+8 Anthony Santander OF S  $2.4K 6.13
+9 Chance Sisco C-1B L  $2.1K 6.5
 
 NYM
-1 Michael Conforto OF L  0
-2 Asdrubal Cabrera 2B S  0
-3 Yoenis Cespedes OF R  0
-4 Jay Bruce OF L  0
-5 Todd Frazier 3B R  0
-6 Adrian Gonzalez 1B L  0
-7 Kevin Plawecki C R  0
-8 Noah Syndergaard SP R  0
-9 Amed Rosario SS R  0
+1 Asdrubal Cabrera 2B S  $3.3K 8.96
+2 Yoenis Cespedes OF R  $3.8K 9.49
+3 Wilmer Flores C-1B R  $2.2K 8.56
+4 Todd Frazier 3B R  $3.4K 8.8
+5 Travis d'Arnaud C-1B R  $2.5K 8.44
+6 Jay Bruce OF L  $3.4K 7.63
+7 Juan Lagares OF R  $2.2K 6.08
+8 Jacob deGrom P R  $9.6K 44.76
+9 Amed Rosario SS R  $2.6K 6.28
 
 MIA
-1 Derek Dietrich OF L  0
-2 Lewis Brinson OF R  0
-3 Starlin Castro 2B R  0
-4 Justin Bour 1B L  0
-5 Brian Anderson 3B R  0
-6 Cameron Maybin OF R  0
-7 Miguel Rojas SS R  0
-8 Chad Wallach C R  0
-9 Jose Urena SP R  0
+1 Derek Dietrich OF L  $2.3K 7.77
+2 Miguel Rojas SS R  $2.4K 7.15
+3 Starlin Castro 2B R  $2.9K 7.4
+4 Justin Bour C-1B L  $2.3K 8.73
+5 Brian Anderson 3B R  $2.9K 6.01
+6 Cameron Maybin OF R  $2.3K 7.43
+7 Lewis Brinson OF R  $2.0K 5.01
+8 Chad Wallach C-1B R  $2.0K 4.97
+9 Caleb Smith P L  $5.7K 28.25
+
+NYY
+1 Brett Gardner OF L  $3.3K 7.43
+2 Aaron Judge OF R  $4.8K 8.46
+3 Giancarlo Stanton OF R  $4.4K 8.95
+4 Gary Sanchez C-1B R  $3.5K 7.76
+5 Didi Gregorius SS L  $4.2K 6.68
+6 Neil Walker C-1B S  $3.2K 6.09
+7 Tyler Austin C-1B R  $3.2K 5.87
+8 Miguel Andujar 3B R  $2.4K 5.19
+9 Ronald Torreyes 2B R  $2.3K 5.0
+
+BOS
+1 Mookie Betts OF R  $4.3K 8.98
+2 Andrew Benintendi OF L  $3.6K 8.23
+3 Hanley Ramirez C-1B R  $3.4K 7.91
+4 J.D. Martinez OF R  $4.0K 8.44
+5 Rafael Devers 3B L  $3.8K 7.18
+6 Eduardo Nunez SS R  $2.9K 7.76
+7 Brock Holt 2B L  $2.0K 5.83
+8 Jackie Bradley OF L  $2.5K 6.46
+9 Christian Vazquez C-1B R  $2.3K 5.87
 
 LAA
-1 Zack Cozart 2B R  0
-2 Mike Trout OF R  0
-3 Justin Upton OF R  0
-4 Albert Pujols DH R  0
-5 Kole Calhoun OF L  0
-6 Andrelton Simmons SS R  0
-7 Luis Valbuena 3B L  0
-8 Jefry Marte 1B R  0
-9 Martin Maldonado C R  
+1 Zack Cozart 2B R  $3.8K 11.08
+2 Mike Trout OF R  $5.2K 13.18
+3 Justin Upton OF R  $3.9K 10.68
+4 Albert Pujols C-1B R  $3.1K 9.03
+5 Kole Calhoun OF L  $2.7K 7.63
+6 Andrelton Simmons SS R  $3.1K 7.39
+7 Shohei Ohtani OF R  $3.9K 0
+8 Chris Young OF R  $2.0K 7.88
+9 Martin Maldonado C-1B R  $2.2K 6.8
 
 TEX
-1 Shin-Soo Choo DH L  0
-2 Joey Gallo 1B L  0
-3 Elvis Andrus SS R  0
-4 Adrian Beltre 3B R  0
-5 Nomar Mazara OF L  0
-6 Rougned Odor 2B L  0
-7 Robinson Chirinos C R  0
-8 Ryan Rua OF R  0
-9 Drew Robinson OF L  0
+1 Shin-Soo Choo OF L  $3.4K 9.46
+2 Joey Gallo C-1B L  $3.4K 9.88
+3 Elvis Andrus SS R  $3.5K 9.3
+4 Adrian Beltre 3B R  $3.1K 9.54
+5 Nomar Mazara OF L  $2.5K 6.86
+6 Robinson Chirinos C-1B R  $2.2K 8.52
+7 Jurickson Profar OF S  $2.4K 7.3
+8 Ryan Rua OF R  $2.3K 6.16
+9 Carlos Tocci OF R  $2.1K 5.72
 
 HOU
-1 George Springer OF R  0
-2 Alex Bregman 3B R  0
-3 Jose Altuve 2B R  0
-4 Carlos Correa SS R  0
-5 Josh Reddick OF L  0
-6 Marwin Gonzalez 1B S  0
-7 Jake Marisnick OF R  0
-8 Brian McCann C L  0
-9 Derek Fisher OF L  0
+1 George Springer OF R  $4.0K 11.12
+2 Alex Bregman 3B R  $3.6K 10.91
+3 Jose Altuve 2B R  $4.5K 11.56
+4 Carlos Correa SS R  $4.1K 10.32
+5 Josh Reddick OF L  $3.8K 8.93
+6 Marwin Gonzalez C-1B S  $3.2K 8.23
+7 Evan Gattis C-1B R  $2.7K 8.39
+8 Brian McCann C-1B L  $2.9K 7.86
+9 Derek Fisher OF L  $2.7K 5.94
 
 MIN
-1 Brian Dozier 2B R  0
-2 Joe Mauer 1B L  0
-3 Miguel Sano 3B R  0
-4 Eddie Rosario OF L  0
-5 Logan Morrison DH L  0
-6 Eduardo Escobar SS S  0
-7 Max Kepler OF L  0
-8 Byron Buxton OF R  0
-9 Jason Castro C L  0
+1 Brian Dozier 2B R  $4.3K 10.03
+2 Joe Mauer C-1B L  $2.7K 6.8
+3 Miguel Sano 3B R  $4.2K 9.82
+4 Robbie Grossman OF S  $2.0K 7.82
+5 Byron Buxton OF R  $2.6K 8.06
+6 Max Kepler OF L  $2.5K 4.83
+7 Ryan LaMarre OF R  $2.0K 6.05
+8 Ehire Adrianza SS S  $2.1K 5.73
+9 Mitchell Garver C-1B R  $2.1K 5.35
+
+MIL
+1 Lorenzo Cain OF R  $3.6K 7.56
+2 Eric Thames C-1B L  $3.6K 9.91
+3 Ryan Braun OF R  $3.0K 8.52
+4 Travis Shaw 3B L  $3.8K 9.33
+5 Domingo Santana OF R  $2.7K 7.71
+6 Manuel Pina C-1B R  $2.3K 6.44
+7 Jonathan Villar 2B S  $2.4K 7.41
+8 Orlando Arcia SS R  $2.0K 5
+9 Brent Suter P L  $6.4K 27.15
+
+STL
+1 Dexter Fowler OF S  $2.8K 9.17
+2 Thomas Pham OF R  $3.2K 10.53
+3 Matt Carpenter 3B L  $3.4K 8.42
+4 Marcell Ozuna OF R  $3.7K 9.28
+5 Jose Martinez C-1B R  $3.0K 8.76
+6 Yadier Molina C-1B R  $3.3K 6.64
+7 Paul DeJong SS R  $3.1K 8.01
+8 Yairo Munoz 3B R  $2.0K 5.51
+9 Carlos Martinez P R  $8.7K 37.
 
 SEA
-1 Dee Gordon OF L  0
-2 Jean Segura SS R  0
-3 Robinson Cano 2B L  0
-4 Mitch Haniger OF R  0
-5 Kyle Seager 3B L  0
-6 Daniel Vogelbach DH L  0
-7 Ryon Healy 1B R  0
-8 Ichiro Suzuki OF L  0
-9 Michael Marjama C R  0
+1 Dee Gordon OF L  $3.4K 9.63
+2 Jean Segura SS R  $3.5K 9.53
+3 Robinson Cano 2B L  $3.7K 9.13
+4 Mitch Haniger OF R  $3.3K 8.39
+5 Kyle Seager 3B L  $2.8K 8.4
+6 Daniel Vogelbach C-1B L  $2.2K 6.94
+7 Guillermo Heredia OF R  $2.2K 6.41
+8 Taylor Motter OF R  $2.0K 5.17
+9 Michael Marjama C-1B R  $2.1K 5.9
 
-KAN
-1 Jon Jay OF L  0
-2 Whit Merrifield 2B R  0
-3 Mike Moustakas 3B L  0
-4 Lucas Duda 1B L  0
-5 Cheslor Cuthbert 3B R  0
-6 Jorge Soler OF R  0
-7 Alex Gordon OF L  0
-8 Alcides Escobar SS R  0
-9 Drew Butera C R  
+KC
+1 Jon Jay OF L  $2.7K 8.48
+2 Whit Merrifield 2B R  $2.8K 8.66
+3 Mike Moustakas 3B L  $3.2K 9.37
+4 Lucas Duda C-1B L  $3.0K 8.67
+5 Jorge Soler OF R  $2.2K 7.06
+6 Cheslor Cuthbert C-1B R  $2.1K 6.32
+7 Paulo Orlando OF R  $2.0K 6.16
+8 Alcides Escobar SS R  $2.2K 5.79
+9 Drew Butera C-1B R  $2.1K 4.3
 
 SDP
-1 Manuel Margot OF R  0
-2 Jose Pirela OF R  0
-3 Eric Hosmer 1B L  0
-4 Christian Villanueva 3B R  0
-5 Hunter Renfroe OF R  0
-6 Carlos Asuaje 2B L  0
-7 Freddy Galvis SS S  0
-8 Austin Hedges C R  0
-9 Clayton Richard SP L  0
+1 Manuel Margot OF R  $2.8K 9.55
+2 Jose Pirela OF R  $2.7K 9.41
+3 Eric Hosmer C-1B L  $3.6K 9.13
+4 Hunter Renfroe OF R  $2.6K 11.09
+5 Christian Villanueva 3B R  $3.1K 9.85
+6 Freddy Galvis SS S  $3.2K 9.59
+7 Carlos Asuaje 2B L  $2.5K 7.47
+8 Austin Hedges C-1B R  $2.6K 8.11
+9 Joey Lucchesi P L  $5.5K 19.8
 
 COL
-1 Charlie Blackmon OF L  0
-2 DJ LeMahieu 2B R  0
-3 Nolan Arenado 3B R  0
-4 Ian Desmond 1B R  0
-5 Carlos Gonzalez OF L  0
-6 Trevor Story SS R  0
-7 Chris Iannetta C R  0
-8 Gerardo Parra OF L  0
-9 Jon Gray SP R  
+1 Charlie Blackmon OF L  $4.9K 11.79
+2 DJ LeMahieu 2B R  $4.2K 11.48
+3 Nolan Arenado 3B R  $5.4K 13.19
+4 Trevor Story SS R  $4.2K 12.88
+5 Ian Desmond C-1B R  $4.0K 11.01
+6 Chris Iannetta C-1B R  $3.1K 8.28
+7 Carlos Gonzalez OF L  $3.5K 9.21
+8 Patrick Valaika SS R  $2.5K 8.52
+9 Tyler Anderson P L  $6.0K 23.
+
+OAK
+1 Marcus Semien SS R  $3.4K 8.7
+2 Jake Smolinski OF R  $2.1K 7.59
+3 Jed Lowrie 2B S  $3.3K 7.75
+4 Khris Davis OF R  $3.3K 8.31
+5 Matt Olson C-1B L  $3.8K 7.71
+6 Matt Chapman 3B R  $4.0K 6.25
+7 Jonathan Lucroy C-1B R  $2.4K 6.06
+8 Stephen Piscotty OF R  $2.5K 6.56
+9 Sean Manaea P L  $8.2K 31.64
+
+LAD
+1 Christopher Taylor OF R  $3.2K 9.33
+2 Corey Seager SS L  $3.6K 8.81
+3 Yasiel Puig OF R  $3.3K 9.16
+4 Enrique Hernandez 2B R  $2.5K 8.78
+5 Cody Bellinger C-1B L  $3.5K 8.64
+6 Matt Kemp OF R  $2.8K 7.49
+7 Logan Forsythe 3B R  $2.3K 7.66
+8 Austin Barnes C-1B R  $2.2K 7.96
+9 Hyun-Jin Ryu P L  $6.5K 36.26
 
 ARI
-1 David Peralta OF L  0
-2 Ketel Marte 2B S  0
-3 Paul Goldschmidt 1B R  0
-4 A.J. Pollock OF R  0
-5 Chris Owings OF R  0
-6 Daniel Descalso 3B L  0
-7 Deven Marrero 3B R  0
-8 Jeff Mathis C R  0
-9 Zachary Godley SP R  0
+1 David Peralta OF L  $3.7K 9.09
+2 Ketel Marte 2B S  $2.4K 8.44
+3 Paul Goldschmidt C-1B R  $4.3K 10.47
+4 A.J. Pollock OF R  $3.9K 9.56
+5 Daniel Descalso 3B L  $2.1K 7.38
+6 Alex Avila C-1B L  $2.0K 7.42
+7 Nick Ahmed SS R  $3.2K 4.86
+8 Jarrod Dyson OF L  $2.1K 6.71
+9 Patrick Corbin P L  $9.0K 38.6
 
 SFG
-1 Joe Panik 2B L  0
-2 Brandon Belt 1B L  0
-3 Andrew McCutchen OF R  0
-4 Buster Posey C R  0
-5 Evan Longoria 3B R  0
-6 Brandon Crawford SS L  0
-7 Hunter Pence OF R  0
-8 Gregor Blanco OF L  0
-9 Derek Holland SP L  0
+1 Austin Jackson OF R  $2.1K 8.87
+2 Joe Panik 2B L  $3.0K 7.39
+3 Andrew McCutchen OF R  $2.7K 10.23
+4 Buster Posey C-1B R  $3.0K 9.2
+5 Evan Longoria 3B R  $2.5K 7.62
+6 Hunter Pence OF R  $2.3K 8.01
+7 Brandon Belt C-1B L  $2.5K 5.93
+8 Brandon Crawford SS L  $2.2K 5.29
+9 Tyler Beede P R  $8.0K 40.6

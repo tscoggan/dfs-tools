@@ -80,10 +80,71 @@ object Draftbook extends App {
       case (pss, stats) => (pss.player, (pss, stats))
     }.toMap
 
+  case class PitcherStats(p: Player) {
+    val opposingHitters: List[Player] = p.opposingHitters
+
+    val pitcherAtBatsPerStart: Option[Int] = season.statsByPlayer.get(p.id)
+      .map(_.gamesStarted.map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum / season.statsByPlayer(p.id).gamesStarted.length)
+
+    val pitcherFullSeasonStats_FD: Option[PlayerSeasonStats] = pitcher2017Stats_FD.get(p).map(_._1)
+    val pitcherBvpStats_FD: Option[BatterVsPitcherStats] = season.pitcherFptsPerAB_vs_Hitters(p, opposingHitters, FanDuelMLB)
+    val projFptsFD: Option[Double] = pitcherAtBatsPerStart match {
+      case Some(abPerStart) => {
+        val fullSeasonAtBats = pitcherFullSeasonStats_FD.map(_.games.collect { case pgs: PitcherGameStats => pgs }
+          .map(_.pitchingStats.atBats))
+          .map(_.sum).getOrElse(0)
+        val fullSeasonFptsPerAB = pitcherFullSeasonStats_FD.map(_.games.collect { case pgs: PitcherGameStats => pgs }
+          .map(_.pitchingStats.fantasyPoints(FanDuelMLB).toDouble))
+          .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
+        val fullSeasonWeight = List(200, fullSeasonAtBats).min
+        val bvpWeight = List(200, pitcherBvpStats_FD.map(_.atBats).getOrElse(0)).min
+        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB)
+        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0))
+        val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
+
+        //        println(s"$p - FanDuel - fullSeason AB: $fullSeasonAtBats, fullSeason FPTS/AB: ${fullSeasonFptsPerAB.rounded(2)}, fullSeasonWeight: $fullSeasonWeight \n\t" +
+        //          s"bvp AB: ${pitcherBvpStats_FD.map(_.atBats).getOrElse(0)}, bvp FPTS/AB: ${pitcherBvpStats_FD.map(_.fptsPerAB).map(_.rounded(2)).getOrElse(0.0)}, bvpWeight: $bvpWeight \n\t" +
+        //          s"Projected FPTS = ${mean(combinedWeightedFptsPerAB).rounded(2)} FPTS/AB * $abPerStart projected AB = ${mean(combinedWeightedFptsPerAB) * abPerStart}")
+
+        Some(mean(combinedWeightedFptsPerAB) * abPerStart)
+      }
+      case _ => None
+    }
+    val projValueFD: Option[Double] = (p.fanduel.map(_.salary), projFptsFD) match {
+      case (Some(salary), Some(fpts)) => Some((fpts / salary) * 1000)
+      case _                          => None
+    }
+
+    val pitcherFullSeasonStats_DK: Option[PlayerSeasonStats] = pitcher2017Stats_DK.get(p).map(_._1)
+    val pitcherBvpStats_DK: Option[BatterVsPitcherStats] = season.pitcherFptsPerAB_vs_Hitters(p, opposingHitters, DraftKingsMLB)
+    val projFptsDK: Option[Double] = pitcherAtBatsPerStart match {
+      case Some(abPerStart) => {
+        val fullSeasonAtBats = pitcherFullSeasonStats_DK.map(_.games.collect { case pgs: PitcherGameStats => pgs }
+          .map(_.pitchingStats.atBats))
+          .map(_.sum).getOrElse(0)
+        val fullSeasonFptsPerAB = pitcherFullSeasonStats_DK.map(_.games.collect { case pgs: PitcherGameStats => pgs }
+          .map(_.pitchingStats.fantasyPoints(DraftKingsMLB).toDouble))
+          .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
+        val fullSeasonWeight = List(200, fullSeasonAtBats).min
+        val bvpWeight = List(200, pitcherBvpStats_DK.map(_.atBats).getOrElse(0)).min
+        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB)
+        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0))
+        val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
+        Some(mean(combinedWeightedFptsPerAB) * abPerStart)
+      }
+      case _ => None
+    }
+    val projValueDK: Option[Double] = (p.draftkings.map(_.salary), projFptsDK) match {
+      case (Some(salary), Some(fpts)) => Some((fpts / salary) * 1000)
+      case _                          => None
+    }
+
+  }
+
   case class HitterStats(p: Player) {
     val projAtBats: Double = projectedAtBats(p)
 
-    val opposingPitcher: Player = p.opposingPitcher(startingPitchers)
+    val opposingPitcher: Player = p.opposingPitcher
 
     val hitterTotalAtBats: Int = season.hitterStatsAgainstPitcherType(opposingPitcher.throws, p).map(_.atBats).sum
     val pitcherTotalAtBats: Int = p.bats match {
@@ -144,18 +205,25 @@ object Draftbook extends App {
     //      s"Projected FPTS: ${projFptsDK.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueDK.map(_.rounded(2)).getOrElse("-")}")
   }
 
-  val startingHitterStats: Map[Player, HitterStats] = startingHitters.map { p => (p, HitterStats(p)) }.toMap
+  val startingHitterStats: Map[Player, HitterStats] = startingHitters.filter(season.hasStatsFor(_)).map { p => (p, HitterStats(p)) }.toMap
+
+  val startingPitcherStats: Map[Player, PitcherStats] = startingPitchers.filter(season.hasStatsFor(_)).map { p => (p, PitcherStats(p)) }.toMap
 
   println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
     s"$pitcher [${pitcherStatsAllowedToAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
       s"${pitcherStatsAllowedToAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
         startingHittersByTeam(pitcher.opponent.get).map { hitter =>
-          val stats = startingHitterStats.get(hitter).get
-          s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - " +
-            s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
-            s"${stats.projValueFD.map(_.rounded(2)).getOrElse("???")} value on FD ${hitter.fanduel.map("($" + _.salary + ")").getOrElse("???")}, " +
-            s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
-            s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")} "
+          startingHitterStats.get(hitter) match {
+            case Some(stats) =>
+              s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - " +
+                s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
+                s"${stats.projValueFD.map(_.rounded(2)).getOrElse("???")} value on FD ${hitter.fanduel.map("($" + _.salary + ")").getOrElse("???")}, " +
+                s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
+                s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")} "
+            case None =>
+              s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - NO STATS"
+          }
+
         }.mkString("\n\t")
       }"
   }.mkString("\n"))
@@ -178,7 +246,7 @@ object Draftbook extends App {
           statsAgainst.map(_.atBatsAgainst).getOrElse("Unknown"))
       }))
 
-  log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance (by batter handedness): ###\n")
+  log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 50 PA): ###\n")
   log(toHtmlTable(
     List("Pitcher", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
@@ -186,6 +254,7 @@ object Draftbook extends App {
         List(pitcherStatsAllowedToLefties.get(pitcher), pitcherStatsAllowedToRighties.get(pitcher), pitcherStatsAllowedToSwitchHitters.get(pitcher)).flatten
       }
       .sortBy(_.fptsPerAtBatAgainst_FD).reverse
+      .filter(_.atBatsAgainst >= 50)
       .take(10)
       .map { stats =>
         List(stats.pitcher,
@@ -276,14 +345,26 @@ object Draftbook extends App {
 
   log("\n### Starting pitchers ranked by value (FanDuel): ###\n")
   log(toHtmlTable(
-    List("Pitcher", "FD Salary", "Opponent", "Value"),
-    startingPitchers.flatMap(p => pitcher2017Stats_FD.get(p).map(stats => (p, stats))).map {
-      case (p, (seasonStats, deviationStats)) =>
-        val value = mean(List(seasonStats.fptsPerGameAsStarter(FanDuelMLB))) / p.fanduel.map(_.salary).get
-        (p, value)
-    }.sortBy(_._2).reverse.map {
-      case (p, value) =>
-        List(p, p.fanduel.map(fd => "$" + fd.salary).getOrElse("Unknown"), p.opponent.get, (value * 1000).rounded(2))
-    }))
+    List("Pitcher", "FD Salary", "Opponent", "Sample Size (BvP PA)", "Projected FPTS", "Value"),
+    startingPitcherStats.toList
+      .filter { case (p, stats) => p.fanduel.nonEmpty && season.hasStatsFor(p) }
+      .sortBy(_._2.projValueFD.getOrElse(0.0)).reverse
+      .map {
+        case (p, stats) =>
+          List(p, p.fanduel.map(fd => "$" + fd.salary).get, p.opponent.get, stats.pitcherBvpStats_FD.map(_.atBats).getOrElse(0),
+            stats.projFptsFD.map(_.rounded(2)).getOrElse("???"), stats.projValueFD.map(_.rounded(2)).getOrElse("???"))
+      }))
+
+  log("\n### Starting pitchers ranked by value (DraftKings): ###\n")
+  log(toHtmlTable(
+    List("Pitcher", "DK Salary", "Opponent", "Sample Size (BvP PA)", "Projected FPTS", "Value"),
+    startingPitcherStats.toList
+      .filter { case (p, stats) => p.draftkings.nonEmpty && season.hasStatsFor(p) }
+      .sortBy(_._2.projValueDK.getOrElse(0.0)).reverse
+      .map {
+        case (p, stats) =>
+          List(p, p.draftkings.map(dk => "$" + dk.salary).get, p.opponent.get, stats.pitcherBvpStats_DK.map(_.atBats).getOrElse(0),
+            stats.projFptsDK.map(_.rounded(2)).getOrElse("???"), stats.projValueDK.map(_.rounded(2)).getOrElse("???"))
+      }))
 
 }

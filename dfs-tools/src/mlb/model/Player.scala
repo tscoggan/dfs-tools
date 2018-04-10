@@ -24,11 +24,8 @@ case class Player(
   lazy val battingPosition: Option[Int] = fanduel.flatMap(_.battingPosition).orElse(rg.StartingLineups.battingPositionOf(this))
 
   // for a given DFS game slate:
-  def opposingPitcher(allStartingPitchers: List[Player]): Player = allStartingPitchers.find(_.team == opponent.get).get
-  def opposingHitters(allHitters: List[Player], startersOnly: Boolean = false): List[Player] = startersOnly match {
-    case true  => allHitters.filter(p => p.team == opponent.get && p.fanduel.flatMap(_.starter).getOrElse(false))
-    case false => allHitters.filter(_.team == opponent.get)
-  }
+  def opposingPitcher: Player = Players.startingPitchers.find(_.team == opponent.get).get
+  def opposingHitters: List[Player] = Players.startingHittersByTeam(opponent.get)
 
   def isStarting: Boolean = fanduel.flatMap(_.starter).getOrElse(rg.StartingLineups.isStarting(this))
 

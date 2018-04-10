@@ -82,7 +82,7 @@ object Players {
 
     val newTeam = fanduel.map(_.team).orElse(draftkings.map(_.team)).getOrElse(player.team)
 
-    val newOpponent = draftkings.map(_.opponent).orElse(fanduel.map(_.opponent))
+    val newOpponent = fanduel.map(_.opponent).orElse(draftkings.map(_.opponent))
 
     val newBattingPosition = fanduel.flatMap(_.battingOrder) match {
       case None if (fanduel.flatMap(_.probablePitcher).getOrElse(false) == true) =>
