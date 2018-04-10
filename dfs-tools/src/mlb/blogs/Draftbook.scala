@@ -277,7 +277,7 @@ object Draftbook extends App {
       .sortBy(_._2.projValueFD.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
+          List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n### Top 10 mid-range hitters ranked by value (FanDuel): ###\n")
@@ -288,7 +288,7 @@ object Draftbook extends App {
       .sortBy(_._2.projValueFD.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
+          List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n### Top 10 cheap hitters ranked by value (FanDuel): ###\n")
@@ -299,7 +299,7 @@ object Draftbook extends App {
       .sortBy(_._2.projValueFD.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
+          List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n**************************************************")
@@ -314,7 +314,7 @@ object Draftbook extends App {
       .sortBy(_._2.projValueDK.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
+          List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n### Top 10 mid-range hitters ranked by value (DraftKings): ###\n")
@@ -325,7 +325,7 @@ object Draftbook extends App {
       .sortBy(_._2.projValueDK.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
+          List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n### Top 10 cheap hitters ranked by value (DraftKings): ###\n")
@@ -336,7 +336,7 @@ object Draftbook extends App {
       .sortBy(_._2.projValueDK.get).reverse.take(10)
       .map {
         case (p, stats) =>
-          List(p, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
+          List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n**************************************************")
