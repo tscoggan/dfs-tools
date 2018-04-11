@@ -83,8 +83,13 @@ object Draftbook extends App {
   case class PitcherStats(p: Player) {
     val opposingHitters: List[Player] = p.opposingHitters
 
-    val pitcherAtBatsPerStart: Option[Int] = season.statsByPlayer.get(p.id)
-      .map(_.gamesStarted.map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum / season.statsByPlayer(p.id).gamesStarted.length)
+    val pitcherAtBatsPerStart: Option[Int] = season.statsByPlayer.get(p.id).map(_.gamesStarted) match {
+      case Some(gamesStarted) =>
+        if (gamesStarted.nonEmpty)
+          Some(gamesStarted.map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum / gamesStarted.length)
+        else None
+      case None => None
+    }
 
     val pitcherFullSeasonStats_FD: Option[PlayerSeasonStats] = pitcher2017Stats_FD.get(p).map(_._1)
     val pitcherBvpStats_FD: Option[BatterVsPitcherStats] = season.pitcherFptsPerAB_vs_Hitters(p, opposingHitters, FanDuelMLB)
@@ -179,8 +184,8 @@ object Draftbook extends App {
     }
     val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
 
-    //    println(s"$p - FanDuel - FPTS/PA: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
-    //      s"Projected FPTS: ${projFptsFD.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueFD.map(_.rounded(2)).getOrElse("-")}")
+    //        println(s"$p - FanDuel - FPTS/PA: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
+    //          s"Projected FPTS: ${projFptsFD.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueFD.map(_.rounded(2)).getOrElse("-")}")
 
     val hitterSeasonStatsDK: Option[PlayerSeasonStats] = hitter2017Stats_DK.get(p).map(_._1)
     val hitterDeviationStatsDK: Option[DeviationStats] = hitter2017Stats_DK.get(p).map(_._2)
@@ -233,7 +238,7 @@ object Draftbook extends App {
   log("**************************************************\n")
 
   log("\n### Pitchers ranked by FPTS given up per plate appearance: ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Pitcher", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
       .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
@@ -247,7 +252,7 @@ object Draftbook extends App {
       }))
 
   log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 50 PA): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Pitcher", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
       .flatMap { pitcher =>
@@ -270,7 +275,7 @@ object Draftbook extends App {
   log("**************************************************\n")
 
   log("\n### Top 10 expensive hitters ranked by value (FanDuel): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
@@ -281,7 +286,7 @@ object Draftbook extends App {
       }))
 
   log("\n### Top 10 mid-range hitters ranked by value (FanDuel): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
@@ -292,7 +297,7 @@ object Draftbook extends App {
       }))
 
   log("\n### Top 10 cheap hitters ranked by value (FanDuel): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
@@ -307,7 +312,7 @@ object Draftbook extends App {
   log("**************************************************\n")
 
   log("\n### Top 10 expensive hitters ranked by value (DraftKings): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
@@ -318,7 +323,7 @@ object Draftbook extends App {
       }))
 
   log("\n### Top 10 mid-range hitters ranked by value (DraftKings): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
@@ -329,7 +334,7 @@ object Draftbook extends App {
       }))
 
   log("\n### Top 10 cheap hitters ranked by value (DraftKings): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
       .map(p => (p, startingHitterStats.get(p).get))
@@ -344,7 +349,7 @@ object Draftbook extends App {
   log("**************************************************\n")
 
   log("\n### Starting pitchers ranked by value (FanDuel): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Pitcher", "FD Salary", "Opponent", "Sample Size (BvP PA)", "Projected FPTS", "Value"),
     startingPitcherStats.toList
       .filter { case (p, stats) => p.fanduel.nonEmpty && season.hasStatsFor(p) }
@@ -356,7 +361,7 @@ object Draftbook extends App {
       }))
 
   log("\n### Starting pitchers ranked by value (DraftKings): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Pitcher", "DK Salary", "Opponent", "Sample Size (BvP PA)", "Projected FPTS", "Value"),
     startingPitcherStats.toList
       .filter { case (p, stats) => p.draftkings.nonEmpty && season.hasStatsFor(p) }

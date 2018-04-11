@@ -53,7 +53,7 @@ object FindingBestGppPlayers extends App {
   log("**************************************************\n")
 
   log("\n### Hitters with lowest downside deviation in fantasy points per game started (min 25 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Downside deviation", "Upside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
     pointsPerGameStartedDeviation.sortBy(_._2.downsideDev).take(30).map {
       case (p, stats) =>
@@ -66,7 +66,7 @@ object FindingBestGppPlayers extends App {
     }))
 
   log("\n### Pitchers with lowest downside deviation in fantasy points per game started (min 10 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Downside deviation", "Upside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
     pitcherPointsPerGameStartedDeviation.sortBy(_._2.downsideDev).take(30).map {
       case (p, stats) =>
@@ -83,7 +83,7 @@ object FindingBestGppPlayers extends App {
   log("********************************************\n")
 
   log("\n### Hitters with highest upside deviation in fantasy points per game started (min 25 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Upside deviation", "Downside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
     pointsPerGameStartedDeviation.sortBy(_._2.upsideDev).reverse.take(30).map {
       case (p, stats) =>
@@ -108,7 +108,7 @@ object FindingBestGppPlayers extends App {
   //  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
 
   log("\n### Hitters with highest (upside deviation / avg FPTS/game) in fantasy points per game started (min 25 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Upside Dev / FPPG", "Downside deviation", "Upside deviation", "Avg FPTS / game", "# of games started"),
     pointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.fptsPerGameAsStarter() }.reverse.take(30).map {
       case (p, stats) =>
@@ -127,7 +127,7 @@ object FindingBestGppPlayers extends App {
   //      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted))))
 
   log("\n### Pitchers with highest (upside deviation / avg FPTS/game) in fantasy points per game started (min 10 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Upside Dev / FPPG", "Downside deviation", "Upside deviation", "Avg FPTS / game", "# of games started"),
     pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.fptsPerGameAsStarter() }.reverse.take(30).map {
       case (p, stats) =>
@@ -140,7 +140,7 @@ object FindingBestGppPlayers extends App {
     }))
 
   log("\n### Hitters with highest net upside deviation in fantasy points per game started (min 25 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Net upside deviation", "Upside deviation", "Downside deviation", "Avg FPTS / game", "# of games started"),
     pointsPerGameStartedDeviation.sortBy { case (p, s) => s.netUpsideDev }.reverse.take(20).map {
       case (p, stats) =>
@@ -153,7 +153,7 @@ object FindingBestGppPlayers extends App {
     }))
 
   log("\n### Pitchers with highest net upside deviation in fantasy points per game started (min 10 games started): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Player", "Net upside deviation", "Upside deviation", "Downside deviation", "Avg FPTS / game", "# of games started"),
     pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.netUpsideDev }.reverse.take(20).map {
       case (p, stats) =>

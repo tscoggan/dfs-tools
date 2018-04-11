@@ -30,6 +30,8 @@ object Configs {
     val playerMappingsFile: String = conf.getString("player_mappings_file")
   }
   
+  val blogFormat: String = conf.getString("blog_format")
+  
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {

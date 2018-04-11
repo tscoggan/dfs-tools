@@ -24,7 +24,7 @@ object DoesBattingPositionMatter extends App {
   log("*************************************************************\n")
 
   log("\n### 2017 league-average FPTS per game by batting position: ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Batting position", "Total # of plate appearances", "Avg FPTS / plate appearance (FD)", "Avg plate appearances / game", "Avg FPTS / game"),
     leagueAvgStatsByBattingPosition.toList.sortBy(_._1).tail.map {
       case (battingPosition, stats) =>
@@ -36,7 +36,7 @@ object DoesBattingPositionMatter extends App {
     }))
 
   log("\n### 2017 league-average FPTS per game by batting position (visiting team): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Batting position", "Total # of plate appearances", "Avg FPTS / PA (FD)", "Avg plate appearances / game", "Avg FPTS / game"),
     leagueAvgStatsByBattingPosition_VisitingTeam.toList.sortBy(_._1).tail.map {
       case (battingPosition, stats) =>
@@ -48,7 +48,7 @@ object DoesBattingPositionMatter extends App {
     }))
 
   log("\n### 2017 league-average FPTS per game by batting position (home team): ###\n")
-  log(toHtmlTable(
+  log(toTable(
     List("Batting position", "Total # of plate appearances", "Avg FPTS / PA (FD)", "Avg plate appearances / game", "Avg FPTS / game"),
     leagueAvgStatsByBattingPosition_HomeTeam.toList.sortBy(_._1).tail.map {
       case (battingPosition, stats) =>
