@@ -91,6 +91,13 @@ object Draftbook extends App {
       case None => None
     }
 
+    val ballparkFactor: Double = p.visitingOrHomeTeam match {
+      case Some(vOrH) =>
+        if (vOrH == Home) pitcherBallparkFactor_HomeTeam(p.team).forPitcher(p)
+        else pitcherBallparkFactor_VisitingTeam(p.opponent.get).forPitcher(p)
+      case None => 1.0
+    }
+
     val pitcherFullSeasonStats_FD: Option[PlayerSeasonStats] = pitcher2017Stats_FD.get(p).map(_._1)
     val pitcherBvpStats_FD: Option[BatterVsPitcherStats] = season.pitcherFptsPerAB_vs_Hitters(p, opposingHitters, FanDuelMLB)
     val projFptsFD: Option[Double] = pitcherAtBatsPerStart match {
@@ -103,8 +110,8 @@ object Draftbook extends App {
           .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
         val fullSeasonWeight = List(200, fullSeasonAtBats).min
         val bvpWeight = List(200, pitcherBvpStats_FD.map(_.atBats).getOrElse(0)).min
-        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB)
-        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0))
+        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
+        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
         val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
 
         //        println(s"$p - FanDuel - fullSeason AB: $fullSeasonAtBats, fullSeason FPTS/AB: ${fullSeasonFptsPerAB.rounded(2)}, fullSeasonWeight: $fullSeasonWeight \n\t" +
@@ -132,8 +139,8 @@ object Draftbook extends App {
           .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
         val fullSeasonWeight = List(200, fullSeasonAtBats).min
         val bvpWeight = List(200, pitcherBvpStats_DK.map(_.atBats).getOrElse(0)).min
-        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB)
-        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0))
+        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
+        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
         val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
         Some(mean(combinedWeightedFptsPerAB) * abPerStart)
       }
@@ -160,8 +167,8 @@ object Draftbook extends App {
 
     val ballparkFactor: Double = p.visitingOrHomeTeam match {
       case Some(vOrH) =>
-        if (vOrH == Home) hitterBallparkFactor_HomeTeam(p.team).forPlayer(p)
-        else hitterBallparkFactor_VisitingTeam(p.opponent.get).forPlayer(p)
+        if (vOrH == Home) hitterBallparkFactor_HomeTeam(p.team).forHitter(p)
+        else hitterBallparkFactor_VisitingTeam(p.opponent.get).forHitter(p)
       case None => 1.0
     }
 
@@ -178,7 +185,7 @@ object Draftbook extends App {
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-      val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get)
+      val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       mean(combinedWeightedFptsPerAB) * projAtBats
     }
@@ -200,7 +207,7 @@ object Draftbook extends App {
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-      val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get)
+      val pitcherWeightedFptsPerAB = (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       mean(combinedWeightedFptsPerAB) * projAtBats
     }

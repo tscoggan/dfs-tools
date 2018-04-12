@@ -37,6 +37,8 @@ case class Game(
 
   def statsFor(player: Player): Option[PlayerGameStats] = allPlayerStats.find(_.player == player)
 
+  def involvesTeam(team: Team): Boolean = visitingTeam == team || homeTeam == team
+  
   def isHomeGameFor(team: Team): Boolean = homeTeam == team
 
   override def toString: String = alias +
