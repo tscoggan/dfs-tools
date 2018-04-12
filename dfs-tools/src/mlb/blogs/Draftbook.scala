@@ -160,8 +160,8 @@ object Draftbook extends App {
 
     val ballparkFactor: Double = p.visitingOrHomeTeam match {
       case Some(vOrH) =>
-        if (vOrH == Home) hitterBallparkFactor_HomeTeam(p.team)
-        else hitterBallparkFactor_VisitingTeam(p.opponent.get)
+        if (vOrH == Home) hitterBallparkFactor_HomeTeam(p.team).forPlayer(p)
+        else hitterBallparkFactor_VisitingTeam(p.opponent.get).forPlayer(p)
       case None => 1.0
     }
 

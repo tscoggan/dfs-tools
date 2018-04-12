@@ -164,52 +164,111 @@ object Season2017Stats {
       (homeTeam, ballparkStats)
   }
 
+  case class BallparkFactor(leftyMultiplier: Double, switchMultiplier: Double, rightyMultiplier: Double) {
+    def forPlayer(player: Player): Double = player.bats match {
+      case Left   => leftyMultiplier
+      case Right  => rightyMultiplier
+      case Switch => switchMultiplier
+    }
+  }
+
   // FPTS/PA projection for visiting team hitters should be multiplied by this number --- key is home team, which is a proxy for ballpark
-  val hitterBallparkFactor_VisitingTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
-    case (homeTeam, games) =>
-      val hittingStatsAllowedInThisPark = games.flatMap(_.visitingTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats])
-      val thisParkFptsPerAB = hittingStatsAllowedInThisPark.map(_.fantasyPoints().toDouble).sum / hittingStatsAllowedInThisPark.map(_.hittingStats.atBats).sum
+  val hitterBallparkFactor_VisitingTeam: Map[Team, BallparkFactor] = season.games.groupBy(_.homeTeam).map {
+    case (team, homeGames) =>
+      val hittingStatsInThisPark = homeGames.flatMap(_.visitingTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats]).map(_.asInstanceOf[HitterGameStats])
+      val hittingStatsInThisParkToLefties = hittingStatsInThisPark.filter(_.player.bats == Left)
+      val hittingStatsInThisParkToSwitch = hittingStatsInThisPark.filter(_.player.bats == Switch)
+      val hittingStatsInThisParkToRighties = hittingStatsInThisPark.filter(_.player.bats == Right)
+      val thisParkFptsPerABForLefties = hittingStatsInThisParkToLefties.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisParkToLefties.map(_.hittingStats.atBats).sum
+      val thisParkFptsPerABForSwitch = hittingStatsInThisParkToSwitch.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisParkToSwitch.map(_.hittingStats.atBats).sum
+      val thisParkFptsPerABForRighties = hittingStatsInThisParkToRighties.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisParkToRighties.map(_.hittingStats.atBats).sum
 
-      val homeTeamPitchers = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[PitcherGameStats]).map(_.player).distinct
-      val hittingStatsAllowedInAllParks = homeTeamPitchers.flatMap { pitcher =>
-        season.statsByPlayer(pitcher.id).games.flatMap {
-          _ match {
-            case pitcherStats: PitcherGameStats => pitcherStats.hittingStatsAllowed
-            case _                              => Nil
-          }
-        }
+      //println(s"Visiting @ $team - ${homeGames.length} home games - PA: L: ${hittingStatsInThisParkToLefties.map(_.hittingStats.atBats).sum}, S: ${hittingStatsInThisParkToSwitch.map(_.hittingStats.atBats).sum}, R: ${hittingStatsInThisParkToRighties.map(_.hittingStats.atBats).sum} ")
+
+      val allGames = season.games.filter(g => g.visitingTeam == team || g.homeTeam == team)
+      val hittingStatsInAllParks = allGames.flatMap { game =>
+        if (game.isHomeGameFor(team)) game.visitingTeamPlayerStats.filter(_.isInstanceOf[HitterGameStats]).map(_.asInstanceOf[HitterGameStats])
+        else if (game.visitingTeam == team) game.homeTeamPlayerStats.filter(_.isInstanceOf[HitterGameStats]).map(_.asInstanceOf[HitterGameStats])
+        else throw new Exception("Something unexpected happened!")
       }
-      val allParksFptsPerAB = hittingStatsAllowedInAllParks.map(_.fantasyPoints().toDouble).sum / hittingStatsAllowedInAllParks.map(_.atBats).sum
+      val hittingStatsInAllParksToLefties = hittingStatsInAllParks.filter(_.player.bats == Left)
+      val hittingStatsInAllParksToSwitch = hittingStatsInAllParks.filter(_.player.bats == Switch)
+      val hittingStatsInAllParksToRighties = hittingStatsInAllParks.filter(_.player.bats == Right)
+      val allParksFptsPerABForLefties = hittingStatsInAllParksToLefties.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParksToLefties.map(_.hittingStats.atBats).sum
+      val allParksFptsPerABForSwitch = hittingStatsInAllParksToSwitch.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParksToSwitch.map(_.hittingStats.atBats).sum
+      val allParksFptsPerABForRighties = hittingStatsInAllParksToRighties.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParksToRighties.map(_.hittingStats.atBats).sum
 
-      (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
+      val leftyFactor = thisParkFptsPerABForLefties / allParksFptsPerABForLefties
+      val rightyFactor = thisParkFptsPerABForRighties / allParksFptsPerABForRighties
+      val switchFactor = {
+        if (hittingStatsInThisParkToSwitch.map(_.hittingStats.atBats).sum > 300) thisParkFptsPerABForSwitch / allParksFptsPerABForSwitch
+        else List(leftyFactor, rightyFactor).max
+      }
+
+      (team, BallparkFactor(leftyFactor, switchFactor, rightyFactor))
   }
 
   // FPTS/PA projection for home team hitters should be multiplied by this number --- key is home team, which is a proxy for ballpark
-  val hitterBallparkFactor_HomeTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
-    case (homeTeam, games) =>
-      val hittingStatsInThisPark = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats])
-      val thisParkFptsPerAB = hittingStatsInThisPark.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisPark.map(_.hittingStats.atBats).sum
+  val hitterBallparkFactor_HomeTeam: Map[Team, BallparkFactor] = season.games.groupBy(_.homeTeam).map {
+    case (team, homeGames) =>
+      val hittingStatsInThisPark = homeGames.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats]).map(_.asInstanceOf[HitterGameStats])
+      val hittingStatsInThisParkToLefties = hittingStatsInThisPark.filter(_.player.bats == Left)
+      val hittingStatsInThisParkToSwitch = hittingStatsInThisPark.filter(_.player.bats == Switch)
+      val hittingStatsInThisParkToRighties = hittingStatsInThisPark.filter(_.player.bats == Right)
+      val thisParkFptsPerABForLefties = hittingStatsInThisParkToLefties.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisParkToLefties.map(_.hittingStats.atBats).sum
+      val thisParkFptsPerABForSwitch = hittingStatsInThisParkToSwitch.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisParkToSwitch.map(_.hittingStats.atBats).sum
+      val thisParkFptsPerABForRighties = hittingStatsInThisParkToRighties.map(_.fantasyPoints().toDouble).sum / hittingStatsInThisParkToRighties.map(_.hittingStats.atBats).sum
 
-      val homeTeamHitters = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[HitterGameStats]).map(_.player).distinct
-      val hittingStatsInAllParks = homeTeamHitters.flatMap { hitter =>
-        season.statsByPlayer(hitter.id).games.collect {
-          _ match {
-            case hitterStats: HitterGameStats => hitterStats.hittingStats
-          }
-        }
+      //println(s"Home @ $team - ${homeGames.length} home games - PA: L: ${hittingStatsInThisParkToLefties.map(_.hittingStats.atBats).sum}, S: ${hittingStatsInThisParkToSwitch.map(_.hittingStats.atBats).sum}, R: ${hittingStatsInThisParkToRighties.map(_.hittingStats.atBats).sum} ")
+
+      val allGames = season.games.filter(g => g.visitingTeam == team || g.homeTeam == team)
+      val hittingStatsInAllParks = allGames.flatMap { game =>
+        if (game.isHomeGameFor(team)) game.homeTeamPlayerStats.filter(_.isInstanceOf[HitterGameStats]).map(_.asInstanceOf[HitterGameStats])
+        else if (game.visitingTeam == team) game.visitingTeamPlayerStats.filter(_.isInstanceOf[HitterGameStats]).map(_.asInstanceOf[HitterGameStats])
+        else throw new Exception("Something unexpected happened!")
       }
-      val allParksFptsPerAB = hittingStatsInAllParks.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParks.map(_.atBats).sum
+      val hittingStatsInAllParksToLefties = hittingStatsInAllParks.filter(_.player.bats == Left)
+      val hittingStatsInAllParksToSwitch = hittingStatsInAllParks.filter(_.player.bats == Switch)
+      val hittingStatsInAllParksToRighties = hittingStatsInAllParks.filter(_.player.bats == Right)
+      val allParksFptsPerABForLefties = hittingStatsInAllParksToLefties.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParksToLefties.map(_.hittingStats.atBats).sum
+      val allParksFptsPerABForSwitch = hittingStatsInAllParksToSwitch.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParksToSwitch.map(_.hittingStats.atBats).sum
+      val allParksFptsPerABForRighties = hittingStatsInAllParksToRighties.map(_.fantasyPoints().toDouble).sum / hittingStatsInAllParksToRighties.map(_.hittingStats.atBats).sum
 
-      (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
+      val leftyFactor = thisParkFptsPerABForLefties / allParksFptsPerABForLefties
+      val rightyFactor = thisParkFptsPerABForRighties / allParksFptsPerABForRighties
+      val switchFactor = {
+        if (hittingStatsInThisParkToSwitch.map(_.hittingStats.atBats).sum > 300) thisParkFptsPerABForSwitch / allParksFptsPerABForSwitch
+        else List(leftyFactor, rightyFactor).max
+      }
+
+      (team, BallparkFactor(leftyFactor, switchFactor, rightyFactor))
   }
 
-//  // FPTS/game projection for visiting team pitchers should be multiplied by this number --- key is home team, which is a proxy for ballpark
-//  val pitcherBallparkFactor_VisitingTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
-//    ???
-//  }
+  // FPTS/game projection for visiting team pitchers should be multiplied by this number --- key is home team, which is a proxy for ballpark
+  //  val pitcherBallparkFactor_VisitingTeam: Map[Team, Double] = season.games.groupBy(_.homeTeam).map {
+  //    case (homeTeam, games) =>
+  //      val pitchingStatsAllowedInThisPark = games.flatMap(_.starterStats).filter(_.isInstanceOf[PitcherGameStats])
+  //      val thisParkFptsPerAB = hittingStatsAllowedInThisPark.map(_.fantasyPoints().toDouble).sum / hittingStatsAllowedInThisPark.map(_.hittingStats.atBats).sum
+  //
+  //      val homeTeamPitchers = games.flatMap(_.homeTeamPlayerStats).filter(_.isInstanceOf[PitcherGameStats]).map(_.player).distinct
+  //      val hittingStatsAllowedInAllParks = homeTeamPitchers.flatMap { pitcher =>
+  //        season.statsByPlayer(pitcher.id).games.flatMap {
+  //          _ match {
+  //            case pitcherStats: PitcherGameStats => pitcherStats.hittingStatsAllowed
+  //            case _                              => Nil
+  //          }
+  //        }
+  //      }
+  //      val allParksFptsPerAB = hittingStatsAllowedInAllParks.map(_.fantasyPoints().toDouble).sum / hittingStatsAllowedInAllParks.map(_.atBats).sum
+  //
+  //      (homeTeam, thisParkFptsPerAB / allParksFptsPerAB)
+  //      ???
+  //  }
 
-  //  log("\nBallpark factors:\n\t" + hitterBallparkFactor_VisitingTeam.toList.sortBy(_._2).reverse.map {
-  //    case (homeTeam, factor) => s"$homeTeam ballpark\t - ${factor.rounded(2)} for visiting hitters\t${hitterBallparkFactor_HomeTeam(homeTeam).rounded(2)} for home team hitters"
+  //  log("\nBallpark factors:\n\t" + hitterBallparkFactor_VisitingTeam.toList.sortBy { case (team, bpf) => bpf.leftyMultiplier + bpf.rightyMultiplier }.reverse.map {
+  //    case (homeTeam, factor) =>
+  //      s"$homeTeam ballpark\t - L: ${factor.leftyMultiplier.rounded(2)}, S: ${factor.switchMultiplier.rounded(2)}, R: ${factor.rightyMultiplier.rounded(2)} for visiting hitters\t" +
+  //        s"L: ${hitterBallparkFactor_HomeTeam(homeTeam).leftyMultiplier.rounded(2)}, S: ${hitterBallparkFactor_HomeTeam(homeTeam).switchMultiplier.rounded(2)}, R: ${hitterBallparkFactor_HomeTeam(homeTeam).rightyMultiplier.rounded(2)} for home team hitters"
   //  }.mkString("\n\t"))
 
   def logSummary: Unit = {
