@@ -16,11 +16,11 @@ object FindingBestGppPlayers extends App {
 
   val games = FileUtils.getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
 
-  val season = Season(2017, games)
+  val season = Season("2017", games)
 
-  val season1stHalf = Season(2017, games.filter(_.date.before(allStarGameDate)))
+  val season1stHalf = Season("2017 H1", games.filter(_.date.before(allStarGameDate)))
 
-  val season2ndHalf = Season(2017, games.filter(_.date.after(allStarGameDate)))
+  val season2ndHalf = Season("2017 H2", games.filter(_.date.after(allStarGameDate)))
 
   log(s"Finished loading ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
 

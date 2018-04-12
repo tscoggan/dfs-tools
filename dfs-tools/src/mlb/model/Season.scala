@@ -3,7 +3,7 @@ package mlb.model
 import CustomTypes._
 import mlb._
 
-case class Season(year: Int, games: List[Game]) {
+case class Season(year: String, games: List[Game]) {
 
   val statsByPlayer: Map[PlayerID, PlayerSeasonStats] = {
     games.flatMap { game =>

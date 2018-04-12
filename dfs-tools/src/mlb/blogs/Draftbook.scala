@@ -9,12 +9,12 @@ import utils.FloatUtils._
 import utils.DoubleUtils._
 import utils.MathUtils._
 import utils.StringUtils._
-import mlb.Season2017Stats._
 import mlb.Players._
 
 object Draftbook extends App {
 
-  Season2017Stats.logSummary
+  import mlb.Season2017Stats.stats._
+  mlb.Season2017Stats.stats.logSummary
 
   def projectedAtBats(player: Player): Double = player.visitingOrHomeTeam match {
     case Some(vh) => vh match {
