@@ -277,6 +277,31 @@ object Draftbook extends App {
           stats.atBatsAgainst)
       }))
 
+  log("\n### Top 10 hitter stacks by projected value (FanDuel): ###\n")
+  teamsOnSlate.map { team =>
+    val stack = startingHittersByTeam(team).sortBy { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) }.reverse.take(5)
+      .sortBy(_.battingPosition.getOrElse(10))
+    val avgValue = mean(stack.map { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) })
+    (stack -> avgValue)
+  }.sortBy(_._2).reverse.take(10).map {
+    case (stack, avgValue) =>
+      val totalSalary = stack.flatMap { hitter => hitter.fanduel.map(_.salary) }.sum
+      val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsFD).getOrElse(0.0) }.sum
+      s"${stack.head.team} vs ${stack.head.opposingPitcher} - FPTS: ${totalFPTS.rounded(2)}, Value: ${((totalFPTS / totalSalary) * 1000).rounded(2)}\n\t" +
+        stack.map { hitter =>
+          startingHitterStats.get(hitter) match {
+            case Some(stats) =>
+              s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - " +
+                s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
+                s"${stats.projValueFD.map(_.rounded(2)).getOrElse("???")} value on FD ${hitter.fanduel.map("($" + _.salary + ")").getOrElse("???")}, " +
+                s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
+                s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")} "
+            case None =>
+              s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - NO STATS"
+          }
+        }.mkString("\n\t")
+  }.foreach(log(_))
+
   log("\n**************************************************")
   log("*** Value hitters - FD ***")
   log("**************************************************\n")
@@ -349,6 +374,21 @@ object Draftbook extends App {
       .map {
         case (p, stats) =>
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
+      }))
+
+  log("\n**************************************************")
+  log("*** Top projected hitters - FD ***")
+  log("**************************************************\n")
+
+  log("\n### Top 10 hitters ranked by projected FPTS (FanDuel): ###\n")
+  log(toTable(
+    List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
+    hitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projFptsFD).nonEmpty)
+      .map(p => (p, startingHitterStats.get(p).get))
+      .sortBy(_._2.projFptsFD.get).reverse.take(10)
+      .map {
+        case (p, stats) =>
+          List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
   log("\n**************************************************")
