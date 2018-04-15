@@ -60,12 +60,15 @@ object Players {
   }
 
   val draftkingsPlayers: List[Player_DK] = {
-    val file = getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
-      .filter(_.getName.startsWith("DraftKings-MLB-"))
-      .sortBy(_.getName.trimPrefix("DraftKings-MLB-").take(10).toDate())
-      .last
-    log("Loading DK players from file " + file)
-    Player_DK.parseFrom(file.getPath)
+    getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
+      .filter(_.getName.startsWith("DraftKings-MLB-")) match {
+        case Nil => Nil
+        case files => {
+          val file = files.sortBy(_.getName.trimPrefix("DraftKings-MLB-").take(10).toDate()).last
+          log("Loading DK players from file " + file)
+          Player_DK.parseFrom(file.getPath)
+        }
+      }
   } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // ignore non-starting pitchers
   log(s"Found ${draftkingsPlayers.length} DK players")
 
