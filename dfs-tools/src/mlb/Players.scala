@@ -13,6 +13,12 @@ object Players {
 
   case class PlayerMapping(retrosheetID: PlayerID, fdPlayerID: String, dkNameAndTeam: String)
 
+  val teamsNotPlaying: List[Team] = Source.fromFile(Configs.teamsNotPlayingFile).getLines.toList
+    .map(_.substringBefore("//").trim)
+    .filter(_.nonEmpty)
+    .map { case teamID => Teams.get(teamID) }
+  log(s"Teams not playing: ${teamsNotPlaying.mkString(", ")}")
+
   val playerMappings: List[PlayerMapping] = Source.fromFile(Configs.playerMappingsFile).getLines.toList.tail
     .map(_.substringBefore("//").trim)
     .filter(_.nonEmpty)
@@ -132,7 +138,7 @@ object Players {
 
   val playersByTeam: Map[Team, List[Player]] = allPlayers.groupBy(_.team)
 
-  val startingPlayers: List[Player] = allPlayers.filter(_.isStarting)
+  val startingPlayers: List[Player] = allPlayers.filter(p => p.isStarting && !teamsNotPlaying.contains(p.team))
 
   startingPlayers.filter { p => p.fanduel.isEmpty && p.draftkings.isEmpty } match {
     case Nil              => // OK
@@ -145,11 +151,11 @@ object Players {
 
   val startingHittersByTeam: Map[Team, List[Player]] = startingHitters.groupBy(_.team).map { case (team, hitters) => (team, hitters.sortBy(_.battingPosition.getOrElse(10))) }
 
-//    println("\nStarters: \n" + startingPlayersByTeam.map {
-//      case (team, players) =>
-//        s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
-//          .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
-//    }.mkString("\n"))
+  //    println("\nStarters: \n" + startingPlayersByTeam.map {
+  //      case (team, players) =>
+  //        s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
+  //          .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
+  //    }.mkString("\n"))
 
   def get(playerID: String): Player = playersByID.get(playerID).get // throws exception if playerID is invalid
 }

@@ -59,7 +59,7 @@ object StartingLineups {
       case teamID :: lines =>
         val team = Teams.get(teamID)
         val batters = lines.takeWhile(_.nonEmpty).map { line =>
-          val position :: first :: last :: otherStuff = line.split(" ").toList
+          val position :: first :: last :: otherStuff = line.splitOnSpace().toList
           Players.playersByTeam(team).find { p =>
             playerMappings.find(m => m.rgPlayerName.toUpperCase == s"$first $last".toUpperCase && m.team == team) match {
               case Some(mapping) =>

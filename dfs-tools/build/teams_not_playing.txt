@@ -1,0 +1,3 @@
+// list teams on games that have been postponed
+MIN
+CWS

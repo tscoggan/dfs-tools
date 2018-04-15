@@ -46,5 +46,7 @@ object Configs {
   val playerMappingsFile: String = conf.getString("player_mappings_file")
   
   val newPlayersFile: String = conf.getString("new_players_file")
+  
+  val teamsNotPlayingFile: String = conf.getString("teams_not_playing_file")
 
 }

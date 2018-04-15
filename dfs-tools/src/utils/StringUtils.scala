@@ -18,6 +18,18 @@ object StringUtils {
       if (discardOuterQuotes) tokens.map(_.trimPrefix("\"").trimSuffix("\""))
       else tokens
     }
+    
+    /**
+     * Ignores spaces surrounded by quotation marks.  For example, invoking this method on the following string...
+     * {{{ a b "c d" e }}}
+     * ...will produce:
+     * {{{ Array("a", "b", "c d", "e") }}}
+     */
+    def splitOnSpace(discardOuterQuotes: Boolean = true): Array[String] = {
+      val tokens = s.split("\\s{1,}(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1) // 2nd param ensures trailing empty tokens are included
+      if (discardOuterQuotes) tokens.map(_.trimPrefix("\"").trimSuffix("\""))
+      else tokens
+    }
 
     def trimPrefix(prefix: String): String = {
       if (s.startsWith(prefix)) s.substring(prefix.length)

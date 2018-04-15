@@ -19,6 +19,21 @@ class StringUtilsTests extends FunSuite {
     val s = "a,b,c,d,e,,"
     assert(s.splitCSV().deep == Array("a","b","c","d","e","","").deep)
   }
+  
+  test("splitOnSpace works without quotation marks") {
+    val s = "a b c d   e"
+    assert(s.splitOnSpace().deep == Array("a","b","c","d","e").deep)
+  }
+  
+  test("splitOnSpace works with quotation marks") {
+    val s = "a b \"c d\" e"
+    assert(s.splitOnSpace().deep == Array("a","b","c d","e").deep)
+  }
+  
+  test("splitOnSpace works with trailing empty tokens") {
+    val s = "a b c d e  "
+    assert(s.splitOnSpace().deep == Array("a","b","c","d","e","").deep)
+  }
 
   test("trimPrefix works") {
     assert(",p.BLAH".trimPrefix(",p.") == "BLAH")
