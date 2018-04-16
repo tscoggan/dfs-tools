@@ -1,8 +1,10 @@
 package utils
 
 import java.util.{ Date, Calendar }
+import org.joda.time.DateTime
 import java.text.SimpleDateFormat
 import scala.collection.mutable
+import scala.annotation.tailrec
 import Logger._
 
 object DateTimeUtils {
@@ -26,9 +28,35 @@ object DateTimeUtils {
     }
   }
 
+  def getDatesBetween(start: Date, end: Date, inclusive: Boolean = true): List[Date] = {
+    @tailrec def next(dates: List[Date], currentDay: Date, lastDay: Date): List[Date] = (currentDay.isAfter(lastDay)) match {
+      case true  => dates.sorted
+      case false => next(currentDay :: dates, currentDay.nextDay, lastDay)
+    }
+
+    inclusive match {
+      case true  => next(Nil, start, end)
+      case false => next(Nil, start.nextDay, end.previousDay)
+    }
+  }
+
   implicit class EnrichedDate(d: Date) {
 
     def print(format: String = "yyyy-MM-dd"): String = getDateFormat(format).format(d)
+
+    def plusDays(days: Int): Date = (new DateTime(d)).plusDays(days).toDate
+
+    def nextDay: Date = d.plusDays(1)
+
+    def minusDays(days: Int): Date = (new DateTime(d)).minusDays(days).toDate
+
+    def previousDay: Date = d.minusDays(1)
+
+    def isBefore(other: Date): Boolean = (new DateTime(d)).isBefore(new DateTime(other))
+
+    def isAfter(other: Date): Boolean = (new DateTime(d)).isAfter(new DateTime(other))
+
+    def isSameDayAs(other: Date): Boolean = d.print("yyyy-MM-dd") == other.print("yyyy-MM-dd")
 
   }
 
