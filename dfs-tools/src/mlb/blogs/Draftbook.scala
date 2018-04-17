@@ -279,7 +279,7 @@ object Draftbook extends App {
 
   log("\n### Top 10 hitter stacks by projected value (FanDuel): ###\n")
   teamsOnSlate.map { team =>
-    val stack = startingHittersByTeam(team).sortBy { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) }.reverse.take(5)
+    val stack = startingHittersByTeam(team).sortBy { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) }.reverse.take(4)
       .sortBy(_.battingPosition.getOrElse(10))
     val avgValue = mean(stack.map { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) })
     (stack -> avgValue)
