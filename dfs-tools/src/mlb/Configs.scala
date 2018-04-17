@@ -4,6 +4,8 @@ import com.typesafe.config.{ ConfigFactory, Config }
 import scala.collection.JavaConversions._
 import model._
 import utils.Logger._
+import utils.StringUtils._
+import java.util.Date
 
 object Configs {
   private val conf = ConfigFactory.load.getConfig("mlb")
@@ -20,6 +22,10 @@ object Configs {
     private val conf = Configs.conf.getConfig("mlbdotcom")
     
     val baseURL: String = conf.getString("base_url")
+    
+    val seasonStartDate: Date = conf.getString("season_start_date").toDate("yyyy-MM-dd")
+    
+    val dataFileDir: String = conf.getString("data_file_dir")
   }
   
   object Rotogrinders {

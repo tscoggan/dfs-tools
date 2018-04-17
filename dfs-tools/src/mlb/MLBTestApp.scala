@@ -1,6 +1,6 @@
 package mlb
 
-import retrosheet._
+//import retrosheet._
 import mlbdotcom._
 import model._
 import utils._
@@ -22,10 +22,15 @@ object MLBTestApp extends App {
   //    if (p.fanduel.isEmpty || p.draftkings.isEmpty) println(s"$p ${p.id} --> ${p.fanduel} / ${p.draftkings}")
   //  }
 
-//  val gameURLs = MLBWebsiteParser.getGameURLs("2017-06-01".toDate())
-//  println("Loading "+gameURLs.head)
-//  println(MLBWebsiteParser.getPlayerURLs(gameURLs.head).mkString("\n"))
-  
-  rg.StartingLineups.all.foreach(println(_))
+  //  rg.StartingLineups.all.foreach(println(_))
+
+  val gameURLs = MLBWebsiteParser.getGameURLs("2018-04-14".toDate())
+  gameURLs.foreach { gameURL => 
+    println("Loading game " + gameURL)
+     MLBWebsiteParser.getPlayerURLs(gameURL).foreach { playerURL => 
+       println("Loading player "+playerURL)
+       Player_MLB.parseFrom(playerURL)
+    }
+  }
 
 }

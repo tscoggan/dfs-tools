@@ -8,6 +8,10 @@ import scala.annotation.tailrec
 import Logger._
 
 object DateTimeUtils {
+  
+  def today: Date = Calendar.getInstance.getTime
+  
+  def yesterday: Date = today.previousDay
 
   def timeInSeconds[T](code: => T): (T, Int) = {
     val t1 = System.currentTimeMillis

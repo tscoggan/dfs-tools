@@ -65,6 +65,8 @@ object DoesBattingPositionMatter extends App {
   log("***+/- FPTS/PA in each batting position compared to each player's avg across all batting positions (hitters only) ***")
   log("*********************************************************************************************************************\n")
   
+  case class BattingPositionStats(batPosition: Int, atBats: Int, fptsPerAB: Double)
   
+  //val hittersWithMultipleBatPositions = season.allHitters.
 
 }

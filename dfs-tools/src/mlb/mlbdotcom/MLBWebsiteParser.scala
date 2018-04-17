@@ -22,11 +22,13 @@ object MLBWebsiteParser {
     games.flatMap(_.attribute("game_data_directory")).toList.flatten.map(g => baseURL + g.text + "/")
   }
 
-  def getPlayerURLs(game: GameURL): List[String] = {
+  def getPlayerURLs(game: GameURL): List[String] = try {
     val batters = scala.io.Source.fromURL(game + "batters/").mkString
     val pitchers = scala.io.Source.fromURL(game + "pitchers/").mkString
     batters.substringsBetween("a href=\"", "\">").filter(_.endsWith(".xml")).map(file => game + "batters/" + file) ++
       pitchers.substringsBetween("a href=\"", "\">").filter(_.endsWith(".xml")).map(file => game + "pitchers/" + file)
+  } catch {
+    case e: java.io.FileNotFoundException => Nil
   }
 
 }

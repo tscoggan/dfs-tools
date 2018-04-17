@@ -3,13 +3,14 @@ package mlb.model
 import CustomTypes._
 import mlb._
 import mlb.model._
+import mlb.mlbdotcom.Player_MLB
 
 /**
  * Static data about a player
  */
 
 case class Player(
-    id: PlayerID,
+    id: PlayerID, // Retrosheet player ID
     name: String,
     bats: Handedness,
     throws: Handedness,
@@ -17,6 +18,7 @@ case class Player(
     position: Position,
     opponent: Option[Team] = None,
     visitingOrHomeTeam: Option[VisitingOrHomeTeam] = None, // for the upcoming game
+    mlbdotcom: Option[Player_MLB] = None,
     fanduel: Option[PlayerSiteInfo] = None,
     draftkings: Option[PlayerSiteInfo] = None,
     retrosheet: Option[PlayerSiteInfo] = None) {

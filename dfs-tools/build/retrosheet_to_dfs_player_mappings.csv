@@ -1,45 +1,46 @@
-Retrosheet player ID,FanDuel player ID,DraftKings player name & team
-ellia001,24219-5927,A.J. Ellis-SD
-grifa002,24219-23093,A.J. Griffin-NYM
-polla001,24219-12970,A.J. Pollock-ARI
-ramoa001,24219-17143,AJ Ramos-NYM
-reeda002,24219-68524,AJ Reed-HOU
-civaa001,24219-82557,Aaron Civale-CLE
-conla001,,Adam Conley-MIA
-fraza001,24219-70898,Adam Frazier-PIT
-gurry001,24219-71507,Yuli Gurriel-HOU
-castn001,24219-13342,Nicholas Castellanos-DET
-souzs001,24219-38249,Steven Souza Jr.-ARI
-mccul002,24219-52159,Lance McCullers Jr.-HOU
-ramij002,24219-13107,JC Ramirez-LAA
-ramij003,24678-38976,Jose Ramirez-CLE
-ramij004,24219-38185,Jose Ramirez-ATL
-farij001,24219-79259,Jake Faria-TB
-bradj001,24219-21637,Jackie Bradley Jr.-BOS
-riddj001,24219-79176,JT Riddle-MIA
-robed003,24219-13862,Daniel Robertson-ARI
-robed004,24219-53007,Daniel Robertson-TB
-smitc002,,Chris Smith-OAK
-smitc005,24219-74147,Chris Smith-WAS
-urshg001,24678-38112,Gio Urshela-CLE
-youne003,24219-6252,Eric Young Jr.-LAA
-younc003,24219-6229,Chris Young-SD
-younc004,24219-6230,Chris Young-LAA
-herne001,24678-13792,Kike Hernandez-LAD
-wrigm001,24648-21211,Mike Wright Jr.-BAL
-tuckp001,24648-39109,Preston Tucker-ATL
-almoa002,24717-38276,Albert Almora Jr.-CHC
-munoy001,24717-79205,Yairo Munoz-STL
-taylm002,24786-21074,Michael A. Taylor-WAS
-duffm001,24786-53844,Matt Duffy-TB
-junij001,24822-79147,Jakob Junis-KC
-mikom001,24822-17121,Miles Mikolas-STL
-fierm001,24822-13444,Mike Fiers-DET
-velav001,24822-62872,Vince Velasquez-PHI
-karnn001,24822-38183,Nate Karns-KC
-boydm001,24822-63136,Matt Boyd-DET
-leitm002,24822-79936,Mark Leiter Jr.-PHI
-dunnm002,24822-6296,Mike Dunn-COL
-winkd001,24822-53767,Dan Winkler-ATL
-edwac001,24822-52146,Carl Edwards Jr.-CHC
-minom001,24996-12481,Mike Minor-TEX
+Retrosheet player ID,FanDuel player ID,DraftKings player name & team,MLB.com player ID
+ellia001,24219-5927,A.J. Ellis-SD,
+grifa002,24219-23093,A.J. Griffin-NYM,
+polla001,24219-12970,A.J. Pollock-ARI,
+ramoa001,24219-17143,AJ Ramos-NYM,
+reeda002,24219-68524,AJ Reed-HOU,
+civaa001,24219-82557,Aaron Civale-CLE,
+conla001,,Adam Conley-MIA,
+fraza001,24219-70898,Adam Frazier-PIT,
+gurry001,24219-71507,Yuli Gurriel-HOU,
+castn001,24219-13342,Nicholas Castellanos-DET,
+souzs001,24219-38249,Steven Souza Jr.-ARI,
+mccul002,24219-52159,Lance McCullers Jr.-HOU,
+ramij002,24219-13107,JC Ramirez-LAA,
+ramij003,24678-38976,Jose Ramirez-CLE,
+ramij004,24219-38185,Jose Ramirez-ATL,
+farij001,24219-79259,Jake Faria-TB,
+bradj001,24219-21637,Jackie Bradley Jr.-BOS,
+riddj001,24219-79176,JT Riddle-MIA,
+robed003,24219-13862,Daniel Robertson-ARI,
+robed004,24219-53007,Daniel Robertson-TB,
+smitc002,,Chris Smith-OAK,
+smitc005,24219-74147,Chris Smith-WAS,
+urshg001,24678-38112,Gio Urshela-CLE,
+youne003,24219-6252,Eric Young Jr.-LAA,
+younc003,24219-6229,Chris Young-SD,
+younc004,24219-6230,Chris Young-LAA,
+herne001,24678-13792,Kike Hernandez-LAD,
+wrigm001,24648-21211,Mike Wright Jr.-BAL,
+tuckp001,24648-39109,Preston Tucker-ATL,
+almoa002,24717-38276,Albert Almora Jr.-CHC,
+munoy001,24717-79205,Yairo Munoz-STL,
+taylm002,24786-21074,Michael A. Taylor-WAS,
+duffm001,24786-53844,Matt Duffy-TB,
+junij001,24822-79147,Jakob Junis-KC,
+mikom001,24822-17121,Miles Mikolas-STL,
+fierm001,24822-13444,Mike Fiers-DET,
+velav001,24822-62872,Vince Velasquez-PHI,
+karnn001,24822-38183,Nate Karns-KC,
+boydm001,24822-63136,Matt Boyd-DET,
+leitm002,24822-79936,Mark Leiter Jr.-PHI,
+dunnm002,24822-6296,Mike Dunn-COL,
+winkd001,24822-53767,Dan Winkler-ATL,
+edwac001,24822-52146,Carl Edwards Jr.-CHC,
+minom001,24996-12481,Mike Minor-TEX,
+refsr001,25046-53757,Rob Refsnyder-TB,
