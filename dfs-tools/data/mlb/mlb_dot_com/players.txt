@@ -969,4 +969,18 @@
 501992|Karns|Nate|R|R|KC|P|karnn001
 519306|Souza Jr.|Steven|R|R|ARI|OF|souzs001
 605541|Wright Jr.|Mike|R|R|BAL|P|wrigm001
-663432|Rainey|Tanner|R|R|CIN|P|???
+663432|Rainey|Tanner|R|R|CIN|P|raint001
+474319|Snyder|Brandon|R|R|TB|1B|snydb001
+502239|Cahill|Trevor|R|R|OAK|P|cahit001
+571970|Muncy|Max|L|R|LAD|3B|muncm001
+596143|Sardinas|Luis|S|R|BAL|2B|sardl001
+605130|Barlow|Scott|R|R|KC|P|barls001
+607352|Biagini|Joe|R|R|TOR|P|biagj001
+621056|Wood|Hunter|R|R|TB|P|woodh001
+639373|Bautista|Gerson|R|R|NYM|P|???
+641427|Busenitz|Alan|R|R|MIN|P|busea001
+642152|Trivino|Lou|R|R|OAK|P|???
+643778|Webb|Tyler|R|L|SD|P|webbt001
+656185|Allen|Greg|S|R|CLE|OF|alleg002
+664057|Stevenson|Andrew|L|L|WAS|OF|steva001
+664641|Miranda|Ariel|L|L|SEA|P|miraa002
