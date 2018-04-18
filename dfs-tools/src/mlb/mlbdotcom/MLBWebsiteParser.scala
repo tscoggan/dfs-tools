@@ -23,6 +23,7 @@ object MLBWebsiteParser {
   }
 
   def getPlayerURLs(game: GameURL): List[String] = try {
+    println("Getting player URL's for game "+game)
     val batters = scala.io.Source.fromURL(game + "batters/").mkString
     val pitchers = scala.io.Source.fromURL(game + "pitchers/").mkString
     batters.substringsBetween("a href=\"", "\">").filter(_.endsWith(".xml")).map(file => game + "batters/" + file) ++

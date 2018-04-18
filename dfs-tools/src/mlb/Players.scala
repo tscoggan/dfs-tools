@@ -83,12 +83,17 @@ object Players {
     val loadStartDate = Player_MLB.playersLoadedThrough.map(_.nextDay).getOrElse(Configs.MlbDotCom.seasonStartDate)
     val datesToLoad = getDatesBetween(loadStartDate, yesterday)
     log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")
-    val newPlayers = datesToLoad.flatMap(MLBWebsiteParser.getGameURLs(_)).flatMap(MLBWebsiteParser.getPlayerURLs(_))
-      .map(Player_MLB.parseFrom(_)).filter(p => !existingPlayers.exists(_.id == p.id)).distinct
+    val playerURLs = datesToLoad.flatMap(MLBWebsiteParser.getGameURLs(_)).flatMap(MLBWebsiteParser.getPlayerURLs(_))
+      .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map { case (playerID, urls) => urls.head }
+    log(s"Found ${playerURLs.length} distinct player URL's")
+    val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
+      .map(Player_MLB.parseFrom(_)).distinct
     log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
     if (newPlayers.nonEmpty) Player_MLB.saveToFile(newPlayers, datesToLoad.sorted.last, false) // save new players to file
     (existingPlayers ++ newPlayers).distinct
   }.sortBy(_.id)
+
+  val mlbDotComPlayersByID: Map[String, Player_MLB] = mlbDotComPlayers.map(p => (p.id, p)).toMap
 
   mlbDotComPlayers.groupBy(_.name).foreach {
     case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} MLB.com players with same name: ${players.mkString(", ")}")

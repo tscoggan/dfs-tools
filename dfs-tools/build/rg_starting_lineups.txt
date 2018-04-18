@@ -1,197 +1,264 @@
 COL
-1 Charlie Blackmon OF L  $4.3K 9.83
-2 Chris Iannetta C-1B R  $2.3K 11.23
-3 DJ LeMahieu 2B R  $3.8K 9.96
-4 Trevor Story SS R  $3.1K 10.5
-5 Ian Desmond C-1B R  $2.6K 9.98
-6 Carlos Gonzalez OF L  $2.9K 5.58
-7 Patrick Valaika SS R  $2.0K 8
-8 Ryan McMahon 3B L  $2.0K 5.07
-9 German Marquez P R  $5.9K 2
+1 DJ LeMahieu 2B R  $4.0K 8.81
+2 Chris Iannetta C-1B R  $2.2K 9.57
+3 Charlie Blackmon OF L  $4.6K 11.87
+4 Carlos Gonzalez OF L  $3.0K 10.55
+5 Gerardo Parra OF L  $2.5K 8.83
+6 Ian Desmond C-1B R  $2.7K 7.56
+7 Trevor Story SS R  $2.9K 7.83
+8 Ryan McMahon 3B L  $2.0K 6.74
+9 Chad Bettis P R  $6.0K 28.09
 
 PIT
-1 Adam Frazier OF L  $2.2K 8.19
-2 Gregory Polanco OF L  $4.4K 10.92
-3 Starling Marte OF R  $3.9K 10.85
-4 Josh Bell C-1B S  $3.6K 9.72
-5 Corey Dickerson OF L  $4.1K 9.41
-6 Francisco Cervelli C-1B R  $2.7K 8.1
-7 Colin Moran 3B L  $2.9K 8.22
-8 Jordy Mercer SS R  $2.8K 6.35
-9 Steven Brault P L  $5.6K 22.24
-
-KC
-1 Abraham Almonte OF S  $2.0K 9.63
-2 Whit Merrifield 2B R  $3.1K 11.03
-3 Mike Moustakas 3B L  $3.6K 9.68
-4 Cheslor Cuthbert C-1B R  $2.3K 9.39
-5 Jorge Soler OF R  $2.2K 9.74
-6 Lucas Duda C-1B L  $2.6K 8.58
-7 Paulo Orlando OF R  $2.3K 9.13
-8 Alcides Escobar SS R  $2.4K 7.5
-9 Drew Butera C-1B R  $2.2K 5.26
-
-TOR
-1 Steve Pearce OF R  $2.7K 11.09
-2 Teoscar Hernandez OF R  $2.7K 9.61
-3 Justin Smoak C-1B S  $3.8K 10.58
-4 Yangervis Solarte 3B S  $3.2K 9.42
-5 Russell Martin C-1B R  $2.2K 9.51
-6 Kevin Pillar OF R  $2.7K 9.33
-7 Randal Grichuk OF R  $2.1K 8.53
-8 Aledmys Diaz SS R  $2.6K 7.7
-9 Devon Travis 2B R  $2.2K 8.77
+1 Sean Rodriguez 2B R  $2.2K 8.01
+2 Gregory Polanco OF L  $4.5K 11.04
+3 Starling Marte OF R  $4.1K 10.97
+4 Josh Bell C-1B S  $3.7K 10.11
+5 Corey Dickerson OF L  $4.2K 10.05
+6 Francisco Cervelli C-1B R  $2.8K 8.3
+7 Colin Moran 3B L  $2.9K 7.59
+8 Jordy Mercer SS R  $2.7K 6.48
+9 Trevor Williams P R  $6.8K 24.6
 
 TEX
-1 Shin-Soo Choo OF L  $2.8K 8.96
-2 Jurickson Profar SS S  $2.4K 8.89
-3 Nomar Mazara OF L  $2.3K 7.39
-4 Adrian Beltre 3B R  $3.1K 9.88
-5 Joey Gallo C-1B L  $3.2K 8.09
-6 Robinson Chirinos C-1B R  $2.1K 8.73
-7 Ryan Rua OF R  $2.1K 7.34
-8 Drew Robinson OF L  $2.0K 5.3
-9 Isiah Kiner-Falefa 2B R  $2.2K 5.45
+1 Shin-Soo Choo OF L  $2.7K 10.29
+2 Isiah Kiner-Falefa 2B R  $2.1K 9.03
+3 Nomar Mazara OF L  $2.3K 9.4
+4 Adrian Beltre 3B R  $3.0K 9.19
+5 Joey Gallo C-1B L  $3.1K 10.77
+6 Ronald Guzman C-1B L  $2.4K 7.73
+7 Juan Centeno C-1B L  $2.0K 6.62
+8 Drew Robinson OF L  $2.0K 7.14
+9 Carlos Tocci OF R  $2.0K 7.1
 
 TB
-1 Matt Duffy 3B R  $2.8K 8.28
-2 Adeiny Hechavarria SS R  $2.0K 7.68
-3 Carlos Gomez OF R  $2.7K 8.13
-4 C.J. Cron C-1B R  $2.5K 8.8
-5 Wilson Ramos C-1B R  $2.0K 8.19
-6 Daniel Robertson 2B R  $2.4K 8.34
-7 Robert Refsnyder OF R  $2.0K 7.28
-8 John Field OF R  0
-9 Mallex Smith OF L  $2.8K 6.9
+1 Daniel Robertson 2B R  $2.4K 7.74
+2 Adeiny Hechavarria SS R  $2.0K 8.86
+3 Carlos Gomez OF R  $2.7K 9.73
+4 C.J. Cron C-1B R  $2.8K 10.08
+5 Wilson Ramos C-1B R  $2.0K 8.52
+6 Brandon Snyder 3B R  6.58
+7 Robert Refsnyder OF R  $2.0K 7.26
+8 Johnny Field OF R  $2.1K 6.14
+9 Mallex Smith OF L  $2.9K 5.85
 
 WAS
-1 Trea Turner SS R  $4.4K 9.53
-2 Anthony Rendon 3B R  $3.5K 9.6
-3 Bryce Harper OF L  $5.2K 11.23
-4 Ryan Zimmerman C-1B R  $2.5K 8.66
-5 Matt Adams C-1B L  $2.6K 8.71
-6 Howie Kendrick 2B R  $2.9K 8.12
-7 Matt Wieters C-1B S  $2.4K 7.01
-8 Michael Taylor OF R  $2.5K 7.41
-9 Jeremy Hellickson SP R  26.
+1 Trea Turner SS R  $4.5K 11.31
+2 Howie Kendrick 2B R  $2.9K 9.21
+3 Bryce Harper OF L  $5.2K 12.86
+4 Ryan Zimmerman C-1B R  $2.6K 9.59
+5 Matt Adams C-1B L  $2.4K 9.58
+6 Matt Wieters C-1B S  $2.7K 7.58
+7 Wilmer Difo 2B S  $2.6K 7.4
+8 Gio Gonzalez P L  $8.7K 34.15
+9 Michael Taylor OF R  $2.8K 8.11
 
 NYM
-1 Michael Conforto OF L  $4.0K 11.25
-2 Asdrubal Cabrera 2B S  $3.9K 10.06
-3 Yoenis Cespedes OF R  $3.8K 9.78
-4 Jay Bruce OF L  $3.3K 10.09
-5 Adrian Gonzalez C-1B L  $2.9K 9.14
-6 Todd Frazier 3B R  $4.0K 8.88
-7 Amed Rosario SS R  $2.3K 7.35
-8 Jose Lobaton C-1B S  $2.0K 7.09
-9 Jacob deGrom P R  $9.4K 4
+1 Asdrubal Cabrera 2B S  $3.6K 9.31
+2 Yoenis Cespedes OF R  $3.7K 9.74
+3 Wilmer Flores C-1B R  $2.7K 10.24
+4 Todd Frazier 3B R  $4.1K 10.27
+5 Jay Bruce OF L  $3.1K 8.29
+6 Juan Lagares OF R  $2.0K 6.68
+7 Tomas Nido C-1B R  $2.0K 5.67
+8 Zack Wheeler P R  $7.3K 28.28
+9 Amed Rosario SS R  $2.4K 6.87
+
+CLE
+1 Francisco Lindor SS S  $4.6K 11.24
+2 Jason Kipnis 2B L  $3.4K 10.3
+3 Jose Ramirez 3B S  $4.1K 11.95
+4 Michael Brantley OF L  $3.2K 10.6
+5 Edwin Encarnacion C-1B R  $3.4K 12.21
+6 Yonder Alonso C-1B L  $2.9K 9.86
+7 Yan Gomes C-1B R  $2.6K 8.48
+8 Tyler Naquin OF L  $2.2K 8.38
+9 Bradley Zimmer OF L  $2.1K 8.45
+
+MIN
+1 Brian Dozier 2B R  $4.0K 9.68
+2 Joe Mauer C-1B L  $3.0K 7.89
+3 Miguel Sano 3B R  $3.7K 9.42
+4 Eddie Rosario OF L  $2.9K 8.66
+5 Logan Morrison C-1B L  $2.2K 8.84
+6 Eduardo Escobar SS S  $3.2K 7.76
+7 Max Kepler OF L  $2.5K 8.74
+8 Byron Buxton OF R  $2.5K 7.53
+9 Jason Castro C-1B L  $2.2K 7.25
 
 PHI
-1 Cesar Hernandez 2B S  $3.7K 10.25
-2 Carlos Santana C-1B S  $3.7K 10.73
-3 Odubel Herrera OF L  $3.2K 10.42
-4 Rhys Hoskins OF R  $4.6K 11.53
-5 Nick Williams OF L  $2.5K 10.46
-6 Scott Kingery SS R  $3.7K 7.78
-7 Jorge Alfaro C-1B R  $2.1K 8.11
-8 J.P. Crawford SS L  $2.5K 7.81
-9 Aaron Nola P R  $8.8K 34
+1 Cesar Hernandez 2B S  $3.9K 10.17
+2 Carlos Santana C-1B S  $3.5K 10.97
+3 Odubel Herrera OF L  $3.4K 10.26
+4 Rhys Hoskins OF R  $4.7K 11.94
+5 Nick Williams OF L  $2.5K 9.65
+6 Maikel Franco 3B R  $3.5K 8.22
+7 Andrew Knapp C-1B S  $2.2K 6.7
+8 Nicholas Pivetta P R  $7.8K 30.8
+9 J.P. Crawford SS L  $2.5K 7.96
 
 ATL
-1 Ender Inciarte OF L  $3.0K 9.38
-2 Ozzie Albies 2B S  $4.6K 9.71
-3 Freddie Freeman C-1B L  $4.6K 11.07
-4 Nick Markakis OF L  $3.5K 8.55
-5 Kurt Suzuki C-1B R  $2.8K 7.39
-6 Preston Tucker OF L  $3.2K 7.74
-7 Dansby Swanson SS R  $3.9K 6.4
-8 Ryan Flaherty 3B L  $3.0K 6.61
-9 Julio Teheran P R  $6.1K 25.
+1 Ender Inciarte OF L  $3.0K 9.83
+2 Ozzie Albies 2B S  $4.4K 10.92
+3 Freddie Freeman C-1B L  $4.6K 11.94
+4 Nick Markakis OF L  $3.5K 8.67
+5 Preston Tucker OF L  $3.2K 8.52
+6 Dansby Swanson SS R  $3.8K 7.37
+7 Ryan Flaherty 3B L  $3.1K 6.97
+8 Carlos Perez C-1B R  $2.0K 6.69
+9 Michael Foltynewicz P R  $7.4K 29.
 
 CIN
-1 Billy Hamilton OF S  $2.9K 9.6
-2 Jose Peraza SS R  $2.4K 8.96
-3 Joey Votto C-1B L  $3.7K 10.43
-4 Adam Duvall OF R  $2.4K 11.01
-5 Scooter Gennett 2B L  $3.2K 7.99
-6 Phillip Ervin OF R  $2.2K 8.85
-7 Devin Mesoraco C-1B R  $2.1K 8.55
-8 Alex Blandino 3B R  $2.0K 6.51
-9 Luis Castillo P R  $7.0K 33.24
+1 Billy Hamilton OF S  $3.2K 10.16
+2 Jesse Winker OF L  $2.6K 8.83
+3 Joey Votto C-1B L  $3.6K 12.45
+4 Adam Duvall OF R  $2.5K 9.68
+5 Scooter Gennett 2B L  $3.1K 9.7
+6 Devin Mesoraco C-1B R  $2.1K 7.34
+7 Jose Peraza SS R  $2.5K 8.09
+8 Cliff Pennington SS S  $2.0K 6.25
+9 Sal Romano P R  $5.6K 25.6
 
 MIL
-1 Lorenzo Cain OF R  $2.7K 9.13
-2 Eric Thames C-1B L  $3.5K 12.36
-3 Ryan Braun OF R  $3.4K 10.81
-4 Travis Shaw 3B L  $3.6K 10.71
-5 Domingo Santana OF R  $2.8K 10.27
-6 Jonathan Villar 2B S  $2.6K 9.96
-7 Orlando Arcia SS R  $2.3K 8
-8 Jett Bandy C-1B R  $2.2K 4.15
-9 Brent Suter P L  $6.0K 24
+1 Lorenzo Cain OF R  $3.0K 10.33
+2 Eric Thames C-1B L  $3.3K 10.14
+3 Ryan Braun OF R  $3.3K 11.41
+4 Travis Shaw 3B L  $3.3K 11.51
+5 Domingo Santana OF R  $2.8K 10.43
+6 Eric Sogard 2B L  $2.0K 8.22
+7 Orlando Arcia SS R  $2.3K 8.73
+8 Jacob Nottingham C-1B R  $2.0K 6.02
+9 Junior Guerra P R  $6.2K 29.7
+
+STL
+1 Dexter Fowler OF S  $3.3K 9.92
+2 Thomas Pham OF R  $4.4K 11.13
+3 Matt Carpenter 3B L  $3.5K 9.85
+4 Marcell Ozuna OF R  $4.2K 10.49
+5 Jose Martinez C-1B R  $3.8K 9.77
+6 Yadier Molina C-1B R  $3.6K 8.75
+7 Greg Garcia 2B L  $3.4K 0
+8 Paul DeJong SS R  $3.8K 9.94
+9 Adam Wainwright P R  24.
+
+CHC
+1 Ben Zobrist OF S  $3.2K 9.37
+2 Kris Bryant 3B R  $5.1K 11.52
+3 Anthony Rizzo C-1B L  $3.9K 12.05
+4 Willson Contreras C-1B R  $3.4K 10.21
+5 Kyle Schwarber OF L  $3.9K 10.86
+6 Javier Baez 2B R  $4.1K 9.32
+7 Addison Russell SS R  $3.4K 8.21
+8 Jason Heyward OF L  $3K 7.4
+9 Tyler Chatwood P R  2
+
+SF
+1 Austin Jackson OF R  $2.2K 8.59
+2 Joe Panik 2B L  $3.0K 7.75
+3 Andrew McCutchen OF R  $3.6K 10.84
+4 Buster Posey C-1B R  $3.2K 10.4
+5 Evan Longoria 3B R  $3.0K 9.83
+6 Hunter Pence OF R  $2.2K 9.26
+7 Brandon Belt C-1B L  $2.5K 7.77
+8 Brandon Crawford SS L  $2.1K 7.2
+9 Johnny Cueto P R  $8.1K 28.7
+
+ARI
+1 David Peralta OF L  $3.3K 10.94
+2 Ketel Marte 2B S  $2.5K 8.65
+3 Paul Goldschmidt C-1B R  $4.3K 12.17
+4 A.J. Pollock OF R  $3.2K 10.65
+5 Daniel Descalso 3B L  $2.0K 8.31
+6 Chris Owings OF R  $2.5K 8.55
+7 Alex Avila C-1B L  $2.3K 8.93
+8 Nick Ahmed SS R  $2.7K 5.23
+9 Patrick Corbin P L  $9.5K 35.3
 
 CWS
-1 Yoan Moncada 2B S  $3.3K 10.07
-2 Avisail Garcia OF R  $2.9K 9.37
-3 Jose Abreu C-1B R  $3.4K 10.44
-4 Matt Davidson 3B R  $3.9K 9.42
-5 Nick Delmonico OF L  $2.2K 9.64
-6 Welington Castillo C-1B R  $2.3K 9
-7 Yolmer Sanchez 3B S  $2.7K 8.62
-8 Tim Anderson SS R  $3.3K 8.22
-9 Adam Engel OF R  $2.0K 5.8
+1 Yoan Moncada 2B S  $3.3K 10.22
+2 Avisail Garcia OF R  $2.9K 9.82
+3 Jose Abreu C-1B R  $3.4K 10.84
+4 Matt Davidson 3B R  $3.9K 9.98
+5 Nick Delmonico OF L  $2.2K 9.49
+6 Yolmer Sanchez 3B S  $2.8K 8.5
+7 Tim Anderson SS R  $3.3K 8.67
+8 Leury Garcia OF S  $2.1K 0
+9 Omar Narvaez C-1B L  $2.1K 0
 
 OAK
-1 Matt Joyce OF L  $2.9K 10.7
-2 Marcus Semien SS R  $3.5K 9.8
-3 Jed Lowrie 2B S  $3.6K 9.35
-4 Khris Davis OF R  $4.0K 10.71
-5 Matt Olson C-1B L  $3.5K 11.88
-6 Matt Chapman 3B R  $4.4K 10.52
-7 Jonathan Lucroy C-1B R  $2.5K 7.72
-8 Stephen Piscotty OF R  $2.5K 7.74
-9 Jake Smolinski OF R  $2.0K 2.
+1 Matt Joyce OF L  $2.9K 10.71
+2 Marcus Semien SS R  $3.5K 9.58
+3 Jed Lowrie 2B S  $3.8K 10.27
+4 Khris Davis OF R  $4.0K 11.35
+5 Matt Olson C-1B L  $3.3K 12.06
+6 Matt Chapman 3B R  $4.2K 11.48
+7 Mark Canha OF R  $2.4K 8.41
+8 Stephen Piscotty OF R  $2.5K 7.24
+9 Jonathan Lucroy C-1B R  $2.5K 7.6
+P Trevor Cahill
 
-HOU
-1 George Springer OF R  $4.5K 10.22
-2 Alex Bregman 3B R  $4.2K 9.99
-3 Jose Altuve 2B R  $4.7K 10.73
-4 Carlos Correa SS R  $4.7K 10.07
-5 Yulieski Gurriel C-1B R  $3.3K 7.66
-6 Evan Gattis C-1B R  $2.4K 8.86
-7 Marwin Gonzalez C-1B S  $2.8K 8.62
-8 Max Stassi C-1B R  $2.3K 7.99
-9 Jake Marisnick OF R  $2.3K 7.
+BOS
+1 Mookie Betts OF R  $4.8K 11.11
+2 Andrew Benintendi OF L  $4.3K 10.37
+3 Hanley Ramirez C-1B R  $3.8K 9.49
+4 J.D. Martinez OF R  $4.0K 10.67
+5 Rafael Devers 3B L  $3.4K 8.9
+6 Eduardo Nunez SS R  $3.4K 9.05
+7 Jackie Bradley OF L  $2.9K 8.29
+8 Christian Vazquez C-1B R  $2.0K 6.47
+9 Brock Holt 2B L  $2.2K 6.36
 
-SEA
-1 Dee Gordon OF L  $3.7K 8.79
-2 Jean Segura SS R  $4.0K 9.34
-3 Robinson Cano 2B L  $4.2K 7.94
-4 Nelson Cruz OF R  $3.6K 10.82
-5 Mitch Haniger OF R  $3.7K 8.98
-6 Kyle Seager 3B L  $3.7K 8.1
-7 Guillermo Heredia OF R  $2.0K 8.44
-8 Taylor Motter OF R  $2.1K 6.09
-9 David Freitas C-1B R  $2.2K 5.53
+LAA
+1 Ian Kinsler 2B R  $3.8K 9.1
+2 Mike Trout OF R  $5.4K 12.23
+3 Justin Upton OF R  $4.3K 11.08
+4 Albert Pujols C-1B R  $3.5K 8.15
+5 Zack Cozart SS R  $4.0K 9.31
+6 Andrelton Simmons SS R  $3.6K 7.99
+7 Jefry Marte C-1B R  $2.6K 7.48
+8 Chris Young OF R  $2.6K 8.36
+9 Martin Maldonado C-1B R  $2.6K 6.
 
 LAD
-1 Christopher Taylor OF R  $2.9K 9.82
-2 Corey Seager SS L  $3.6K 10.19
-3 Yasiel Puig OF R  $3.0K 8.56
-4 Enrique Hernandez 2B R  $2.3K 10.27
-5 Matt Kemp OF R  $2.6K 8.82
-6 Cody Bellinger C-1B L  $4.1K 10.18
-7 Yasmani Grandal C-1B S  $3.4K 8.35
-8 Kyle Farmer C-1B R  $2.0K 5.63
-9 Hyun-Jin Ryu P L  $7.2K 34.62
+1 Christopher Taylor OF R  $3.2K 10.51
+2 Corey Seager SS L  $3.6K 11.22
+3 Matt Kemp OF R  $2.7K 9.43
+4 Cody Bellinger C-1B L  $4.0K 11.09
+5 Yasmani Grandal C-1B S  $3.5K 9.73
+6 Yasiel Puig OF R  $3.2K 10.89
+7 Chase Utley 2B L  $2.9K 8.34
+8 Enrique Hernandez 3B R  $2.4K 6.43
+9 Alex Wood P L  $8.4K 40.11
 
 SD
-1 Jose Pirela OF R  $3.0K 10.05
-2 Freddy Galvis SS S  $3.4K 7.52
-3 Eric Hosmer C-1B L  $3.2K 9.41
-4 Hunter Renfroe OF R  $3.2K 10.83
-5 Christian Villanueva 3B R  $3.3K 9.23
-6 Cory Spangenberg 3B L  $2.0K 7.02
-7 Matthew Szczur OF R  $2.0K 7.69
-8 Austin Hedges C-1B R  $2.2K 6.71
-9 Robbie Erlin P L  $5.5
+1 Jose Pirela OF R  $3.2K 9.24
+2 Freddy Galvis SS S  $3.5K 7.72
+3 Eric Hosmer C-1B L  $3.2K 7.76
+4 Hunter Renfroe OF R  $3.1K 9.56
+5 Christian Villanueva 3B R  $3.6K 9.5
+6 Matthew Szczur OF R  $2.1K 7.32
+7 Carlos Asuaje 2B L  $2.3K 6.04
+8 Austin Hedges C-1B R  $2.1K 6.45
+9 Bryan Mitchell P R  $5.5K 20.
+
+HOU
+1 George Springer OF R  $4.4K 12.75
+2 Alex Bregman 3B R  $4.0K 11.25
+3 Jose Altuve 2B R  $4.6K 12.12
+4 Carlos Correa SS R  $4.7K 11.37
+5 Yulieski Gurriel C-1B R  $3.4K 9.68
+6 Marwin Gonzalez C-1B S  $2.8K 8.97
+7 Evan Gattis C-1B R  $2.5K 9.38
+8 Max Stassi C-1B R  $2.3K 8.22
+9 Jake Marisnick OF R  $2.2K 8.3
+
+SEA
+1 Dee Gordon OF L  $3.4K 9.29
+2 Jean Segura SS R  $2.8K 9.36
+3 Robinson Cano 2B L  $3.9K 10.2
+4 Nelson Cruz OF R  $3.4K 9.82
+5 Kyle Seager 3B L  $3.5K 9.58
+6 Mitch Haniger OF R  $3.5K 8.7
+7 Daniel Vogelbach C-1B L  $2.6K 6.13
+8 Ichiro Suzuki OF L  $2.1K 5.21
+9 Michael Marjama C-1B R  $2.1K 5.68

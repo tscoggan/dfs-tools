@@ -18,7 +18,7 @@ object StringUtils {
       if (discardOuterQuotes) tokens.map(_.trimPrefix("\"").trimSuffix("\""))
       else tokens
     }
-    
+
     /**
      * Ignores spaces surrounded by quotation marks.  For example, invoking this method on the following string...
      * {{{ a b "c d" e }}}
@@ -47,6 +47,11 @@ object StringUtils {
     }
 
     def substringAfter(delim: String): String = s.indexOf(delim) match {
+      case -1 => s // delim not found
+      case i  => s.substring(i + delim.length)
+    }
+
+    def substringAfterLast(delim: String): String = s.lastIndexOf(delim) match {
       case -1 => s // delim not found
       case i  => s.substring(i + delim.length)
     }
