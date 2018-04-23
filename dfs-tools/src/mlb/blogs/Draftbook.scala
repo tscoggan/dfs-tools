@@ -245,18 +245,44 @@ object Draftbook extends App {
   log("**************************************************\n")
 
   log("\n### Pitchers ranked by FPTS given up per plate appearance: ###\n")
-  log(toTable(
-    List("Pitcher", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
-    startingPitchers
-      .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
-      .map { pitcher =>
-        val statsAgainst = pitcherStatsAllowedToAllHitters.get(pitcher)
-        List(pitcher,
-          pitcher.opponent.get,
-          statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("Unknown"),
-          statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("Unknown"),
-          statsAgainst.map(_.atBatsAgainst).getOrElse("Unknown"))
-      }))
+  mlb.Configs.blogFormat.toUpperCase match {
+    case "RG" =>
+      val pitcherRows = startingPitchers
+        .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
+        .map { p =>
+          val vsAll = pitcherStatsAllowedToAllHitters.get(p)
+          val vsLeft = pitcherStatsAllowedToLefties.get(p)
+          val vsSwitch = pitcherStatsAllowedToSwitchHitters.get(p)
+          val vsRight = pitcherStatsAllowedToRighties.get(p)
+
+          s"|${p.toStringTeamOnly}|${p.opponent.get}|" +
+            s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
+            s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)|"
+        }.mkString("\n")
+      log(s"|||_\\4. FPTS/PA given up (FanDuel)|_\\4. FPTS/PA given up (DraftKings)|\n" +
+        s"|_. Pitcher|_. Opponent|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|\n" +
+        pitcherRows)
+
+    case "DRAFTSHOT" =>
+      log(toTable(
+        List("Pitcher", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
+        startingPitchers
+          .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
+          .map { pitcher =>
+            val statsAgainst = pitcherStatsAllowedToAllHitters.get(pitcher)
+            List(pitcher.toStringTeamOnly,
+              pitcher.opponent.get,
+              statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A"),
+              statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A"),
+              statsAgainst.map(_.atBatsAgainst).getOrElse("N/A"))
+          }))
+  }
 
   log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 30 PA): ###\n")
   log(toTable(
@@ -269,7 +295,7 @@ object Draftbook extends App {
       .filter(_.atBatsAgainst >= 30)
       .take(15)
       .map { stats =>
-        List(stats.pitcher,
+        List(stats.pitcher.toStringTeamOnly,
           stats.pitcher.opponent.get,
           stats.batterHandedness.get.toVerboseString,
           stats.fptsPerAtBatAgainst_FD.rounded(1),
@@ -282,7 +308,7 @@ object Draftbook extends App {
     val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsFD).getOrElse(0.0) }.sum
     (totalFPTS / totalSalary) * 1000
   }
-  
+
   def draftkingsValueOf(stack: List[Player]): Double = {
     val totalSalary = stack.flatMap { hitter => hitter.draftkings.map(_.salary) }.sum
     val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsDK).getOrElse(0.0) }.sum

@@ -33,6 +33,8 @@ case class Player(
 
   override def toString: String = s"$name ($position, $team)"
   
+  def toStringTeamOnly: String = s"$name ($team)"
+  
   def toString_FD: String = s"$name (${fanduel.map(_.position).getOrElse("???")}, $team)"
   def toString_DK: String = s"$name (${draftkings.map(_.position).getOrElse("???")}, $team)"
 }
