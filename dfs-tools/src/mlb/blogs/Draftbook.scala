@@ -256,16 +256,16 @@ object Draftbook extends App {
           val vsRight = pitcherStatsAllowedToRighties.get(p)
 
           s"|${p.toStringTeamOnly}|${p.opponent.get}|" +
-            s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} (${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)|" +
-            s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} (${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)|"
+            s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
+            s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|"
         }.mkString("\n")
-      log(s"|||_\\4. FPTS/PA given up (FanDuel)|_\\4. FPTS/PA given up (DraftKings)|\n" +
+      log(s"|||_\\4. FPTS / PA given up (FanDuel)|_\\4. FPTS / PA given up (DraftKings)|\n" +
         s"|_. Pitcher|_. Opponent|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|\n" +
         pitcherRows)
 
