@@ -989,3 +989,17 @@
 605538|Wisler|Matt|R|R|ATL|P|wislm001
 641933|O'Neill|Tyler|R|R|STL|OF|???
 642571|Gonzalez|Merandy|R|R|MIA|P|???
+448614|Torres|Carlos|R|R|WAS|P|torrc001
+571595|Cuevas|Noel|R|R|COL|OF|???
+571735|Hale|David|R|R|NYY|P|???
+572998|Lucas|Josh|R|R|OAK|P|lucaj001
+595222|Gerber|Mike|L|R|DET|OF|???
+605135|Bassitt|Chris|R|R|OAK|P|???
+607776|Williamson|Mac|R|R|SF|OF|willm008
+608652|Farrell|Luke|L|R|CHC|P|farrl001
+613534|Adams|Austin L.|R|R|WAS|P|???
+621295|Wittgren|Nick|R|R|MIA|P|wittn001
+621311|Dahl|David|L|R|COL|OF|dahld001
+623520|Bote|David|R|R|CHC|2B|???
+650402|Torres|Gleyber|R|R|NYY|2B|torrg001
+666971|Gurriel Jr. Jr.|Lourdes|R|R|TOR|2B|???
