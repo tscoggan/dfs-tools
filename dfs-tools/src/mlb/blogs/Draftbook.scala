@@ -258,7 +258,7 @@ object Draftbook extends App {
           statsAgainst.map(_.atBatsAgainst).getOrElse("Unknown"))
       }))
 
-  log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 50 PA): ###\n")
+  log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 30 PA): ###\n")
   log(toTable(
     List("Pitcher", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
@@ -266,8 +266,8 @@ object Draftbook extends App {
         List(pitcherStatsAllowedToLefties.get(pitcher), pitcherStatsAllowedToRighties.get(pitcher), pitcherStatsAllowedToSwitchHitters.get(pitcher)).flatten
       }
       .sortBy(_.fptsPerAtBatAgainst_FD).reverse
-      .filter(_.atBatsAgainst >= 50)
-      .take(10)
+      .filter(_.atBatsAgainst >= 30)
+      .take(15)
       .map { stats =>
         List(stats.pitcher,
           stats.pitcher.opponent.get,
@@ -277,13 +277,40 @@ object Draftbook extends App {
           stats.atBatsAgainst)
       }))
 
-  log("\n### Top 10 hitter stacks by projected value (FanDuel): ###\n")
+  log("\n### Top 4-hitter stacks by projected value (FanDuel): ###\n")
   teamsOnSlate.map { team =>
     val stack = startingHittersByTeam(team).sortBy { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) }.reverse.take(4)
       .sortBy(_.battingPosition.getOrElse(10))
     val avgValue = mean(stack.map { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) })
     (stack -> avgValue)
-  }.sortBy(_._2).reverse.take(10).map {
+  }.sortBy(_._2).reverse.take(5).map {
+    case (stack, avgValue) =>
+      val totalSalary = stack.flatMap { hitter => hitter.fanduel.map(_.salary) }.sum
+      val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsFD).getOrElse(0.0) }.sum
+      s"${stack.head.team} vs ${stack.head.opposingPitcher} - FPTS: ${totalFPTS.rounded(2)}, Value: ${((totalFPTS / totalSalary) * 1000).rounded(2)}\n\t" +
+        stack.map { hitter =>
+          startingHitterStats.get(hitter) match {
+            case Some(stats) =>
+              s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - " +
+                s"${stats.projFptsFD.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
+                s"${stats.projValueFD.map(_.rounded(2)).getOrElse("???")} value on FD ${hitter.fanduel.map("($" + _.salary + ")").getOrElse("???")}, " +
+                s"${stats.projFptsDK.map(_.rounded(2)).getOrElse("???")} proj FPTS & " +
+                s"${stats.projValueDK.map(_.rounded(2)).getOrElse("???")} value on DK ${hitter.draftkings.map("($" + _.salary + ")").getOrElse("???")} "
+            case None =>
+              s"${hitter.battingPosition.getOrElse("?")}) ${hitter.name} (${hitter.bats}) - NO STATS"
+          }
+        }.mkString("\n\t")
+  }.foreach(log(_))
+
+  log("\n### Top 3-hitter stacks by projected value (FanDuel) --- only includes batting positions 1-7: ###\n")
+  teamsOnSlate.map { team =>
+    val stack = startingHittersByTeam(team)
+      .filter(_.battingPosition.getOrElse(10) <= 7)
+      .sortBy { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) }.reverse.take(3)
+      .sortBy(_.battingPosition.getOrElse(10))
+    val avgValue = mean(stack.map { h => startingHitterStats.get(h).flatMap(_.projValueFD).getOrElse(0.0) })
+    (stack -> avgValue)
+  }.sortBy(_._2).reverse.take(5).map {
     case (stack, avgValue) =>
       val totalSalary = stack.flatMap { hitter => hitter.fanduel.map(_.salary) }.sum
       val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsFD).getOrElse(0.0) }.sum

@@ -984,3 +984,8 @@
 656185|Allen|Greg|S|R|CLE|OF|alleg002
 664057|Stevenson|Andrew|L|L|WAS|OF|steva001
 664641|Miranda|Ariel|L|L|SEA|P|miraa002
+571893|Liberatore|Adam|L|L|LAD|P|libea001
+592145|Biddle|Jesse|L|L|ATL|P|???
+605538|Wisler|Matt|R|R|ATL|P|wislm001
+641933|O'Neill|Tyler|R|R|STL|OF|???
+642571|Gonzalez|Merandy|R|R|MIA|P|???

@@ -65,8 +65,25 @@ object DoesBattingPositionMatter extends App {
   log("***+/- FPTS/PA in each batting position compared to each player's avg across all batting positions (hitters only) ***")
   log("*********************************************************************************************************************\n")
   
-  case class BattingPositionStats(batPosition: Int, atBats: Int, fptsPerAB: Double)
+  case class BattingPositionStats(player: Player, batPosition: Int, atBats: Int, fptsPerABForThisBP: Double, fptsPerABForAllBP: Double)
   
-  //val hittersWithMultipleBatPositions = season.allHitters.
+  val statsPerBatPosition: Map[Int, List[BattingPositionStats]] = season.allHitters.flatMap { seasonStats =>
+    val player = seasonStats.player
+    val statsPerBattingPos = seasonStats.games.groupBy(_.battingPosition).map { case (bp, games) =>
+      val atBats = games.map(_.hittingStats.atBats).sum
+      val fptsPerAB = games.map(_.hittingStats.fantasyPoints().toDouble).sum / atBats
+      BattingPositionStats(player, bp, atBats, fptsPerAB, seasonStats.fptsPerAtBat())
+    }.toList.sortBy(_.batPosition).filter(_.atBats >= 20)
+    //println(s"$player:\n\t${statsPerBattingPos.map{stats => s"${stats.batPosition}) ${stats.fptsPerABForThisBP.rounded(2)} FPTS/PA in ${stats.atBats} PA"}.mkString("\n\t")}")
+    statsPerBattingPos
+  }.groupBy(_.batPosition)
+  
+  val avgDeltaPerBatPosition = statsPerBatPosition.map{ case (bp, stats) =>
+    val weightedDeltas = stats.map(s => (s.fptsPerABForThisBP - s.fptsPerABForAllBP) * s.atBats)
+    val avgDelta = weightedDeltas.sum / stats.map(_.atBats).sum
+    (bp, avgDelta)
+  }
+  
+  println(avgDeltaPerBatPosition.toList.sortBy(_._1).map {case (bp, avgDelta) => s"$bp) ${avgDelta.rounded(3)}"}.mkString("\n"))
 
 }
