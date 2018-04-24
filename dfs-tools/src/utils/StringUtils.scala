@@ -55,6 +55,11 @@ object StringUtils {
       case -1 => s // delim not found
       case i  => s.substring(i + delim.length)
     }
+    
+    def substringBeforeLast(delim: String): String = s.lastIndexOf(delim) match {
+      case -1 => s // delim not found
+      case i  => s.substring(0, i)
+    }
 
     /**
      * Returns a list of all substrings enclosed by the specified `prefix` and `suffix`.

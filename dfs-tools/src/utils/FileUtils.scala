@@ -39,6 +39,7 @@ object FileUtils {
 
   def writeToFile(s: String, fileName: String, overwrite: Boolean = false): Unit = {
     val file = new File(fileName)
+    file.getParentFile.mkdirs
     val writer = getFileWriter(fileName, overwrite)
     writer.write(s)
     writer.flush
@@ -46,6 +47,7 @@ object FileUtils {
 
   def writeLinesToFile(lines: Iterable[String], fileName: String, overwrite: Boolean = false): Unit = {
     val file = new File(fileName)
+    file.getParentFile.mkdirs
     if (overwrite && file.exists) file.delete
     val writer = getFileWriter(fileName, overwrite)
     writer.write(lines.mkString("\n") + "\n")

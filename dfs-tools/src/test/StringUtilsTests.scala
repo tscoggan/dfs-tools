@@ -59,6 +59,10 @@ class StringUtilsTests extends FunSuite {
     assert("abc//ghi".substringAfter("//") == "ghi" && "abcdefghi//".substringAfter("//") == "" && "abcdefghi".substringAfter("//") == "abcdefghi")
   }
   
+  test("substringBeforeLast works") {
+    assert("ab/cd/ef/gh".substringBeforeLast("/") == "ab/cd/ef")
+  }
+  
   test("substringsBetween works") {
     val results = "ab(cd)e(f)gh".substringsBetween("(",")")
     assert(results == List("cd", "f"))
