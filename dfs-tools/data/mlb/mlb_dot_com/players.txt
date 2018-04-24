@@ -1003,3 +1003,7 @@
 623520|Bote|David|R|R|CHC|2B|???
 650402|Torres|Gleyber|R|R|NYY|2B|torrg001
 666971|Gurriel Jr. Jr.|Lourdes|R|R|TOR|2B|???
+571476|Beck|Chris|R|R|CWS|P|beckc002
+605121|Anderson|Justin|L|R|LAA|P|???
+643466|Musgrave|Harrison|L|L|COL|P|???
+621111|Buehler|Walker|R|R|LAD|P|buehw001

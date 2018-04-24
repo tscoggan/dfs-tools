@@ -8,6 +8,7 @@ import utils.DateTimeUtils._
 import utils.Logger._
 import mlb._
 import java.util.Date
+import scala.xml._
 
 /**
  * Parsed from MLB.com XML
@@ -52,9 +53,37 @@ case class Player_MLB(
 
 object Player_MLB {
 
-  import scala.xml._
+  private val playersFileName = s"${Configs.MlbDotCom.dataFileDir}/players.txt"
+  private val loadedThroughfileName = s"${Configs.MlbDotCom.dataFileDir}/players_loaded_through.txt"
 
-  def parseFrom(url: String): Player_MLB = {
+  private val baseURL = Configs.MlbDotCom.baseURL
+
+  val allPlayers: List[Player_MLB] = {
+    val existingPlayers = loadPlayersFromFile
+    val loadStartDate = playersLoadedThrough.map(_.nextDay).getOrElse(Configs.MlbDotCom.seasonStartDate)
+    val datesToLoad = getDatesBetween(loadStartDate, yesterday)
+    log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")
+    val playerURLs = datesToLoad.flatMap(Game_MLB.getGameURLs(_)).flatMap(getPlayerURLs(_))
+      .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map { case (playerID, urls) => urls.head }
+    log(s"Found ${playerURLs.length} distinct player URL's")
+    val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
+      .map(parsePlayerFromURL(_)).distinct
+    log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
+    if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, datesToLoad.sorted.last, false) // save new players to file
+    (existingPlayers ++ newPlayers).distinct
+  }.sortBy(_.id)
+
+  def getPlayerURLs(gameURL: String): List[String] = try {
+    println("Getting player URL's for game " + gameURL)
+    val batters = scala.io.Source.fromURL(gameURL + "batters/").mkString
+    val pitchers = scala.io.Source.fromURL(gameURL + "pitchers/").mkString
+    batters.substringsBetween("a href=\"", "\">").filter(_.endsWith(".xml")).map(file => gameURL + "batters/" + file) ++
+      pitchers.substringsBetween("a href=\"", "\">").filter(_.endsWith(".xml")).map(file => gameURL + "pitchers/" + file)
+  } catch {
+    case e: java.io.FileNotFoundException => Nil
+  }
+
+  def parsePlayerFromURL(url: String): Player_MLB = {
     val xml = XML.load(url)
     val id = (xml \ "@id").text
     val lastName = (xml \ "@last_name").text
@@ -70,7 +99,7 @@ object Player_MLB {
     Player_MLB(id, lastName, firstName, bats, throws, Teams.get(teamID), position)
   }
 
-  private def parseFromCSV(csv: String): Player_MLB = {
+  private def parsePlayerFromCSV(csv: String): Player_MLB = {
     val Array(id, lastName, firstName, bats, throws, team, position, retrosheetID) = csv.split("\\|")
     val rsID = retrosheetID.trim match {
       case "???" | "" => None
@@ -79,10 +108,7 @@ object Player_MLB {
     Player_MLB(id, lastName, firstName, bats, throws, Teams.get(team), position, rsID)
   }
 
-  private val playersFileName = s"${Configs.MlbDotCom.dataFileDir}/players.txt"
-  private val loadedThroughfileName = s"${Configs.MlbDotCom.dataFileDir}/players_loaded_through.txt"
-
-  def saveToFile(players: List[Player_MLB], loadedThrough: Date, overwrite: Boolean = false): Unit = {
+  def savePlayersToFile(players: List[Player_MLB], loadedThrough: Date, overwrite: Boolean = false): Unit = {
     writeLinesToFile(players.map(_.toCSV), playersFileName, overwrite)
     writeToFile(loadedThrough.print("yyyy-MM-dd"), loadedThroughfileName, true)
     log(s"Saved ${players.length} MLB.com players to file ${if (overwrite) "--- overwrote existing file" else ""}")
@@ -93,10 +119,10 @@ object Player_MLB {
     case true  => scala.io.Source.fromFile(loadedThroughfileName).getLines.toList.filter(_.trim.nonEmpty).headOption.map(_.toDate("yyyy-MM-dd"))
   }
 
-  def loadFromFile: List[Player_MLB] = fileExists(playersFileName) match {
+  def loadPlayersFromFile: List[Player_MLB] = fileExists(playersFileName) match {
     case false => Nil
     case true =>
-      val players = scala.io.Source.fromFile(playersFileName).getLines.toList.filter(_.trim.nonEmpty).map(parseFromCSV(_))
+      val players = scala.io.Source.fromFile(playersFileName).getLines.toList.filter(_.trim.nonEmpty).map(parsePlayerFromCSV(_))
       log(s"Loaded ${players.length} MLB.com players from file")
       players
   }

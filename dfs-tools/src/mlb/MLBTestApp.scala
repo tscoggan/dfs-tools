@@ -5,6 +5,7 @@ import mlbdotcom._
 import model._
 import utils._
 import utils.StringUtils._
+import scala.util.{ Try, Success, Failure }
 
 object MLBTestApp extends App {
 
@@ -24,12 +25,11 @@ object MLBTestApp extends App {
 
   //  rg.StartingLineups.all.foreach(println(_))
 
-  val gameURLs = MLBWebsiteParser.getGameURLs("2018-04-14".toDate())
-  gameURLs.foreach { gameURL => 
-    println("Loading game " + gameURL)
-     MLBWebsiteParser.getPlayerURLs(gameURL).foreach { playerURL => 
-       println("Loading player "+playerURL)
-       Player_MLB.parseFrom(playerURL)
+  val gameURLs = Game_MLB.getGameURLs("2018-04-14".toDate())
+  val games = gameURLs.flatMap {
+    Game_MLB.parseFrom(_) match {
+      case Success(game) => List(game)
+      case _             => Nil
     }
   }
 
