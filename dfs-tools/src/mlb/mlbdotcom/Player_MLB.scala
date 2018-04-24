@@ -67,7 +67,7 @@ object Player_MLB {
       .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map { case (playerID, urls) => urls.head }
     log(s"Found ${playerURLs.length} distinct player URL's")
     val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
-      .map(parsePlayerFromURL(_)).distinct
+      .map(loadPlayerFromURL(_)).distinct
     log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
     if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, datesToLoad.sorted.last, false) // save new players to file
     (existingPlayers ++ newPlayers).distinct
@@ -83,7 +83,7 @@ object Player_MLB {
     case e: java.io.FileNotFoundException => Nil
   }
 
-  def parsePlayerFromURL(url: String): Player_MLB = {
+  def loadPlayerFromURL(url: String): Player_MLB = {
     val xml = XML.load(url)
     val id = (xml \ "@id").text
     val lastName = (xml \ "@last_name").text
@@ -99,7 +99,7 @@ object Player_MLB {
     Player_MLB(id, lastName, firstName, bats, throws, Teams.get(teamID), position)
   }
 
-  private def parsePlayerFromCSV(csv: String): Player_MLB = {
+  private def loadPlayerFromCSV(csv: String): Player_MLB = {
     val Array(id, lastName, firstName, bats, throws, team, position, retrosheetID) = csv.split("\\|")
     val rsID = retrosheetID.trim match {
       case "???" | "" => None
@@ -122,7 +122,7 @@ object Player_MLB {
   def loadPlayersFromFile: List[Player_MLB] = fileExists(playersFileName) match {
     case false => Nil
     case true =>
-      val players = scala.io.Source.fromFile(playersFileName).getLines.toList.filter(_.trim.nonEmpty).map(parsePlayerFromCSV(_))
+      val players = scala.io.Source.fromFile(playersFileName).getLines.toList.filter(_.trim.nonEmpty).map(loadPlayerFromCSV(_))
       log(s"Loaded ${players.length} MLB.com players from file")
       players
   }

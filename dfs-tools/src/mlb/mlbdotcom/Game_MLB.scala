@@ -22,6 +22,33 @@ object Game_MLB {
 
   private val baseURL = Configs.MlbDotCom.baseURL
 
+  private val gamesRootDir = s"${Configs.MlbDotCom.dataFileDir}/games"
+  private val loadedThroughfileName = s"${Configs.MlbDotCom.dataFileDir}/games_loaded_through.txt"
+
+  val allGames: List[Game] = loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
+
+  def loadGamesForDateRange(from: Date, to: Date): List[Game] = getDatesBetween(from, to) flatMap { date =>
+    val dayDir = s"${gamesRootDir}/year_${date.print("yyyy")}/month_${date.print("MM")}/day_${date.print("dd")}"
+    if (fileExists(dayDir)) {
+      val gameDirs = getSubdirectories(dayDir)
+      log(s"Found ${gameDirs.length} games for ${date.print()}")
+      gameDirs.flatMap { dir =>
+        loadGameFromFile(dir.toString) match {
+          case Success(game) => List(game)
+          case _             => Nil
+        }
+      }
+    } else {
+      log(s"Downloading ${date.print()} games from MLB.com website")
+      getGameURLs(date).flatMap { url =>
+        loadGameFromURL(url) match {
+          case Success(game) => List(game)
+          case _             => Nil
+        }
+      }
+    }
+  }
+
   def getGameURLs(date: Date): List[String] = {
     val dateStr = getDateFormat("yyyy-MM-dd").format(date)
     val Array(year, month, day) = dateStr.split("-")
@@ -29,7 +56,7 @@ object Game_MLB {
     games.flatMap(_.attribute("game_data_directory")).toList.flatten.map(g => baseURL + g.text + "/")
   }
 
-  def parseFrom(url: String): Try[Game_MLB] = Try {
+  def loadGameFromURL(url: String): Try[Game] = Try {
     val eventsFileName = s"${Configs.MlbDotCom.dataFileDir}/games/${url.substringAfter("game/mlb/")}game_events.xml"
     val rawBoxScoreFileName = s"${Configs.MlbDotCom.dataFileDir}/games/${url.substringAfter("game/mlb/")}rawboxscore.xml"
 
@@ -49,24 +76,18 @@ object Game_MLB {
         xml
       case true => XML.loadFile(rawBoxScoreFileName)
     }
-    
-    Game_MLB()
+
+    (new MLBGameParser(eventsXML, rawBoxScoreXML)).toGame
   }
 
-  private val gamesRootDir = s"${Configs.MlbDotCom.dataFileDir}/games"
-  private val loadedThroughfileName = s"${Configs.MlbDotCom.dataFileDir}/games_loaded_through.txt"
+  def loadGameFromFile(gameDirectory: String): Try[Game] = Try {
+    val eventsFileName = s"${gameDirectory.trimSuffix("/")}/game_events.xml"
+    val rawBoxScoreFileName = s"${gameDirectory.trimSuffix("/")}/rawboxscore.xml"
 
-  def gamesLoadedThrough: Option[Date] = fileExists(loadedThroughfileName) match {
-    case false => None
-    case true  => scala.io.Source.fromFile(loadedThroughfileName).getLines.toList.filter(_.trim.nonEmpty).headOption.map(_.toDate("yyyy-MM-dd"))
+    val eventsXML = XML.loadFile(eventsFileName)
+    val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)
+
+    (new MLBGameParser(eventsXML, rawBoxScoreXML)).toGame
   }
-
-  //  def loadFromFile: List[Game_MLB] = fileExists(playersFileName) match {
-  //    case false => Nil
-  //    case true =>
-  //      val players = scala.io.Source.fromFile(playersFileName).getLines.toList.filter(_.trim.nonEmpty).map(parseFromCSV(_))
-  //      log(s"Loaded ${players.length} MLB.com players from file")
-  //      players
-  //  }
 
 }

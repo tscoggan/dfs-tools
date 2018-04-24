@@ -22,6 +22,13 @@ object FileUtils {
     } else Nil
   }
 
+  def getSubdirectories(parentDir: String): List[File] = {
+    val d = new File(parentDir)
+    if (d.exists && d.isDirectory) {
+      d.listFiles.filter(_.isDirectory).toList
+    } else Nil
+  }
+
   // key: (filename, overwrite existing file when writing?)
   private val fileWriterCache: mutable.Map[(String, Boolean), FileWriter] = mutable.Map.empty
 
@@ -29,7 +36,7 @@ object FileUtils {
     fileWriterCache.get((fileName, overwrite)) match {
       case Some(cached) => cached
       case None => {
-        log(s"$fileName file writer not found in cache --> adding")
+        //log(s"$fileName file writer not found in cache --> adding")
         val fw = new FileWriter(fileName, !overwrite)
         fileWriterCache += ((fileName, overwrite) -> fw)
         fw

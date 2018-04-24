@@ -25,12 +25,7 @@ object MLBTestApp extends App {
 
   //  rg.StartingLineups.all.foreach(println(_))
 
-  val gameURLs = Game_MLB.getGameURLs("2018-04-14".toDate())
-  val games = gameURLs.flatMap {
-    Game_MLB.parseFrom(_) match {
-      case Success(game) => List(game)
-      case _             => Nil
-    }
-  }
+
+  val games = Game_MLB.allGames
 
 }
