@@ -48,6 +48,12 @@ object Draftbook extends App {
     case notFound => println("\n\nWARNING: No starting pitcher found for " + notFound.mkString(", "))
   }
 
+  teamsOnSlate.foreach { team =>
+    val pitchers = startingPitchers.filter(_.team == team)
+    if (pitchers.isEmpty) throw new Exception("No starting pitcher for " + team)
+    if (pitchers.length > 1) throw new Exception(s"Multiple starting pitchers for $team: ${pitchers.mkString(",")}")
+  }
+
   val hitter2017Stats_FD: Map[Player, (PlayerSeasonStats, DeviationStats)] = season.allHitters.filter(_.player.fanduel.nonEmpty)
     .map(p => (p, DeviationStats(stdDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB))),
       downsideDev(p.gamesStarted.map(_.fantasyPoints(FanDuelMLB).toDouble), hitterLeagueAvgPointsPerGameStarted_FD),
