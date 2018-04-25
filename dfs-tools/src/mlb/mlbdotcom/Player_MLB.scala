@@ -69,7 +69,8 @@ object Player_MLB {
     val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
       .map(loadPlayerFromURL(_)).distinct
     log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
-    if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, datesToLoad.sorted.last, false) // save new players to file
+    if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, false) // save new players to file
+    writeToFile(datesToLoad.sorted.last.print("yyyy-MM-dd"), loadedThroughfileName, true)
     (existingPlayers ++ newPlayers).distinct
   }.sortBy(_.id)
 
@@ -108,9 +109,8 @@ object Player_MLB {
     Player_MLB(id, lastName, firstName, bats, throws, Teams.get(team), position, rsID)
   }
 
-  def savePlayersToFile(players: List[Player_MLB], loadedThrough: Date, overwrite: Boolean = false): Unit = {
+  def savePlayersToFile(players: List[Player_MLB], overwrite: Boolean = false): Unit = {
     writeLinesToFile(players.map(_.toCSV), playersFileName, overwrite)
-    writeToFile(loadedThrough.print("yyyy-MM-dd"), loadedThroughfileName, true)
     log(s"Saved ${players.length} MLB.com players to file ${if (overwrite) "--- overwrote existing file" else ""}")
   }
 
