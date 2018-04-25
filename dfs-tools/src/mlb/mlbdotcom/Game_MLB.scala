@@ -11,13 +11,6 @@ import java.util.Date
 import scala.util.{ Try, Success, Failure }
 import scala.xml._
 
-/**
- * Parsed from MLB.com XML
- */
-case class Game_MLB() {
-
-}
-
 object Game_MLB {
 
   private val baseURL = Configs.MlbDotCom.baseURL
@@ -32,20 +25,10 @@ object Game_MLB {
     if (fileExists(dayDir)) {
       val gameDirs = getSubdirectories(dayDir)
       log(s"Found ${gameDirs.length} games for ${date.print()}")
-      gameDirs.flatMap { dir =>
-        loadGameFromFile(dir.toString) match {
-          case Success(game) => List(game)
-          case _             => Nil
-        }
-      }
+      gameDirs.flatMap { dir => loadGameFromFile(dir.toString) }
     } else {
       log(s"Downloading ${date.print()} games from MLB.com website")
-      getGameURLs(date).flatMap { url =>
-        loadGameFromURL(url) match {
-          case Success(game) => List(game)
-          case _             => Nil
-        }
-      }
+      getGameURLs(date).flatMap { url => loadGameFromURL(url) }
     }
   }
 
@@ -56,38 +39,62 @@ object Game_MLB {
     games.flatMap(_.attribute("game_data_directory")).toList.flatten.map(g => baseURL + g.text + "/")
   }
 
-  def loadGameFromURL(url: String): Try[Game] = Try {
+  def loadGameFromURL(url: String): Option[Game] = {
     val eventsFileName = s"${Configs.MlbDotCom.dataFileDir}/games/${url.substringAfter("game/mlb/")}game_events.xml"
     val rawBoxScoreFileName = s"${Configs.MlbDotCom.dataFileDir}/games/${url.substringAfter("game/mlb/")}rawboxscore.xml"
+    val lineScoreFileName = s"${Configs.MlbDotCom.dataFileDir}/games/${url.substringAfter("game/mlb/")}linescore.xml"
 
-    val eventsXML = fileExists(eventsFileName) match {
+    val lineScoreXML = fileExists(lineScoreFileName) match {
       case false =>
-        val xml = XML.load(url + "game_events.xml")
-        writeToFile(xml.toString, eventsFileName, true)
-        log(s"Downloaded game events: $eventsFileName")
+        val xml = XML.load(url + "linescore.xml")
+        writeToFile(xml.toString, lineScoreFileName, true)
+        log(s"Downloaded game line score: $lineScoreFileName")
         xml
-      case true => XML.loadFile(eventsFileName)
-    }
-    val rawBoxScoreXML = fileExists(rawBoxScoreFileName) match {
-      case false =>
-        val xml = XML.load(url + "rawboxscore.xml")
-        writeToFile(xml.toString, rawBoxScoreFileName, true)
-        log(s"Downloaded game box score: $rawBoxScoreFileName")
-        xml
-      case true => XML.loadFile(rawBoxScoreFileName)
+      case true => XML.loadFile(lineScoreFileName)
     }
 
-    (new MLBGameParser(eventsXML, rawBoxScoreXML)).toGame
+    (lineScoreXML \ "@status").text match {
+      case "Postponed" => None
+      case "Final" => {
+        val eventsXML = fileExists(eventsFileName) match {
+          case false =>
+            val xml = XML.load(url + "game_events.xml")
+            writeToFile(xml.toString, eventsFileName, true)
+            log(s"Downloaded game events: $eventsFileName")
+            xml
+          case true => XML.loadFile(eventsFileName)
+        }
+        val rawBoxScoreXML = fileExists(rawBoxScoreFileName) match {
+          case false =>
+            val xml = XML.load(url + "rawboxscore.xml")
+            writeToFile(xml.toString, rawBoxScoreFileName, true)
+            log(s"Downloaded game box score: $rawBoxScoreFileName")
+            xml
+          case true => XML.loadFile(rawBoxScoreFileName)
+        }
+
+        Some((new MLBGameParser(eventsXML, rawBoxScoreXML, lineScoreXML)).toGame)
+      }
+      case other => throw new Exception(s"Unknown game status in $lineScoreFileName")
+    }
   }
 
-  def loadGameFromFile(gameDirectory: String): Try[Game] = Try {
+  def loadGameFromFile(gameDirectory: String): Option[Game] = {
     val eventsFileName = s"${gameDirectory.trimSuffix("/")}/game_events.xml"
     val rawBoxScoreFileName = s"${gameDirectory.trimSuffix("/")}/rawboxscore.xml"
+    val lineScoreFileName = s"${gameDirectory.trimSuffix("/")}/linescore.xml"
 
-    val eventsXML = XML.loadFile(eventsFileName)
-    val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)
+    val lineScoreXML = XML.loadFile(lineScoreFileName)
 
-    (new MLBGameParser(eventsXML, rawBoxScoreXML)).toGame
+    (lineScoreXML \ "@status").text match {
+      case "Postponed" => None
+      case "Final" => {
+        val eventsXML = XML.loadFile(eventsFileName)
+        val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)
+        Some((new MLBGameParser(eventsXML, rawBoxScoreXML, lineScoreXML)).toGame)
+      }
+      case other => throw new Exception(s"Unknown game status in $lineScoreFileName")  
+    }
   }
 
 }

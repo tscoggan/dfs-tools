@@ -12,14 +12,8 @@ case class Game(
     date: Date,
     visitingTeam: Team,
     homeTeam: Team,
-    gameNumber: GameNumber,
-    dayGame: Boolean,
-    usedDesignatedHitter: Boolean,
+    gameNumber: GameNumber, // e.g. 1 or 2 if part of a double-header
     homePlateUmpireID: String,
-    temperature: Option[Int],
-    windDirection: WindDirection,
-    windSpeed: Option[Int],
-    precipitation: String,
     winningPitcher: Player,
     losingPitcher: Player,
     savePitcher: Option[Player],
@@ -32,8 +26,8 @@ case class Game(
 
   val alias: String = s"$visitingTeam @ $homeTeam (${date.print()}${if (gameNumber != SINGLE_GAME) s" game $gameNumber" else ""})"
 
-  val visitingTeamStartingPitcher: Player = visitingTeamPlayerStats.find(p => p.isStarter && p.isInstanceOf[PitcherGameStats]).get.player
-  val homeTeamStartingPitcher: Player = homeTeamPlayerStats.find(p => p.isStarter && p.isInstanceOf[PitcherGameStats]).get.player
+  lazy val visitingTeamStartingPitcher: Player = visitingTeamPlayerStats.find(p => p.isStarter && p.isInstanceOf[PitcherGameStats]).get.player
+  lazy val homeTeamStartingPitcher: Player = homeTeamPlayerStats.find(p => p.isStarter && p.isInstanceOf[PitcherGameStats]).get.player
 
   def statsFor(player: Player): Option[PlayerGameStats] = allPlayerStats.find(_.player == player)
 

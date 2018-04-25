@@ -977,33 +977,42 @@
 605130|Barlow|Scott|R|R|KC|P|barls001
 607352|Biagini|Joe|R|R|TOR|P|biagj001
 621056|Wood|Hunter|R|R|TB|P|woodh001
-639373|Bautista|Gerson|R|R|NYM|P|???
 641427|Busenitz|Alan|R|R|MIN|P|busea001
-642152|Trivino|Lou|R|R|OAK|P|???
 643778|Webb|Tyler|R|L|SD|P|webbt001
 656185|Allen|Greg|S|R|CLE|OF|alleg002
 664057|Stevenson|Andrew|L|L|WAS|OF|steva001
 664641|Miranda|Ariel|L|L|SEA|P|miraa002
 571893|Liberatore|Adam|L|L|LAD|P|libea001
-592145|Biddle|Jesse|L|L|ATL|P|???
 605538|Wisler|Matt|R|R|ATL|P|wislm001
-641933|O'Neill|Tyler|R|R|STL|OF|???
-642571|Gonzalez|Merandy|R|R|MIA|P|???
 448614|Torres|Carlos|R|R|WAS|P|torrc001
-571595|Cuevas|Noel|R|R|COL|OF|???
-571735|Hale|David|R|R|NYY|P|???
 572998|Lucas|Josh|R|R|OAK|P|lucaj001
-595222|Gerber|Mike|L|R|DET|OF|???
-605135|Bassitt|Chris|R|R|OAK|P|???
 607776|Williamson|Mac|R|R|SF|OF|willm008
 608652|Farrell|Luke|L|R|CHC|P|farrl001
-613534|Adams|Austin L.|R|R|WAS|P|???
 621295|Wittgren|Nick|R|R|MIA|P|wittn001
 621311|Dahl|David|L|R|COL|OF|dahld001
-623520|Bote|David|R|R|CHC|2B|???
 650402|Torres|Gleyber|R|R|NYY|2B|torrg001
-666971|Gurriel Jr. Jr.|Lourdes|R|R|TOR|2B|???
 571476|Beck|Chris|R|R|CWS|P|beckc002
-605121|Anderson|Justin|L|R|LAA|P|???
-643466|Musgrave|Harrison|L|L|COL|P|???
 621111|Buehler|Walker|R|R|LAD|P|buehw001
+639373|Bautista|Gerson|R|R|NYM|P|bautg001
+571595|Cuevas|Noel|R|R|COL|OF|cuevn001
+571735|Hale|David|R|R|NYY|P|haled001
+592145|Biddle|Jesse|L|L|ATL|P|biddj001
+595222|Gerber|Mike|L|R|DET|OF|gerbm001
+605121|Anderson|Justin|L|R|LAA|P|andej001
+605135|Bassitt|Chris|R|R|OAK|P|bassc001
+613534|Adams|Austin L.|R|R|WAS|P|adama001
+623520|Bote|David|R|R|CHC|2B|boted001
+641933|O'Neill|Tyler|R|R|STL|OF|oneit001
+642152|Trivino|Lou|R|R|OAK|P|trivl001
+642571|Gonzalez|Merandy|R|R|MIA|P|gonzm006
+506703|Sanchez|Adrian|R|R|WAS|SS|sanca007
+543339|Hudson|Daniel|R|R|LAD|P|hudsd001
+572044|Pounders|Brooks|R|R|COL|P|pounb001
+608331|Fried|Max|L|L|ATL|P|friem001
+608648|Duffey|Tyler|R|R|MIN|P|dufft001
+622441|Bautista|Rafael|R|R|WAS|OF|bautr001
+641778|Lauer|Eric|R|L|SD|P|lauee001
+643466|Musgrave|Harrison|L|L|COL|P|musgh001
+594953|Palka|Daniel|L|L|CWS|OF|palkd001
+657770|Stout|Eric|L|L|KC|P|stoue001
+666971|Gurriel Jr. Jr.|Lourdes|R|R|TOR|2B|gurrl001

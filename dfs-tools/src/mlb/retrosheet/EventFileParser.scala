@@ -416,7 +416,6 @@ class GameData(id: String) {
     case (modStart, advStart) => (event.substring(0, modStart), event.substring(modStart + 1, advStart).split("/").toList, event.substring(advStart + 1).split(";").toList)
   }
 
-  def toGame: Game = Game(date.get, visitingTeam.get, homeTeam.get, gameNumber, dayGame.get, usedDesignatedHitter.get,
-    homePlateUmpireID.get, temperature, windDirection, windSpeed, precipitation, winningPitcher.get, losingPitcher.get,
+  def toGame: Game = Game(date.get, visitingTeam.get, homeTeam.get, gameNumber, homePlateUmpireID.get, winningPitcher.get, losingPitcher.get,
     savePitcher, visitingTeamPlayers.toList, homeTeamPlayers.toList)
 }

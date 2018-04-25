@@ -27,5 +27,6 @@ object MLBTestApp extends App {
 
 
   val games = Game_MLB.allGames
+  println(s"Found ${games.length} games:\n\t${games.sortBy(_.date).map(_.alias).mkString("\n\t")}") 
 
 }
