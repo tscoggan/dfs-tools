@@ -70,7 +70,7 @@ object Player_MLB {
       .map(loadPlayerFromURL(_)).distinct
     log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
     if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, false) // save new players to file
-    writeToFile(datesToLoad.sorted.last.print("yyyy-MM-dd"), loadedThroughfileName, true)
+    writeToFile(yesterday.print("yyyy-MM-dd"), loadedThroughfileName, true)
     (existingPlayers ++ newPlayers).distinct
   }.sortBy(_.id)
 
