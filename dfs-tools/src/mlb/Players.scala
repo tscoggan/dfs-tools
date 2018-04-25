@@ -79,6 +79,7 @@ object Players {
   }
 
   val mlbDotComPlayers: List[Player_MLB] = Player_MLB.allPlayers
+  log(s"Found ${mlbDotComPlayers.length} MLB.com players")
 
   val mlbDotComPlayersByID: Map[String, Player_MLB] = mlbDotComPlayers.map(p => (p.id, p)).toMap
 

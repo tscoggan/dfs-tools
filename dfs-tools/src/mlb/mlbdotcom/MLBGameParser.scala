@@ -12,9 +12,9 @@ import scala.collection.mutable
 
 class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
 
-  implicit def playerIDToPlayer(playerID: String): Player = Players.mlbDotComPlayersByID(playerID).player match {
+  implicit def playerIDToPlayer(playerID: String): Player = Players.mlbDotComPlayersByID.get(playerID).flatMap(_.player) match {
     case Some(player) => player
-    case None => throw new Exception("Couldn't find player with MLB.com ID "+playerID)
+    case None         => throw new Exception("Couldn't find player with MLB.com ID " + playerID)
   }
 
   //var bases: Bases = new Bases(this)
@@ -41,21 +41,9 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
   var homeTeam: Team =
     Teams.get { (rawBoxScoreXML \ "team").find(_.attribute("team_flag").head.text == "home").map(_.attribute("team_code").head.text).get }
 
-  // players currently in the game
-  val visitingTeamActivePlayers: mutable.Map[PlayerID, PlayerGameStats] = mutable.Map.empty
-  val homeTeamActivePlayers: mutable.Map[PlayerID, PlayerGameStats] = mutable.Map.empty
-
-  // current pitcher
-  var visitingTeamPitcher: Option[PitcherGameStats] = None
-  var homeTeamPitcher: Option[PitcherGameStats] = None
-
   // all players who played in this game
   val visitingTeamPlayers: mutable.ListBuffer[PlayerGameStats] = mutable.ListBuffer.empty
   val homeTeamPlayers: mutable.ListBuffer[PlayerGameStats] = mutable.ListBuffer.empty
-
-  var inning: Int = -1
-  var outsThisInning = 0
-  var visitingOrHome: Int = -1
 
   def toGame: Game = Game(date, visitingTeam, homeTeam, gameNumber, homePlateUmpireID, winningPitcher, losingPitcher,
     savePitcher, visitingTeamPlayers.toList, homeTeamPlayers.toList)

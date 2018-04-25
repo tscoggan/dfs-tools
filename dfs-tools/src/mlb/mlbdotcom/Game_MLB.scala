@@ -18,7 +18,7 @@ object Game_MLB {
   private val gamesRootDir = s"${Configs.MlbDotCom.dataFileDir}/games"
   private val loadedThroughfileName = s"${Configs.MlbDotCom.dataFileDir}/games_loaded_through.txt"
 
-  val allGames: List[Game] = loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
+  lazy val allGames: List[Game] = loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
 
   def loadGamesForDateRange(from: Date, to: Date): List[Game] = getDatesBetween(from, to) flatMap { date =>
     val dayDir = s"${gamesRootDir}/year_${date.print("yyyy")}/month_${date.print("MM")}/day_${date.print("dd")}"
