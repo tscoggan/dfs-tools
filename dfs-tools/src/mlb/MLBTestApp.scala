@@ -25,8 +25,7 @@ object MLBTestApp extends App {
 
   //  rg.StartingLineups.all.foreach(println(_))
 
-
   val games = Game_MLB.allGames
-  println(s"Found ${games.length} games:\n\t${games.sortBy(_.date).map(_.alias).mkString("\n\t")}") 
+  println(s"Found ${games.length} games")
 
 }
