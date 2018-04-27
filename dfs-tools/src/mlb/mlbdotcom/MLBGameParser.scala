@@ -98,6 +98,9 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
 
     (hitters ++ pitchers).toMap
   }
+  
+  val visitingTeamAtBatsXML = (eventsXML \ "inning" \ "top" \ "_")
+  val homeTeamAtBatsXML = (eventsXML \ "inning" \ "bottom" \ "_")
 
   def toGame: Game = Game(date, visitingTeam, homeTeam, gameNumber, homePlateUmpireID, winningPitcher, losingPitcher,
     savePitcher, visitingTeamPlayers.values.toList, homeTeamPlayers.values.toList)

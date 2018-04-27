@@ -1016,3 +1016,11 @@
 594953|Palka|Daniel|L|L|CWS|OF|palkd001
 657770|Stout|Eric|L|L|KC|P|stoue001
 666971|Gurriel Jr. Jr.|Lourdes|R|R|TOR|2B|gurrl001
+458924|Venters|Jonny|L|L|TB|P|ventj001
+591741|Osuna|Jose|R|R|PIT|1B|osunj001
+592499|Lewicki|Artie|R|R|DET|P|lewia001
+660670|Acuna Jr.|Ronald|R|R|ATL|OF|acunr001
+542924|Beliveau|Jeff|L|L|CLE|P|belij001
+594011|Herrera|Rosell|S|R|CIN|SS|herrr002
+607231|Gant|John|R|R|STL|P|gantj002
+642083|Slegers|Aaron|R|R|MIN|P|slega001
