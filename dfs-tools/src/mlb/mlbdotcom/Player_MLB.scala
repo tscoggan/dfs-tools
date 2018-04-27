@@ -14,7 +14,7 @@ import scala.xml._
  * Parsed from MLB.com XML
  */
 case class Player_MLB(
-    id: String,
+    id: MLBPlayerID,
     lastName: String,
     firstName: String,
     bats: Handedness,

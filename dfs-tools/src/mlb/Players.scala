@@ -81,7 +81,7 @@ object Players {
   val mlbDotComPlayers: List[Player_MLB] = Player_MLB.allPlayers
   log(s"Found ${mlbDotComPlayers.length} MLB.com players")
 
-  val mlbDotComPlayersByID: Map[String, Player_MLB] = mlbDotComPlayers.map(p => (p.id, p)).toMap
+  val mlbDotComPlayersByID: Map[MLBPlayerID, Player_MLB] = mlbDotComPlayers.map(p => (p.id, p)).toMap
 
   mlbDotComPlayers.groupBy(_.name).foreach {
     case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} MLB.com players with same name: ${players.mkString(", ")}")
