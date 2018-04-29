@@ -37,6 +37,7 @@ trait PlayerGameStats {
   def addStrikeoutAgainst(pitcher: PitcherGameStats) = {
     pitcher.pitchingStats.addStrikeout
     pitcher.pitchingStatsAgainst(player, true).addStrikeout
+    logDebug(s"$pitcher strikeout += 1")
   }
 
   def addOutsAgainst(numberOfOuts: Int, pitcher: PitcherGameStats) = {

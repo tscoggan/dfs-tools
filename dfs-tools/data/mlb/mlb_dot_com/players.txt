@@ -1024,3 +1024,11 @@
 594011|Herrera|Rosell|S|R|CIN|SS|herrr002
 607231|Gant|John|R|R|STL|P|gantj002
 642083|Slegers|Aaron|R|R|MIN|P|slega001
+596103|Slater|Austin|R|R|SF|OF|slata001
+543483|Magill|Matt|R|R|MIN|P|magim001
+572073|Rickard|Joey|R|L|BAL|OF|rickj001
+592229|Covey|Dylan|R|R|CWS|P|coved001
+592769|Snelten|D.J.|L|L|SF|P|sneld001
+593700|Hanson|Alen|S|R|SF|2B|hansa001
+656805|Oaks|Trevor|R|R|KC|P|oakst001
+657077|Verdugo|Alex|L|L|LAD|OF|verda001
