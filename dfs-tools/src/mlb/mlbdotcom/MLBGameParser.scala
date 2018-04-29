@@ -64,7 +64,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID)
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.trimSuffix(" Jr."), VISITING_TEAM) -> mlbPlayerID)
+        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
 
         Some((mlbPlayerID, HitterGameStats(date, player.id, batOrder.tail == "00", batOrder.head.asDigit)))
       } else None
@@ -80,7 +80,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID)
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.trimSuffix(" Jr."), VISITING_TEAM) -> mlbPlayerID)
+        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
 
         Some((mlbPlayerID, PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)))
       } else None
@@ -102,7 +102,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID)
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.trimSuffix(" Jr."), HOME_TEAM) -> mlbPlayerID)
+        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
 
         Some((mlbPlayerID, HitterGameStats(date, player.id, batOrder.tail == "00", batOrder.head.asDigit)))
       } else None
@@ -118,7 +118,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID)
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.trimSuffix(" Jr."), HOME_TEAM) -> mlbPlayerID)
+        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
 
         Some((mlbPlayerID, PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)))
       } else None
@@ -177,7 +177,22 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
             }
         }
 
+        val runnersWhoScored: List[PlayerGameStats] = if (description.contains("scores")) {
+          namesOfPlayersWhoScored(description).map {
+            case playerDisplayName =>
+              val mlbPlayerID = mlbPlayerIdByDisplayName((playerDisplayName, battingTeam))
+              val player = battingTeam match {
+                case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
+                case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
+              }
+              //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
+              player.addRunAgainst(pitcher)
+              player
+          }
+        } else Nil
+
         eventXML.toString.substringBefore(" ").tail match {
+
           case "atbat" => {
             val hitter = players((eventXML \ "@batter").text)
 
@@ -190,25 +205,12 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
 
             if (event != "Runner Out") hitter.addAtBatAgainst(pitcher)
 
-            val runnersWhoScored: List[PlayerGameStats] = if (description.contains("scores")) {
-              namesOfPlayersWhoScored(description).map {
-                case playerDisplayName =>
-                  val mlbPlayerID = mlbPlayerIdByDisplayName((playerDisplayName, battingTeam))
-                  val player = battingTeam match {
-                    case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
-                    case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
-                  }
-                  //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
-                  player.addRunAgainst(pitcher)
-                  player
-              }
-            } else Nil
-
             event match {
               case "Batter Interference" =>
                 if (description.contains("strikes out") || description.contains("called out on strikes")) hitter.addStrikeoutAgainst(pitcher)
               case "Bunt Groundout" | "Bunt Lineout" | "Bunt Pop Out" | "Fielders Choice" | "Fielders Choice Out"
-                | "Flyout" | "Forceout" | "Groundout" | "Lineout" | "Pop Out" | "Sac Bunt" | "Sac Fly" => // out already recorded --- do nothing
+                | "Flyout" | "Forceout" | "Groundout" | "Lineout" | "Pop Out" | "Sac Bunt" | "Sac Fly" =>
+                hitter.addRBIAgainst(pitcher, runnersWhoScored.length)
               case "Catcher Interference" => //???
               case "Double" => hitter.addDoubleAgainst(pitcher)
               case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Triple Play" => // outs already recorded --- do nothing
@@ -296,7 +298,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
     //logDebug("### namesOfPlayersWhoScored --- \n\tplay: "+play)
     def next(play: String, playerNames: List[String]): List[String] = play.contains("scores") match {
       case true =>
-        val scoringPlayerName = play.substringBefore("scores").trim.substringAfterLast("  ")
+        val scoringPlayerName = play.substringBefore("scores").substringAfterLast(",").trim.substringAfterLast("  ")
         //logDebug("\tscoring player: "+scoringPlayerName)
         val remainingPlay = play.substringAfter("scores")
         next(remainingPlay, scoringPlayerName :: playerNames)
