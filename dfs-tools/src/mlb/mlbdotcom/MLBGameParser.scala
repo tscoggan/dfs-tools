@@ -247,38 +247,48 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
             }
 
             event match {
-              case "Balk"                              => //???
-              case "Caught Stealing 2B"                => //???
-              case "Caught Stealing 3B"                => //???
-              case "Caught Stealing Home"              => //???
-              case "Defensive Indiff"                  => //???
-              case "Defensive Sub"                     => //???
-              case "Defensive Switch"                  => //???
-              case "Ejection"                          => //???
-              case "Error"                             => //???
-              case "Game Advisory"                     => //???
-              case "Manager Review"                    => //???
-              case "Offensive Sub"                     => //???
-              case "Passed Ball"                       => //???
-              case "Picked off stealing 2B"            => //???
-              case "Picked off stealing 3B"            => //???
-              case "Picked off stealing home"          => //???
-              case "Pickoff 1B"                        => //???
-              case "Pickoff 2B"                        => //???
-              case "Pickoff 3B"                        => //???
-              case "Pickoff Error 1B"                  => //???
-              case "Pickoff Error 2B"                  => //???
-              case "Pitching Substitution"             => //???
-              case "Player Injured"                    => //???
-              case "Runner Advance"                    => //???
-              case "Runner Out"                        => //???
-              case "Stolen Base 2B" | "Stolen Base 3B" => //???
-              case "Stolen Base Home"                  => //???
-              case "Umpire Review"                     => //???
-              case "Umpire Substitution"               => //???
-              case "Wild Pitch"                        => //???
-              case "Batter Turn"                       => //???
-              case _                                   => throw new Exception("Unknown event: " + event)
+              case "Balk"                     => //???
+              case "Caught Stealing 2B"       => //???
+              case "Caught Stealing 3B"       => //???
+              case "Caught Stealing Home"     => //???
+              case "Defensive Indiff"         => //???
+              case "Defensive Sub"            => //???
+              case "Defensive Switch"         => //???
+              case "Ejection"                 => //???
+              case "Error"                    => //???
+              case "Game Advisory"            => //???
+              case "Manager Review"           => //???
+              case "Offensive Sub"            => //???
+              case "Passed Ball"              => //???
+              case "Picked off stealing 2B"   => //???
+              case "Picked off stealing 3B"   => //???
+              case "Picked off stealing home" => //???
+              case "Pickoff 1B"               => //???
+              case "Pickoff 2B"               => //???
+              case "Pickoff 3B"               => //???
+              case "Pickoff Error 1B"         => //???
+              case "Pickoff Error 2B"         => //???
+              case "Pitching Substitution"    => //???
+              case "Player Injured"           => //???
+              case "Runner Advance"           => //???
+              case "Runner Out"               => //???
+              case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
+                namesOfPlayersWhoStoleBase(description).map {
+                  case (playerDisplayName, stoleHome) =>
+                    val mlbPlayerID = mlbPlayerIdByDisplayName((playerDisplayName, battingTeam))
+                    val player = battingTeam match {
+                      case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
+                      case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
+                    }
+                    //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
+                    player.addStolenBaseAgainst(pitcher)
+                    if (stoleHome) player.addRunAgainst(pitcher)
+                }
+              case "Umpire Review"       => //???
+              case "Umpire Substitution" => //???
+              case "Wild Pitch"          => //???
+              case "Batter Turn"         => //???
+              case _                     => throw new Exception("Unknown event: " + event)
             }
           }
         }
@@ -302,6 +312,21 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         //logDebug("\tscoring player: "+scoringPlayerName)
         val remainingPlay = play.substringAfter("scores")
         next(remainingPlay, scoringPlayerName :: playerNames)
+      case false => playerNames
+    }
+    next(play, Nil)
+  }
+
+  // Boolean value returned is true if player stole home base
+  private def namesOfPlayersWhoStoleBase(play: String): List[(String, Boolean)] = {
+    //logDebug("### namesOfPlayersWhoStoleBase --- \n\tplay: "+play)
+    def next(play: String, playerNames: List[(String, Boolean)]): List[(String, Boolean)] = play.contains("steals") match {
+      case true =>
+        val playerName = play.substringBefore("steals").substringAfterLast(",").trim.substringAfterLast("  ")
+        //logDebug("\tplayer: "+playerName)
+        val remainingPlay = play.substringAfter("steals")
+        val stoleHome: Boolean = play.substringAfter("steals").substringBefore("  ").contains("home")
+        next(remainingPlay, (playerName, stoleHome) :: playerNames)
       case false => playerNames
     }
     next(play, Nil)

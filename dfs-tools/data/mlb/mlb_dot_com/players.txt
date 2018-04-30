@@ -1032,3 +1032,10 @@
 593700|Hanson|Alen|S|R|SF|2B|hansa001
 656805|Oaks|Trevor|R|R|KC|P|oakst001
 657077|Verdugo|Alex|L|L|LAD|OF|verda001
+570702|Ramirez|Carlos|R|R|TOR|P|ramic001
+592468|Kingham|Nick|R|R|PIT|P|kingn001
+592779|Stewart|Brock|L|R|LAD|P|stewb001
+596295|Gomber|Austin|L|L|STL|P|gomba001
+608671|Jankowski|Travis|L|R|SD|OF|jankt001
+608723|Voth|Austin|R|R|WAS|P|votha001
+621044|Valentin|Jesmuel|S|R|PHI|2B|valej001
