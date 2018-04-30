@@ -157,6 +157,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         val event = (eventXML \ "@event").text
         val outs = (eventXML \ "@o").text.toInt
         val description = (eventXML \ "@des").text
+        val rbi = (eventXML \ "@rbi").headOption.map(_.text.toInt).getOrElse(0)
 
         logDebug(s"\nEVENT: $event --- ${eventXML.toString}")
 
@@ -210,9 +211,9 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
                 if (description.contains("strikes out") || description.contains("called out on strikes")) hitter.addStrikeoutAgainst(pitcher)
               case "Bunt Groundout" | "Bunt Lineout" | "Bunt Pop Out" | "Fielders Choice" | "Fielders Choice Out"
                 | "Flyout" | "Forceout" | "Groundout" | "Lineout" | "Pop Out" | "Sac Bunt" | "Sac Fly" =>
-                hitter.addRBIAgainst(pitcher, runnersWhoScored.length)
-              case "Catcher Interference" => //???
-              case "Double" => hitter.addDoubleAgainst(pitcher)
+              case "Catcher Interference" =>
+              case "Double" =>
+                hitter.addDoubleAgainst(pitcher)
               case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Triple Play" => // outs already recorded --- do nothing
               case "Fan interference" =>
                 if (description.contains(s"${playerDisplayNames(hitter.playerID)} singles")) hitter.addSingleAgainst(pitcher)
@@ -222,21 +223,27 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
               case "Field Error" => // do nothing
               case "Home Run" =>
                 hitter.addHomeRunAgainst(pitcher)
-                hitter.addRBIAgainst(pitcher, 1 + runnersWhoScored.length)
                 hitter.addRunAgainst(pitcher)
-              case "Intent Walk" | "Walk" | "Hit By Pitch" => hitter.addWalkAgainst(pitcher)
-              case "Runner Out"                            => // out already recorded --- do nothing
-              case "Single"                                => hitter.addSingleAgainst(pitcher)
-              case "Strikeout" | "Strikeout - DP"          => hitter.addStrikeoutAgainst(pitcher)
-              case "Triple"                                => hitter.addTripleAgainst(pitcher)
-              case _                                       => throw new Exception("Unknown event: " + event)
+              case "Intent Walk" | "Walk" | "Hit By Pitch" =>
+                hitter.addWalkAgainst(pitcher)
+              case "Runner Out" => // out already recorded --- do nothing
+              case "Single" =>
+                hitter.addSingleAgainst(pitcher)
+              case "Strikeout" | "Strikeout - DP" => hitter.addStrikeoutAgainst(pitcher)
+              case "Triple" =>
+                hitter.addTripleAgainst(pitcher)
+              case _ => throw new Exception("Unknown event: " + event)
             }
+
+            hitter.addRBIAgainst(pitcher, rbi)
           }
 
           case "action" => {
             val player = (eventXML \ "@player").headOption.flatMap(id => players.get(id.text))
 
             logDebug(s"player: $player, pitcher: $pitcher")
+
+            if (rbi > 0) throw new Exception(s"$rbi RBI's on 'action' event --- not recorded")
 
             if (outs > previousOuts) {
               player match {
