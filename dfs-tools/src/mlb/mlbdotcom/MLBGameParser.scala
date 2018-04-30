@@ -82,7 +82,12 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID)
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
 
-        Some((mlbPlayerID, PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)))
+        val pitcher = PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)
+        if (pitcher.playerID == winningPitcher.id) pitcher.pitchingStats.win = 1
+        if (pitcher.playerID == losingPitcher.id) pitcher.pitchingStats.loss = 1
+        if (pitcher.playerID == savePitcher.map(_.id).getOrElse("")) pitcher.pitchingStats.save = 1
+        pitcher.addEarnedRuns((p \ "@er").text.toInt)
+        Some((mlbPlayerID, pitcher))
       } else None
     }.toList
 
@@ -120,7 +125,12 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID)
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
 
-        Some((mlbPlayerID, PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)))
+        val pitcher = PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)
+        if (pitcher.playerID == winningPitcher.id) pitcher.pitchingStats.win = 1
+        if (pitcher.playerID == losingPitcher.id) pitcher.pitchingStats.loss = 1
+        if (pitcher.playerID == savePitcher.map(_.id).getOrElse("")) pitcher.pitchingStats.save = 1
+        pitcher.addEarnedRuns((p \ "@er").text.toInt)
+        Some((mlbPlayerID, pitcher))
       } else None
     }.toList
 

@@ -26,6 +26,9 @@ object Configs {
     val seasonStartDate: Date = conf.getString("season_start_date").toDate("yyyy-MM-dd")
     
     val dataFileDir: String = conf.getString("data_file_dir")
+    
+    val runSanityChecks: Boolean = conf.getBoolean("run_sanity_checks")
+    if (runSanityChecks) log("#### Running MLB.com sanity checks ####")
   }
   
   object Rotogrinders {

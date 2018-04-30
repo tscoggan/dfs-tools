@@ -25,6 +25,9 @@ object Game_MLB {
     if (fileExists(dayDir)) {
       val gameDirs = getSubdirectories(dayDir)
       log(s"Found ${gameDirs.length} games for ${date.print()}")
+      if (Configs.MlbDotCom.runSanityChecks) {
+        if (getGameURLs(date).length != gameDirs.length) throw new Exception(s"Should have found ${getGameURLs(date).length} games for ${date.print()}")
+      }
       gameDirs.flatMap { dir => loadGameFromFile(dir.toString) }
     } else {
       log(s"Downloading ${date.print()} games from MLB.com website")
@@ -93,7 +96,7 @@ object Game_MLB {
         val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)
         Some((new MLBGameParser(eventsXML, rawBoxScoreXML, lineScoreXML)).toGame)
       }
-      case other => throw new Exception(s"Unknown game status in $lineScoreFileName")  
+      case other => throw new Exception(s"Unknown game status in $lineScoreFileName")
     }
   }
 
