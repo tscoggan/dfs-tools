@@ -2,7 +2,6 @@ package mlb.blogs
 
 import mlb._
 import mlb.model._
-import mlb.retrosheet._
 import utils.FileUtils
 import utils.Logger._
 import utils.FloatUtils._

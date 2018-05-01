@@ -4,13 +4,14 @@ import CustomTypes._
 import mlb._
 import mlb.model._
 import mlb.mlbdotcom.Player_MLB
+import utils.StringUtils._
 
 /**
  * Static data about a player
  */
 
 case class Player(
-    id: PlayerID, // Retrosheet player ID
+    id: MLBPlayerID, // MLB.com player ID
     name: String,
     bats: Handedness,
     throws: Handedness,
@@ -18,10 +19,11 @@ case class Player(
     position: Position,
     opponent: Option[Team] = None,
     visitingOrHomeTeam: Option[VisitingOrHomeTeam] = None, // for the upcoming game
-    mlbdotcom: Option[Player_MLB] = None,
+    mlbdotcom: Player_MLB,
     fanduel: Option[PlayerSiteInfo] = None,
-    draftkings: Option[PlayerSiteInfo] = None,
-    retrosheet: Option[PlayerSiteInfo] = None) {
+    draftkings: Option[PlayerSiteInfo] = None) {
+
+  val alternateName = mlbdotcom.alternateName
 
   lazy val battingPosition: Option[Int] = fanduel.flatMap(_.battingPosition).orElse(rg.StartingLineups.battingPositionOf(this))
 

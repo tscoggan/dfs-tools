@@ -2,7 +2,6 @@ package mlb.blogs
 
 import mlb._
 import mlb.model._
-import mlb.retrosheet._
 import utils.FileUtils
 import utils.Logger._
 import utils.FloatUtils._
@@ -12,17 +11,7 @@ import utils.StringUtils._
 
 object Season2017Review extends App {
 
-  val allStarGameDate = "2017-07-11".toDate("yyyy-MM-dd")
-
-  val games = FileUtils.getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
-
-  val season = Season("2017", games)
-
-  val season1stHalf = Season("2017 H1", games.filter(_.date.before(allStarGameDate)))
-
-  val season2ndHalf = Season("2017 H2", games.filter(_.date.after(allStarGameDate)))
-
-  log(s"Finished loading ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
+  import mlb.Season2017Stats._
 
   val hitterLeagueAvgPointsPerGameStarted = mean(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
   val hitterLeaguePointsPerGameStartedStdDev = stdDev(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))

@@ -13,8 +13,6 @@ object Configs {
   object Retrosheet {
     private val conf = Configs.conf.getConfig("retrosheet")
 
-    val dataFileDir_2017: String = conf.getString("data_file_dir_2017")
-
     val teamsFileName: String = conf.getString("teams_file")
   }
   
@@ -54,8 +52,6 @@ object Configs {
   val teamMappingsFile: String = conf.getString("team_mappings_file")
   
   val playerMappingsFile: String = conf.getString("player_mappings_file")
-  
-  val newPlayersFile: String = conf.getString("new_players_file")
   
   val teamsNotPlayingFile: String = conf.getString("teams_not_playing_file")
 

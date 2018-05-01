@@ -19,7 +19,7 @@ object Game_MLB {
   private val loadedThroughfileName = s"${Configs.MlbDotCom.dataFileDir}/games_loaded_through.txt"
 
   lazy val thisSeasonGames: List[Game] = loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
-  
+
   lazy val past1YearGames: List[Game] = {
     log(s"Loading MLB games from ${oneYearAgo.print()} to ${yesterday.print()}")
     loadGamesForDateRange(oneYearAgo, Configs.MlbDotCom.lastSeasonEndDate) ++ loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
@@ -45,6 +45,7 @@ object Game_MLB {
     val Array(year, month, day) = dateStr.split("-")
     val games = XML.load(baseURL + s"/components/game/mlb/year_$year/month_$month/day_$day/miniscoreboard.xml") \\ "game"
     games.flatMap(_.attribute("game_data_directory")).toList.flatten.map(g => baseURL + g.text + "/")
+      .filterNot(_.contains("aasmlb")) // ignore all-star games
   }
 
   def loadGameFromURL(url: String): Option[Game] = {
@@ -63,7 +64,7 @@ object Game_MLB {
 
     (lineScoreXML \ "@status").text match {
       case "Postponed" => None
-      case "Final" => {
+      case "Final" | "Completed Early" => {
         val eventsXML = fileExists(eventsFileName) match {
           case false =>
             val xml = XML.load(url + "game_events.xml")
@@ -96,7 +97,7 @@ object Game_MLB {
 
     (lineScoreXML \ "@status").text match {
       case "Postponed" => None
-      case "Final" => {
+      case "Final" | "Completed Early" => {
         val eventsXML = XML.loadFile(eventsFileName)
         val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)
         Some((new MLBGameParser(eventsXML, rawBoxScoreXML, lineScoreXML)).toGame)

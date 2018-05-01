@@ -18,6 +18,18 @@ case class Player_DK(
 
   val id: String = s"$name-$team" // is this unique?
   
+  val alternateName = name.substringBefore(" Jr.").replaceAll("\\.", "").trim
+  
+  val mlbPlayerID: Option[MLBPlayerID] = {
+    Players.playerMappings.find(_.dkNameAndTeam == this.id) match {
+      case Some(mapping) => Some(mapping.mlbPlayerID)
+      case None =>
+        Players.mlbDotComPlayers.find(mlb => mlb.team == this.team &&
+          (this.name.toUpperCase == mlb.name.toUpperCase ||
+            this.alternateName == mlb.alternateName)).map(_.id)
+    }
+  }
+  
   val opponent: Team = {
     val atIndex = game.indexOf('@')
     if (atIndex <= 0) log(s"WARNING: Unexpected format for DK game info: $game")
@@ -26,18 +38,18 @@ case class Player_DK(
     if (awayTeam == team) homeTeam else awayTeam
   }
 
-  val player: Option[Player] = {
-    Players.playerMappings.find(_.dkNameAndTeam == id) match {
-      case Some(mapping) =>
-        Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
-          Players.newPlayers.find(_.id == mapping.retrosheetID)
-        }
-      case None =>
-        Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse { // && p.team == team).orElse {
-          Players.newPlayers.find(p => p.name.toUpperCase == name.toUpperCase && p.team == team)
-        }
-    }
-  }
+//  val player: Option[Player] = {
+//    Players.playerMappings.find(_.dkNameAndTeam == id) match {
+//      case Some(mapping) =>
+//        Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
+//          Players.newPlayers.find(_.id == mapping.retrosheetID)
+//        }
+//      case None =>
+//        Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse { // && p.team == team).orElse {
+//          Players.newPlayers.find(p => p.name.toUpperCase == name.toUpperCase && p.team == team)
+//        }
+//    }
+//  }
 
   override def toString: String = s"DK[$name ($position, $team, $salary)]"
 

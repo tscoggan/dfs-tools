@@ -12,7 +12,7 @@ import scala.collection.mutable
 trait PlayerGameStats {
   var game: Option[Game] = None
   val gameDate: Date
-  val playerID: PlayerID
+  val playerID: MLBPlayerID
   val isStarter: Boolean
   var battingPosition: Int
 
@@ -105,7 +105,7 @@ trait PlayerGameStats {
   }
 }
 
-case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
+case class HitterGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this.hittingStats)
 
@@ -113,7 +113,7 @@ case class HitterGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolea
 
 }
 
-case class PitcherGameStats(gameDate: Date, playerID: PlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
+case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
 
   val pitchingStats: PitchingStats = new PitchingStats
 

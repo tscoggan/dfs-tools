@@ -37,17 +37,17 @@ import scala.annotation.tailrec
  */
 object StartingLineups {
 
-  case class PlayerMapping(retrosheetID: PlayerID, rgPlayerName: String, team: Team)
+  case class PlayerMapping(mlbPlayerID: MLBPlayerID, rgPlayerName: String, team: Team)
 
   private val playerMappings: List[PlayerMapping] = Source.fromFile(Configs.Rotogrinders.playerMappingsFile).getLines.toList.tail
     .map(_.substringBefore("//").trim)
     .filter(_.nonEmpty)
     .map {
       case nextLine =>
-        val Array(retrosheetID, rgPlayerName, teamID) = nextLine.splitCSV()
-        PlayerMapping(retrosheetID, rgPlayerName, Teams.get(teamID))
+        val Array(mlbPlayerID, rgPlayerName, teamID) = nextLine.splitCSV()
+        PlayerMapping(mlbPlayerID, rgPlayerName, Teams.get(teamID))
     }
-  log(s"Found ${playerMappings.length} Retrosheet-to-RG player mappings")
+  log(s"Found ${playerMappings.length} MLB-to-RG player mappings")
 
   lazy val battingOrderByTeam: Map[Team, BattingOrder] = {
     val lines = Source.fromFile(Configs.Rotogrinders.projectedStartersFile).getLines.toList.map(_.substringBefore("//").trim)
@@ -60,19 +60,15 @@ object StartingLineups {
         val team = Teams.get(teamID)
         val batters = lines.takeWhile(_.nonEmpty).map { line =>
           val position :: first :: last :: otherStuff = line.splitOnSpace().toList
-          Players.playersByTeam(team).find { p =>
-            playerMappings.find(m => m.rgPlayerName.toUpperCase == s"$first $last".toUpperCase && m.team == team) match {
-              case Some(mapping) =>
-                // mapping found --> use it
-                p.id == mapping.retrosheetID
-              case None => {
-                // no Retrosheet-to-RG mapping found --> try to match a player by name & team
-                (p.team == team) && (p.name.toUpperCase == s"$first $last".toUpperCase ||
-                  p.fanduel.map(_.name.toUpperCase).getOrElse("") == s"$first $last".toUpperCase ||
-                  p.draftkings.map(_.name.toUpperCase).getOrElse("") == s"$first $last".toUpperCase)
-              }
+          (playerMappings.find(m => m.rgPlayerName.toUpperCase == s"$first $last".toUpperCase && m.team == team) match {
+            case Some(mapping) =>
+              // mapping found --> use it
+              Players.playersByID.get(mapping.mlbPlayerID)
+            case None => {
+              // no MLB-to-RG mapping found --> try to match a player by name & team
+              Players.find(s"$first $last", team)
             }
-          } match {
+          }) match {
             case Some(player) => player
             case None         => throw new Exception(s"Couldn't find player named $first $last on $team --> please add to ${Configs.Rotogrinders.playerMappingsFile}")
           }
@@ -84,6 +80,8 @@ object StartingLineups {
   }
 
   lazy val all: List[BattingOrder] = battingOrderByTeam.values.toList
+  
+  //log(all.mkString("\n\n"))
 
   def isStarting(player: Player): Boolean = battingOrderByTeam.get(player.team) match {
     case Some(battingOrder) => battingOrder.contains(player)

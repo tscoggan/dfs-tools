@@ -1,6 +1,5 @@
 package mlb
 
-import retrosheet._
 import mlbdotcom._
 import model._
 import model.CustomTypes._
@@ -13,7 +12,7 @@ import scala.io.Source
 
 object Players {
 
-  case class PlayerMapping(retrosheetID: PlayerID, fdPlayerID: String, dkNameAndTeam: String, mlbPlayerID: String)
+  case class PlayerMapping(fdPlayerID: String, dkNameAndTeam: String, mlbPlayerID: MLBPlayerID)
 
   val teamsNotPlaying: List[Team] = Source.fromFile(Configs.teamsNotPlayingFile).getLines.toList
     .map(_.substringBefore("//").trim)
@@ -26,26 +25,19 @@ object Players {
     .filter(_.nonEmpty)
     .map {
       case nextLine =>
-        val Array(retrosheetID, fdPlayerID, dkNameAndTeam, mlbPlayerID) = nextLine.splitCSV()
-        PlayerMapping(retrosheetID, fdPlayerID.substringAfter("-"), dkNameAndTeam, mlbPlayerID)
+        val Array(mlbPlayerID, fdPlayerID, dkNameAndTeam) = nextLine.splitCSV()
+        PlayerMapping(fdPlayerID.substringAfter("-"), dkNameAndTeam, mlbPlayerID)
     }
   log(s"Found ${playerMappings.length} player mappings")
 
-  val retrosheetPlayers: List[Player] = {
-    getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".ROS").flatMap { file => PlayerData.parseFrom(file.getPath) }
-      .groupBy(_.id).map { case (k, v) => v.head }.toList // if duplicates because same player played on multiple teams, pick one
-  }
-  log(s"Found ${retrosheetPlayers.length} Retrosheet players")
+  val mlbDotComPlayers: List[Player_MLB] = Player_MLB.allPlayers
+  log(s"Found ${mlbDotComPlayers.length} MLB.com players")
 
-  val newPlayers: List[Player] = PlayerData.parseFrom(Configs.newPlayersFile)
-  log(s"Found ${newPlayers.length} new players")
+  val mlbDotComPlayersByID: Map[MLBPlayerID, Player_MLB] = mlbDotComPlayers.map(p => (p.id, p)).toMap
 
-  (retrosheetPlayers ++ newPlayers).groupBy(_.id).foreach {
-    case (id, players) => if (players.length > 1) log(s"WARNING: ${players.length} Retrosheet players with same id: $id")
-  }
-  (retrosheetPlayers ++ newPlayers).groupBy(_.name).foreach {
-    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} Retrosheet players with same name: ${players.mkString(", ")}")
-  }
+  //  mlbDotComPlayers.groupBy(_.name).foreach {
+  //    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} MLB.com players with same name: ${players.mkString(", ")}")
+  //  }
 
   val fanduelPlayers: List[Player_FD] = {
     val file = getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
@@ -57,9 +49,9 @@ object Players {
   } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // ignore non-starting pitchers
   log(s"Found ${fanduelPlayers.length} FD players")
 
-  fanduelPlayers.groupBy(_.nickname).foreach {
-    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} FD players with same name: ${players.mkString(", ")}")
-  }
+  //  fanduelPlayers.groupBy(_.nickname).foreach {
+  //    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} FD players with same name: ${players.mkString(", ")}")
+  //  }
 
   val draftkingsPlayers: List[Player_DK] = {
     getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
@@ -74,34 +66,14 @@ object Players {
   } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // ignore non-starting pitchers
   log(s"Found ${draftkingsPlayers.length} DK players")
 
-  draftkingsPlayers.groupBy(_.name).foreach {
-    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} DK players with same name: ${players.mkString(", ")}")
-  }
+  //  draftkingsPlayers.groupBy(_.name).foreach {
+  //    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} DK players with same name: ${players.mkString(", ")}")
+  //  }
 
-  val mlbDotComPlayers: List[Player_MLB] = Player_MLB.allPlayers
-  log(s"Found ${mlbDotComPlayers.length} MLB.com players")
+  val allPlayers: List[Player] = mlbDotComPlayers map { player =>
+    val fanduel = fanduelPlayers.find(_.mlbPlayerID.getOrElse("") == player.id)
 
-  val mlbDotComPlayersByID: Map[MLBPlayerID, Player_MLB] = mlbDotComPlayers.map(p => (p.id, p)).toMap
-
-  mlbDotComPlayers.groupBy(_.name).foreach {
-    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} MLB.com players with same name: ${players.mkString(", ")}")
-  }
-
-  val allPlayers: List[Player] = (retrosheetPlayers ++ newPlayers) map { player =>
-    val retrosheet = PlayerSiteInfo(player.name, player.team, player.position, 0, None, None)
-    val fanduel = fanduelPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
-    val draftkings = draftkingsPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
-    val mlbdotcom = mlbDotComPlayers.find(_.player.map(_.id).getOrElse("") == player.id)
-
-    val (newName, newPosition) = fanduel match {
-      case Some(fd) => (fd.nickname, fd.position: Position)
-      case None => draftkings match {
-        case Some(dk) => (dk.name, dk.position: Position)
-        case None     => (player.name, player.position)
-      }
-    }
-
-    val newTeam = fanduel.map(_.team).orElse(draftkings.map(_.team)).getOrElse(player.team)
+    val draftkings = draftkingsPlayers.find(_.mlbPlayerID.getOrElse("") == player.id)
 
     val newOpponent = fanduel.map(_.opponent).orElse(draftkings.map(_.opponent))
 
@@ -141,16 +113,23 @@ object Players {
       }
     }
 
-    player.copy(name = newName, position = newPosition, team = newTeam, opponent = newOpponent,
-      fanduel = fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary,
-        p.probablePitcher.orElse(p.battingOrder.map(_ > 0)), newBattingPosition)),
-      draftkings = draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)),
-      retrosheet = Some(retrosheet),
-      visitingOrHomeTeam = visitingOrHomeTeam,
-      mlbdotcom = mlbdotcom)
+    Player(
+      player.id,
+      player.name,
+      player.bats,
+      player.throws,
+      player.team,
+      player.position,
+      newOpponent,
+      visitingOrHomeTeam,
+      player,
+      fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.probablePitcher.orElse(p.battingOrder.map(_ > 0)), newBattingPosition)),
+      draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
   }
 
-  val playersByID: Map[PlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
+  fanduelPlayers.filter(_.mlbPlayerID.isEmpty).foreach { p => throw new Exception(s"WARNING: No MLB player found for FD player $p with alternate name [${p.alternateName}]") }
+
+  val playersByID: Map[MLBPlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
 
   val playersByTeam: Map[Team, List[Player]] = allPlayers.groupBy(_.team)
 
@@ -167,11 +146,21 @@ object Players {
 
   val startingHittersByTeam: Map[Team, List[Player]] = startingHitters.groupBy(_.team).map { case (team, hitters) => (team, hitters.sortBy(_.battingPosition.getOrElse(10))) }
 
-  //    println("\nStarters: \n" + startingPlayersByTeam.map {
-  //      case (team, players) =>
-  //        s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
-  //          .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
-  //    }.mkString("\n"))
+  //  log("\nStarters: \n" + startingPlayersByTeam.map {
+  //    case (team, players) =>
+  //      s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
+  //        .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
+  //  }.mkString("\n"))
+
+  def find(playerName: String, team: Team): Option[Player] = {
+    val alternateName = playerName.substringBefore(" Jr.").replaceAll("\\.", "").trim
+    playersByTeam(team).find { p =>
+      (p.team == team) && (p.name.toUpperCase == playerName.toUpperCase ||
+        p.fanduel.map(_.name.toUpperCase).getOrElse("") == playerName.toUpperCase ||
+        p.draftkings.map(_.name.toUpperCase).getOrElse("") == playerName.toUpperCase ||
+        p.alternateName.toUpperCase == alternateName.toUpperCase)
+    }
+  }
 
   def get(playerID: String): Player = playersByID.get(playerID).get // throws exception if playerID is invalid
 }

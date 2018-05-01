@@ -4,7 +4,7 @@ import mlb.Configs
 import CustomTypes._
 
 case class PlayerSeasonStats(player: Player, games: List[PlayerGameStats]) {
-  val playerID: PlayerID = player.id
+  val playerID: MLBPlayerID = player.id
 
   lazy val isPitcher: Boolean = player.position == Pitcher
 

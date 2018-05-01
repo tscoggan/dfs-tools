@@ -3,7 +3,6 @@ package mlb.model
 import mlb.Players
 
 object CustomTypes {
-  type PlayerID = String // Retrosheet player ID
   type MLBPlayerID = String // MLB.com player ID
   type TeamID = String
   type GameNumber = Int

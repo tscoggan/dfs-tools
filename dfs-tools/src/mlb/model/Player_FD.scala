@@ -24,16 +24,15 @@ case class Player_FD(
     probablePitcher: Option[Boolean],
     battingOrder: Option[Int]) {
 
-  val player: Option[Player] = {
-    Players.playerMappings.find(_.fdPlayerID == id) match {
-      case Some(mapping) =>
-        Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
-          Players.newPlayers.find(_.id == mapping.retrosheetID)
-        }
+  val alternateName = nickname.substringBefore(" Jr.").replaceAll("\\.", "").trim
+  
+  val mlbPlayerID: Option[MLBPlayerID] = {
+    Players.playerMappings.find(_.fdPlayerID == this.id) match {
+      case Some(mapping) => Some(mapping.mlbPlayerID)
       case None =>
-        Players.retrosheetPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase).orElse { // && p.team == team).orElse {
-          Players.newPlayers.find(p => p.name.toUpperCase == nickname.toUpperCase && p.team == team)
-        }
+        Players.mlbDotComPlayers.find(mlb => mlb.team == this.team &&
+          (this.nickname.toUpperCase == mlb.name.toUpperCase ||
+            this.alternateName == mlb.alternateName)).map(_.id)
     }
   }
 

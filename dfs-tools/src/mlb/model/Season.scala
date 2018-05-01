@@ -5,7 +5,7 @@ import mlb._
 
 case class Season(label: String, games: List[Game]) {
 
-  val statsByPlayer: Map[PlayerID, PlayerSeasonStats] = {
+  val statsByPlayer: Map[MLBPlayerID, PlayerSeasonStats] = {
     games.flatMap { game =>
       val aps = game.allPlayerStats
       aps.foreach { pgs => pgs.game = Some(game) }

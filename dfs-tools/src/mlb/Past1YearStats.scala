@@ -21,7 +21,7 @@ object Past1YearStats {
   val season = Season("Past 1 Year", games)
 
   log(s"Finished loading ${season.label} games: ${games.length} games " +
-      s"--- ${games.filter(_.date.after(Configs.MlbDotCom.seasonStartDate.previousDay))} games from this season")
+      s"--- ${games.filter(_.date.after(Configs.MlbDotCom.seasonStartDate.previousDay)).length} games from this season")
   
   val stats = HistoricalStats(season)
 

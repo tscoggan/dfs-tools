@@ -3,7 +3,7 @@ package mlb
 import mlb._
 import mlb.model._
 import mlb.model.CustomTypes._
-import mlb.retrosheet._
+import mlbdotcom._
 import utils.FileUtils
 import utils.Logger._
 import utils.FloatUtils._
@@ -15,7 +15,7 @@ object Season2017Stats {
   
   val allStarGameDate = "2017-07-11".toDate("yyyy-MM-dd")
 
-  val games = FileUtils.getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
+  val games = Game_MLB.loadGamesForDateRange("2017-04-02".toDate("yyyy-MM-dd"), "2017-10-01".toDate("yyyy-MM-dd"))
 
   val season = Season("2017", games)
 

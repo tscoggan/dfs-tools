@@ -20,35 +20,17 @@ case class Player_MLB(
     bats: Handedness,
     throws: Handedness,
     team: Team,
-    position: Position,
-    retrosheetID: Option[PlayerID] = None) {
+    position: Position) {
 
   val name: String = s"$firstName $lastName"
+  
+  val alternateName = name.substringBefore(" Jr.").replaceAll("\\.", "").trim
 
-  val player: Option[Player] = retrosheetID match {
-    case Some(rsID) =>
-      Players.retrosheetPlayers.find(_.id == rsID).orElse {
-        Players.newPlayers.find(_.id == rsID)
-      }
-    case None =>
-      Players.playerMappings.find(_.mlbPlayerID == id) match {
-        case Some(mapping) =>
-          Players.retrosheetPlayers.find(_.id == mapping.retrosheetID).orElse {
-            Players.newPlayers.find(_.id == mapping.retrosheetID)
-          }
-        case None =>
-          Players.retrosheetPlayers.find(p => p.name.toUpperCase == name.toUpperCase).orElse { // && p.team == team).orElse {
-            Players.newPlayers.find(p => p.name.toUpperCase == name.toUpperCase && p.team == team)
-          }
-      }
-  }
-
-  def toCSV: String = List(id, lastName, firstName, bats, throws, team, position, player.map(_.id).getOrElse("???")).mkString("|")
+  def toCSV: String = List(id, lastName, firstName, bats, throws, team, position).mkString("|")
 
   override def toString: String = s"MLB[$name ($position, $team)]"
 
-  def toStringVerbose: String = s"Player_MLB[id=$id, name=$name, team=$team, position=$position, bats=$bats, throws=$throws, " +
-    s"retrosheetID=${retrosheetID.getOrElse("???")}, player=${player.map(_.toString()).getOrElse("???")}]"
+  def toStringVerbose: String = s"Player_MLB[id=$id, name=$name, team=$team, position=$position, bats=$bats, throws=$throws]"
 }
 
 object Player_MLB {
@@ -60,11 +42,18 @@ object Player_MLB {
 
   val allPlayers: List[Player_MLB] = {
     val existingPlayers = loadPlayersFromFile
-    val loadStartDate = playersLoadedThrough.map(_.nextDay).getOrElse(oneYearAgo)
-    val datesToLoad = getDatesBetween(loadStartDate, yesterday)
+    val datesToLoad = {
+      playersLoadedThrough match {
+        case Some(lastLoadDate) => getDatesBetween(lastLoadDate.nextDay, yesterday)
+        case None               => getDatesBetween(oneYearAgo, Configs.MlbDotCom.lastSeasonEndDate) ++ getDatesBetween(Configs.MlbDotCom.seasonStartDate, yesterday)
+      }
+    }.sorted
     log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")
     val playerURLs = datesToLoad.flatMap(Game_MLB.getGameURLs(_)).flatMap(getPlayerURLs(_))
-      .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map { case (playerID, urls) => urls.head }
+      .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map {
+        case (playerID, urls) =>
+          urls.sortBy(_.substringAfter("gid_").take(10).toDate("yyyy_MM_dd")).last // load player from most recent URL to ensure current team
+      }
     log(s"Found ${playerURLs.length} distinct player URL's")
     val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
       .flatMap(loadPlayerFromURL(_)).distinct
@@ -99,18 +88,14 @@ object Player_MLB {
 
     Some(Player_MLB(id, lastName, firstName, bats, throws, Teams.get(teamID), position))
   } catch {
-    case e: Exception => 
+    case e: Exception =>
       log(s"Error loading player from $url: ${e.getMessage}")
       None
   }
 
   private def loadPlayerFromCSV(csv: String): Player_MLB = {
-    val Array(id, lastName, firstName, bats, throws, team, position, retrosheetID) = csv.split("\\|")
-    val rsID = retrosheetID.trim match {
-      case "???" | "" => None
-      case validID    => Some(validID)
-    }
-    Player_MLB(id, lastName, firstName, bats, throws, Teams.get(team), position, rsID)
+    val Array(id, lastName, firstName, bats, throws, team, position) = csv.split("\\|")
+    Player_MLB(id, lastName, firstName, bats, throws, Teams.get(team), position)
   }
 
   def savePlayersToFile(players: List[Player_MLB], overwrite: Boolean = false): Unit = {

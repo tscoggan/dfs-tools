@@ -17,7 +17,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
   private val VISITING_TEAM: HomeOrAway = 0
   private val HOME_TEAM: HomeOrAway = 1
 
-  implicit def playerIDToPlayer(playerID: MLBPlayerID): Player = Players.mlbDotComPlayersByID.get(playerID).flatMap(_.player) match {
+  implicit def playerIDToPlayer(playerID: MLBPlayerID): Player = Players.playersByID.get(playerID) match {
     case Some(player) => player
     case None         => throw new Exception("Couldn't find player with MLB.com ID " + playerID)
   }
@@ -46,7 +46,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
 
   logDebug(s"### ${date.print()} $visitingTeam @ $homeTeam ###")
 
-  val playerDisplayNames: mutable.Map[PlayerID, String] = mutable.Map.empty
+  val playerDisplayNames: mutable.Map[MLBPlayerID, String] = mutable.Map.empty
   val mlbPlayerIdByDisplayName: mutable.Map[(String, HomeOrAway), MLBPlayerID] = mutable.Map.empty
 
   // all players who played in this game
@@ -63,7 +63,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       if (batOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
 
         Some((mlbPlayerID, HitterGameStats(date, player.id, batOrder.tail == "00", batOrder.head.asDigit)))
@@ -79,7 +80,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       if (pitchOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
 
         val pitcher = PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)
@@ -106,7 +108,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       if (batOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
 
         Some((mlbPlayerID, HitterGameStats(date, player.id, batOrder.tail == "00", batOrder.head.asDigit)))
@@ -122,7 +125,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       if (pitchOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
 
         val pitcher = PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)
@@ -191,7 +195,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         val runnersWhoScored: List[PlayerGameStats] = if (description.contains("scores")) {
           namesOfPlayersWhoScored(description).map {
             case playerDisplayName =>
-              val mlbPlayerID = mlbPlayerIdByDisplayName((playerDisplayName, battingTeam))
+              val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((playerDisplayName, battingTeam),
+                mlbPlayerIdByDisplayName((playerDisplayName.head + " " + playerDisplayName.substringAfterLast(" "), battingTeam)))
               val player = battingTeam match {
                 case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
                 case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
@@ -283,8 +288,12 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
               case "Pickoff 1B"               => //???
               case "Pickoff 2B"               => //???
               case "Pickoff 3B"               => //???
+              case "Pickoff Attempt 1B"       => //???
+              case "Pickoff Attempt 2B"       => //???
+              case "Pickoff Attempt 3B"       => //???
               case "Pickoff Error 1B"         => //???
               case "Pickoff Error 2B"         => //???
+              case "Pickoff Error 3B"         => //???
               case "Pitching Substitution"    => //???
               case "Player Injured"           => //???
               case "Runner Advance"           => //???
@@ -292,7 +301,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
                 namesOfPlayersWhoStoleBase(description).map {
                   case (playerDisplayName, stoleHome) =>
-                    val mlbPlayerID = mlbPlayerIdByDisplayName((playerDisplayName, battingTeam))
+                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((playerDisplayName, battingTeam),
+                      mlbPlayerIdByDisplayName((playerDisplayName.head + " " + playerDisplayName.substringAfterLast(" "), battingTeam)))
                     val player = battingTeam match {
                       case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
                       case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
@@ -305,6 +315,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
               case "Umpire Substitution" => //???
               case "Wild Pitch"          => //???
               case "Batter Turn"         => //???
+              case "Pitch Challenge"     => //???
               case _                     => throw new Exception("Unknown event: " + event)
             }
           }

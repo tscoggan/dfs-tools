@@ -25,8 +25,10 @@ object MLBTestApp extends App {
 
   //  rg.StartingLineups.all.foreach(println(_))
 
-  val games = Game_MLB.thisSeasonGames
-  println(s"Found ${games.length} games")
-  games.foreach { g => println(g + "\n\n") }
+//  val games = Game_MLB.thisSeasonGames
+//  println(s"Found ${games.length} games")
+//  games.foreach { g => println(g + "\n\n") }
+  
+  println("D.J. Young Jr. Jr.".substringBefore(" Jr.").replaceAll("\\.", "").trim)
 
 }
