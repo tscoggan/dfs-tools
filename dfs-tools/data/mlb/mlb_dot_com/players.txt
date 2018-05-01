@@ -281,7 +281,7 @@
 474029|Putnam|Zach|R|R|CWS|P
 474039|Beato|Pedro|R|R|PHI|P
 474319|Snyder|Brandon|R|R|TB|1B
-474463|Anderson|Brett|L|L|TOR|P
+474463|Anderson|Brett|L|L|OAK|P
 474521|Tolleson|Shawn|R|R|TB|P
 474568|Mercer|Jordy|R|R|PIT|SS
 474699|Worley|Vance|R|R|MIA|P
@@ -317,7 +317,7 @@
 488862|Escobar|Yunel|R|R|LAA|3B
 488912|Gosewisch|Tuffy|R|R|SEA|C
 488984|Hunter|Tommy|R|R|PHI|P
-489119|Miley|Wade|L|L|BAL|P
+489119|Miley|Wade|L|L|MIL|P
 489138|Moore|Tyler|R|R|MIA|1B
 489149|Morrison|Logan|L|L|MIN|1B
 489232|Recker|Anthony|R|R|MIN|C
@@ -725,7 +725,7 @@
 571437|Altherr|Aaron|R|R|PHI|OF
 571448|Arenado|Nolan|R|R|COL|3B
 571466|Barnhart|Tucker|S|R|CIN|C
-571473|Baumann|Buddy|L|L|SD|P
+571473|Baumann|Buddy|L|L|NYM|P
 571476|Beck|Chris|R|R|CWS|P
 571506|Bour|Justin|L|R|MIA|1B
 571510|Boyd|Matthew|L|L|DET|P

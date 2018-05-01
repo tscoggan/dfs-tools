@@ -140,7 +140,8 @@ object Players {
     case unmatchedPlayers => throw new Exception("Starting players with no FD or DK matches: \n\t" + unmatchedPlayers.mkString("\n\t"))
   }
 
-  val (startingPitchers: List[Player], startingHitters: List[Player]) = startingPlayers.partition(_.position == Pitcher)
+  val (startingPitchers: List[Player], startingHitters: List[Player]) =
+    startingPlayers.partition(p => p.fanduel.map(_.position).orElse(p.draftkings.map(_.position)).getOrElse(p.position) == Pitcher)
 
   val startingPlayersByTeam: Map[Team, List[Player]] = startingPlayers.groupBy(_.team)
 

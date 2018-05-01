@@ -5,6 +5,7 @@ import mlbdotcom._
 import model._
 import utils._
 import utils.StringUtils._
+import utils.DateTimeUtils._
 import scala.util.{ Try, Success, Failure }
 
 object MLBTestApp extends App {
@@ -25,10 +26,9 @@ object MLBTestApp extends App {
 
   //  rg.StartingLineups.all.foreach(println(_))
 
-//  val games = Game_MLB.thisSeasonGames
-//  println(s"Found ${games.length} games")
-//  games.foreach { g => println(g + "\n\n") }
-  
-  println("D.J. Young Jr. Jr.".substringBefore(" Jr.").replaceAll("\\.", "").trim)
+  val games = Game_MLB.loadGamesForDateRange(yesterday, yesterday)
+  println(s"Found ${games.length} games")
+  games.foreach { g => println(g + "\n\n") }
+
 
 }
