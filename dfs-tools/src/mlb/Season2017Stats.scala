@@ -23,7 +23,7 @@ object Season2017Stats {
 
   val season2ndHalf = Season("2017 H2", games.filter(_.date.after(allStarGameDate)))
 
-  log(s"Finished loading ${season.year} season: ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
+  log(s"Finished loading ${season.label} season: ${games.length} games --- ${season2ndHalf.games.length} games after All-Star break")
   
   val stats = HistoricalStats(season)
 

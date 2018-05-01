@@ -24,6 +24,7 @@ object Configs {
     val baseURL: String = conf.getString("base_url")
     
     val seasonStartDate: Date = conf.getString("season_start_date").toDate("yyyy-MM-dd")
+    val lastSeasonEndDate: Date = conf.getString("last_season_end_date").toDate("yyyy-MM-dd")
     
     val dataFileDir: String = conf.getString("data_file_dir")
     

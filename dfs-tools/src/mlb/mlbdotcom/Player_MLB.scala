@@ -60,14 +60,14 @@ object Player_MLB {
 
   val allPlayers: List[Player_MLB] = {
     val existingPlayers = loadPlayersFromFile
-    val loadStartDate = playersLoadedThrough.map(_.nextDay).getOrElse(Configs.MlbDotCom.seasonStartDate)
+    val loadStartDate = playersLoadedThrough.map(_.nextDay).getOrElse(oneYearAgo)
     val datesToLoad = getDatesBetween(loadStartDate, yesterday)
     log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")
     val playerURLs = datesToLoad.flatMap(Game_MLB.getGameURLs(_)).flatMap(getPlayerURLs(_))
       .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map { case (playerID, urls) => urls.head }
     log(s"Found ${playerURLs.length} distinct player URL's")
     val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
-      .map(loadPlayerFromURL(_)).distinct
+      .flatMap(loadPlayerFromURL(_)).distinct
     log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
     if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, false) // save new players to file
     writeToFile(yesterday.print("yyyy-MM-dd"), loadedThroughfileName, true)
@@ -84,7 +84,7 @@ object Player_MLB {
     case e: java.io.FileNotFoundException => Nil
   }
 
-  def loadPlayerFromURL(url: String): Player_MLB = {
+  def loadPlayerFromURL(url: String): Option[Player_MLB] = try {
     val xml = XML.load(url)
     val id = (xml \ "@id").text
     val lastName = (xml \ "@last_name").text
@@ -97,7 +97,11 @@ object Player_MLB {
 
     //log(s"teamID: $teamID, id: $id, firstName: $firstName, lastName: $lastName, position: $position, bats: $bats, throws: $throws")
 
-    Player_MLB(id, lastName, firstName, bats, throws, Teams.get(teamID), position)
+    Some(Player_MLB(id, lastName, firstName, bats, throws, Teams.get(teamID), position))
+  } catch {
+    case e: Exception => 
+      log(s"Error loading player from $url: ${e.getMessage}")
+      None
   }
 
   private def loadPlayerFromCSV(csv: String): Player_MLB = {

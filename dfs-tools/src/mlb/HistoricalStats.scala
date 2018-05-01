@@ -290,7 +290,7 @@ case class HistoricalStats(season: Season) {
   //  }.mkString("\n\t"))
 
   def logSummary: Unit = {
-    log(s"*************** ${season.year} Season Summary --- All players ***************")
+    log(s"*************** ${season.label} Season Summary --- All players ***************")
     log(s"FanDuel - \n\tLeague avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted_FD.rounded(2)}, \n\t" +
       s"std deviation: ${hitterLeaguePointsPerGameStartedStdDev_FD.rounded(2)}\n\tLeague avg FPTS per plate appearance for hitters: ${hitterLeagueAvgPointsPerAtBat_FD.rounded(2)}")
     log(s"DraftKings - \n\tLeague avg PPG for hitters: ${hitterLeagueAvgPointsPerGameStarted_DK.rounded(2)}, \n\t" +

@@ -12,6 +12,8 @@ object DateTimeUtils {
   def today: Date = Calendar.getInstance.getTime
   
   def yesterday: Date = today.previousDay
+  
+  def oneYearAgo: Date = today.minusDays(365)
 
   def timeInSeconds[T](code: => T): (T, Int) = {
     val t1 = System.currentTimeMillis

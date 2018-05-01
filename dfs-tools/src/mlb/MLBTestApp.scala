@@ -25,7 +25,8 @@ object MLBTestApp extends App {
 
   //  rg.StartingLineups.all.foreach(println(_))
 
-  val games = Game_MLB.allGames
+  val games = Game_MLB.thisSeasonGames
   println(s"Found ${games.length} games")
+  games.foreach { g => println(g + "\n\n") }
 
 }
