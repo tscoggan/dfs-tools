@@ -748,7 +748,7 @@
 571704|Giles|Ken|R|R|HOU|P
 571710|Givens|Mychal|R|R|BAL|P
 571718|Goodwin|Brian|L|R|WAS|OF
-571735|Hale|David|R|R|MIN|P
+571735|Hale|David|R|R|NYY|P
 571740|Hamilton|Billy|S|R|CIN|OF
 571745|Haniger|Mitch|R|R|SEA|OF
 571757|Hazelbaker|Jeremy|L|R|ARI|OF
@@ -1370,7 +1370,7 @@
 641627|Gott|Trevor|R|R|WAS|P
 641729|Jimenez|Joe|R|R|DET|P
 641745|Keller|Brad|R|R|KC|P
-641755|Kinley|Tyler|R|R|MIN|P
+641755|Kinley|Tyler|R|R|MIA|P
 641771|Kuhl|Chad|R|R|PIT|P
 641778|Lauer|Eric|R|L|SD|P
 641796|Locastro|Tim|R|R|LAD|2B
@@ -1488,3 +1488,4 @@
 670950|Richards|Trevor|R|R|MIA|P
 673633|Hirano|Yoshihisa|R|R|ARI|P
 676866|Azuaje|Jesus|R|R|PHI|P
+647336|Soroka|Mike|R|R|ATL|P
