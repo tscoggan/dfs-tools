@@ -226,7 +226,11 @@ object Draftbook extends App {
 
   val startingPitcherStats: Map[Player, PitcherStats] = startingPitchers.filter(season.hasStatsFor(_)).map { p => (p, PitcherStats(p)) }.toMap
 
-  println("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
+  log("\n**************************************************")
+  log("*** All starters ***")
+  log("**************************************************\n")
+
+  log("\n\nStarting pitchers: \n" + startingPitchers.sortBy(_.name).map { pitcher =>
     s"$pitcher [${pitcherStatsAllowedToAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("???")} FPTS/AB against (FanDuel), " +
       s"${pitcherStatsAllowedToAllHitters.get(pitcher).map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("???")} FPTS/AB against (DraftKings)] vs: \n\t${
         startingHittersByTeam(pitcher.opponent.get).map { hitter =>
@@ -261,14 +265,14 @@ object Draftbook extends App {
           val vsRight = pitcherStatsAllowedToRighties.get(p)
 
           s"|${p.toStringTeamOnly}|${p.opponent.get}|" +
-            s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|" +
-            s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("N/A")} PA)_%|"
+            s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+            s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|"
         }.mkString("\n")
       log(s"|||_\\4. FPTS / PA given up (FanDuel)|_\\4. FPTS / PA given up (DraftKings)|\n" +
         s"|_. Pitcher|_. Opponent|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|\n" +
@@ -285,7 +289,7 @@ object Draftbook extends App {
               pitcher.opponent.get,
               statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A"),
               statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A"),
-              statsAgainst.map(_.atBatsAgainst).getOrElse("N/A"))
+              statsAgainst.map(_.atBatsAgainst).getOrElse("0"))
           }))
   }
 
@@ -365,7 +369,7 @@ object Draftbook extends App {
           }
         }.mkString("\n\t")
   }.foreach(log(_))
-  
+
   log("\n### Top 2-hitter stacks by projected value (FanDuel) --- only includes batting positions 1-7: ###\n")
   teamsOnSlate.map { team =>
     val stack = startingHittersByTeam(team)

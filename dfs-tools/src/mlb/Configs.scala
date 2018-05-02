@@ -40,6 +40,9 @@ object Configs {
   
   val blogFormat: String = conf.getString("blog_format")
   
+  val overweightRecent: Boolean = conf.getBoolean("overweight_recent_performance")
+  val recentDaysToOverweight: Int = conf.getInt("recent_number_of_days_to_overweight")
+  
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {

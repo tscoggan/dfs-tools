@@ -2,6 +2,7 @@ package mlb.model
 
 import CustomTypes._
 import mlb._
+import utils.DateTimeUtils._
 
 case class Season(label: String, games: List[Game]) {
 
@@ -28,10 +29,7 @@ case class Season(label: String, games: List[Game]) {
   }
 
   def pitcherFptsPerAB_vs_Hitter(pitcher: Player, hitter: Player, scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    val (fptsPerGame, atBatsPerGame) = pitcherStatsAgainstHitter(pitcher, hitter)
-      .map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
-    val totalAtBats = atBatsPerGame.sum
-    if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    batterVsPitcherStatsHelper(pitcherStatsAgainstHitter(pitcher, hitter), scoringSystem)
   }
 
   def pitcherStatsAgainstHitters(pitcher: Player, hitters: List[Player]): List[PitchingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
@@ -41,10 +39,7 @@ case class Season(label: String, games: List[Game]) {
   }.flatten
 
   def pitcherFptsPerAB_vs_Hitters(pitcher: Player, hitters: List[Player], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    val (fptsPerGame, atBatsPerGame) = pitcherStatsAgainstHitters(pitcher, hitters)
-      .map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
-    val totalAtBats = atBatsPerGame.sum
-    if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    batterVsPitcherStatsHelper(pitcherStatsAgainstHitters(pitcher, hitters), scoringSystem)
   }
 
   def pitcherStatsAllowedToHitter(pitcher: Player, hitter: Player): List[HittingStats] = statsByPlayer.get(pitcher.id) match {
@@ -57,17 +52,11 @@ case class Season(label: String, games: List[Game]) {
   }
 
   def hitterFptsPerAB_vs_Pitcher(pitcher: Player, hitter: Player, scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    val (fptsPerGame, atBatsPerGame) = pitcherStatsAllowedToHitter(pitcher, hitter)
-      .map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
-    val totalAtBats = atBatsPerGame.sum
-    if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    batterVsPitcherStatsHelper(pitcherStatsAllowedToHitter(pitcher, hitter), scoringSystem)
   }
 
   def hitterFptsPerAB_vs_Pitchers(pitchers: List[Player], hitter: Player, scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    val (fptsPerGame, atBatsPerGame) = pitchers.flatMap { pitcher => pitcherStatsAllowedToHitter(pitcher, hitter) }
-      .map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
-    val totalAtBats = atBatsPerGame.sum
-    if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    batterVsPitcherStatsHelper(pitchers.flatMap { pitcher => pitcherStatsAllowedToHitter(pitcher, hitter) }, scoringSystem)
   }
 
   def hitterStatsAgainstPitcherType(throws: Handedness, hitter: Player): List[HittingStats] = {
@@ -75,10 +64,7 @@ case class Season(label: String, games: List[Game]) {
   }
 
   def hitterFptsPerAB_vs_PitcherType(throws: Handedness, hitter: Player, scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    val (fptsPerGame, atBatsPerGame) = hitterStatsAgainstPitcherType(throws, hitter)
-      .map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
-    val totalAtBats = atBatsPerGame.sum
-    if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    batterVsPitcherStatsHelper(hitterStatsAgainstPitcherType(throws, hitter), scoringSystem)
   }
 
   def pitcherStatsAllowedToHitters(pitcher: Player, hitters: List[Player]): List[HittingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
@@ -88,10 +74,24 @@ case class Season(label: String, games: List[Game]) {
   }.flatten
 
   def hittersFptsPerAB_vs_Pitcher(pitcher: Player, hitters: List[Player], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    val (fptsPerGame, atBatsPerGame) = pitcherStatsAllowedToHitters(pitcher, hitters)
-      .map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
-    val totalAtBats = atBatsPerGame.sum
-    if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    batterVsPitcherStatsHelper(pitcherStatsAllowedToHitters(pitcher, hitters), scoringSystem)
+  }
+
+  private def batterVsPitcherStatsHelper(stats: List[PlayerStats], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
+    if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
+      val (recentGames, oldGames) = stats.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+
+      val (recentFptsPerGame, recentAtBatsPerGame) = recentGames.map { case game => (game.fantasyPoints(scoringSystem).toDouble * 2, game.atBats) }.unzip
+      val (oldFptsPerGame, oldAtBatsPerGame) = oldGames.map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
+
+      val weightedTotalAtBats = recentAtBatsPerGame.map(_ * 2).sum + oldAtBatsPerGame.sum
+      val totalAtBats = recentAtBatsPerGame.sum + oldAtBatsPerGame.sum
+      if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, (recentFptsPerGame ++ oldFptsPerGame).sum / weightedTotalAtBats)) else None
+    } else {
+      val (fptsPerGame, atBatsPerGame) = stats.map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
+      val totalAtBats = atBatsPerGame.sum
+      if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, fptsPerGame.sum / totalAtBats)) else None
+    }
   }
 
 }

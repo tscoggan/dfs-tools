@@ -16,7 +16,7 @@ trait PlayerGameStats {
   val isStarter: Boolean
   var battingPosition: Int
 
-  val hittingStats: HittingStats = new HittingStats
+  val hittingStats: HittingStats = new HittingStats(gameDate)
 
   lazy val player: Player = Players.get(playerID)
 
@@ -115,7 +115,7 @@ case class HitterGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Boo
 
 case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Boolean, var battingPosition: Int) extends PlayerGameStats {
 
-  val pitchingStats: PitchingStats = new PitchingStats
+  val pitchingStats: PitchingStats = new PitchingStats(gameDate)
 
   private val pitchingStatsByHitter: mutable.Map[Player, PitchingStats] = mutable.Map.empty
 
@@ -124,7 +124,7 @@ case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Bo
   def pitchingStatsAgainst(hitter: Player, updateStats: Boolean = false): PitchingStats = pitchingStatsByHitter.get(hitter) match {
     case Some(stats) => stats
     case None => synchronized {
-      val stats = new PitchingStats
+      val stats = new PitchingStats(gameDate)
       if (updateStats) pitchingStatsByHitter(hitter) = stats
       stats
     }
@@ -133,12 +133,12 @@ case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Bo
   def hittingStatsAllowedTo(hitter: Player, updateStats: Boolean = false): HittingStats = hittingStatsAllowedByHitter.get(hitter) match {
     case Some(stats) => stats
     case None => synchronized {
-      val stats = new HittingStats
+      val stats = new HittingStats(gameDate)
       if (updateStats) hittingStatsAllowedByHitter(hitter) = stats
       stats
     }
   }
-  
+
   lazy val hittingStatsAllowed: List[HittingStats] = hittingStatsAllowedByHitter.values.toList
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this.pitchingStats)
@@ -204,12 +204,15 @@ case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Bo
 }
 
 trait PlayerStats {
+  
+  val gameDate: Date
+  var atBats: Int
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this)
 
 }
 
-class HittingStats extends PlayerStats {
+class HittingStats(val gameDate: Date) extends PlayerStats {
   var atBats = 0
   def addAtBat = {
     atBats += 1
@@ -260,7 +263,7 @@ class HittingStats extends PlayerStats {
 
 }
 
-class PitchingStats extends PlayerStats {
+class PitchingStats(val gameDate: Date) extends PlayerStats {
 
   var atBats = 0
   def addAtBat = {
