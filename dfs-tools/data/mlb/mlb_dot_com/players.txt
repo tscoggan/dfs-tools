@@ -1489,3 +1489,6 @@
 673633|Hirano|Yoshihisa|R|R|ARI|P
 676866|Azuaje|Jesus|R|R|PHI|P
 647336|Soroka|Mike|R|R|ATL|P
+463610|Petit|Gregorio|R|R|MIN|2B
+593495|Castro|Daniel|R|R|COL|SS
+450665|Medlen|Kris|S|R|ARI|P

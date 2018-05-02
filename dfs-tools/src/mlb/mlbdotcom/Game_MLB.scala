@@ -63,7 +63,7 @@ object Game_MLB {
     }
 
     (lineScoreXML \ "@status").text match {
-      case "Postponed" => None
+      case "Postponed" | "In Progress" => None
       case "Final" | "Completed Early" => {
         val eventsXML = fileExists(eventsFileName) match {
           case false =>
@@ -97,6 +97,7 @@ object Game_MLB {
 
     (lineScoreXML \ "@status").text match {
       case "Postponed" => None
+      case "In Progress" => throw new Exception(s"Tried to load 'In Progress' game from file --- need to re-load from URL: "+gameDirectory)
       case "Final" | "Completed Early" => {
         val eventsXML = XML.loadFile(eventsFileName)
         val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)

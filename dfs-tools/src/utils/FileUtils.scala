@@ -63,4 +63,9 @@ object FileUtils {
 
   def fileExists(fileName: String): Boolean = (new File(fileName)).exists
 
+  def delete(file: File): Unit = {
+    if (file.isDirectory) file.listFiles.foreach(delete(_))
+    if (file.exists && !file.delete) throw new Exception(s"Unable to delete ${file.getAbsolutePath}")
+  }
+
 }
