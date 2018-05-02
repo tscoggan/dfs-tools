@@ -30,8 +30,9 @@ object Game_MLB {
     if (fileExists(dayDir)) {
       val gameDirs = getSubdirectories(dayDir)
       log(s"Found ${gameDirs.length} games for ${date.print()}")
-      if (Configs.MlbDotCom.runSanityChecks) {
+      if (Configs.MlbDotCom.runSanityChecks || date.trimTime == yesterday.trimTime || date.trimTime == today.trimTime) {
         if (getGameURLs(date).length != gameDirs.length) throw new Exception(s"Should have found ${getGameURLs(date).length} games for ${date.print()}")
+        else log("...correct # of games")
       }
       gameDirs.flatMap { dir => loadGameFromFile(dir.toString) }
     } else {
@@ -96,8 +97,8 @@ object Game_MLB {
     val lineScoreXML = XML.loadFile(lineScoreFileName)
 
     (lineScoreXML \ "@status").text match {
-      case "Postponed" => None
-      case "In Progress" => throw new Exception(s"Tried to load 'In Progress' game from file --- need to re-load from URL: "+gameDirectory)
+      case "Postponed"   => None
+      case "In Progress" => throw new Exception(s"Tried to load 'In Progress' game from file --- need to re-load from URL: " + gameDirectory)
       case "Final" | "Completed Early" => {
         val eventsXML = XML.loadFile(eventsFileName)
         val rawBoxScoreXML = XML.loadFile(rawBoxScoreFileName)
