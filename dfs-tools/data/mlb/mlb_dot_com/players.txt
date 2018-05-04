@@ -141,7 +141,7 @@
 451192|Adduci|Jim|L|L|DET|OF
 451584|Davis|Wade|R|R|COL|P
 451594|Fowler|Dexter|S|R|STL|OF
-451596|Gallardo|Yovani|R|R|CIN|P
+451596|Gallardo|Yovani|R|R|TEX|P
 451661|Fields|Josh|R|R|LAD|P
 451705|Rosario|Alberto|R|R|STL|C
 452027|Albers|Andrew|R|L|SEA|P
@@ -1480,7 +1480,7 @@
 664192|Lucchesi|Joey|L|L|SD|P
 664208|Maton|Phil|R|R|SD|P
 664641|Miranda|Ariel|L|L|SEA|P
-664701|Taylor|Ben|R|R|BOS|P
+664701|Taylor|Ben|R|R|CLE|P
 666561|Hwang|Jae-Gyun|R|R|SF|3B
 666971|Gurriel Jr. Jr.|Lourdes|R|R|TOR|2B
 669720|Hays|Austin|R|R|BAL|OF
@@ -1492,3 +1492,4 @@
 463610|Petit|Gregorio|R|R|MIN|2B
 593495|Castro|Daniel|R|R|COL|SS
 450665|Medlen|Kris|S|R|ARI|P
+622864|Romero|Fernando|R|R|MIN|P

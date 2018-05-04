@@ -201,10 +201,12 @@ case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Bo
     if (runs != 0) logDebug(s"$this earnedRuns += $runs")
   }
 
+  def isWinningPitcher: Boolean = this.pitchingStats.win > 0
+
 }
 
 trait PlayerStats {
-  
+
   val gameDate: Date
   var atBats: Int
 

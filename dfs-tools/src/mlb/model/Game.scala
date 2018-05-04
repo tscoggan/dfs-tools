@@ -20,6 +20,9 @@ case class Game(
     visitingTeamPlayerStats: List[PlayerGameStats],
     homeTeamPlayerStats: List[PlayerGameStats]) {
 
+  visitingTeamPlayerStats.foreach { p => p.game = Some(this) }
+  homeTeamPlayerStats.foreach { p => p.game = Some(this) }
+
   lazy val allPlayerStats: List[PlayerGameStats] = visitingTeamPlayerStats ++ homeTeamPlayerStats
 
   lazy val starterStats: List[PlayerGameStats] = visitingTeamPlayerStats.filter(_.isStarter) ++ homeTeamPlayerStats.filter(_.isStarter)
@@ -32,7 +35,7 @@ case class Game(
   def statsFor(player: Player): Option[PlayerGameStats] = allPlayerStats.find(_.player == player)
 
   def involvesTeam(team: Team): Boolean = visitingTeam == team || homeTeam == team
-  
+
   def isHomeGameFor(team: Team): Boolean = homeTeam == team
 
   override def toString: String = alias +

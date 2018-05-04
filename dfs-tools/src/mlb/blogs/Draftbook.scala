@@ -314,14 +314,18 @@ object Draftbook extends App {
 
   def fanduelValueOf(stack: List[Player]): Double = {
     val totalSalary = stack.flatMap { hitter => hitter.fanduel.map(_.salary) }.sum
-    val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsFD).getOrElse(0.0) }.sum
-    (totalFPTS / totalSalary) * 1000
+    if (totalSalary == 0) -1.0 else {
+      val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsFD).getOrElse(0.0) }.sum
+      (totalFPTS / totalSalary) * 1000
+    }
   }
 
   def draftkingsValueOf(stack: List[Player]): Double = {
     val totalSalary = stack.flatMap { hitter => hitter.draftkings.map(_.salary) }.sum
-    val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsDK).getOrElse(0.0) }.sum
-    (totalFPTS / totalSalary) * 1000
+    if (totalSalary == 0) -1.0 else {
+      val totalFPTS = stack.map { hitter => startingHitterStats.get(hitter).flatMap(_.projFptsDK).getOrElse(0.0) }.sum
+      (totalFPTS / totalSalary) * 1000
+    }
   }
 
   log("\n### Top 4-hitter stacks by projected value (FanDuel): ###\n")

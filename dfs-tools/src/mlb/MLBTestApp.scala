@@ -6,29 +6,43 @@ import model._
 import utils._
 import utils.StringUtils._
 import utils.DateTimeUtils._
+import utils.DoubleUtils._
 import scala.util.{ Try, Success, Failure }
 
 object MLBTestApp extends App {
 
-  //  val games = FileUtils.getListOfFiles(Configs.Retrosheet.dataFileDir_2017, ".EVA", ".EVN").flatMap { file => new EventFileParser(file.getPath).games }
-  //
-  //  val season = Season(2017, games)
-  //
-  //  season.statsByPlayer("santd001").gamesStarted.foreach { g => println(g.game.get.alias + " -> " + g.fantasyPoints()) }
+  //    val games = Game_MLB.loadGamesForDateRange(yesterday, yesterday)
+  //  println(s"Found ${games.length} games")
+  //  games.foreach { g => println(g + "\n\n") }
 
-  //Players.fanduelPlayers.filter(_.player.isEmpty).sortBy(_.nickname).foreach(p => println(s"$p ${p.id} --> ${p.player.getOrElse("")} ${p.player.map(_.id).getOrElse("")}"))
+  import mlb.Past1YearStats.stats._
+  mlb.Past1YearStats.stats.logSummary
 
-  //Teams.allTeams.foreach(println(_))
+  println("#### SAME GAME ####")
+  
+  val avgFPTS_pitchersSameGame = utils.MathUtils.mean {
+    season.games.map { game => List(game.statsFor(game.visitingTeamStartingPitcher).get, game.statsFor(game.homeTeamStartingPitcher).get) }
+      .map {
+        case pitchers => 
+          pitchers.map(_.asInstanceOf[PitcherGameStats].pitchingStats.fantasyPoints(DraftKingsMLB)).sum
+      }
+  }
 
-  //  Players.allPlayers.sortBy(_.name).foreach { p =>
-  //    if (p.fanduel.isEmpty || p.draftkings.isEmpty) println(s"$p ${p.id} --> ${p.fanduel} / ${p.draftkings}")
-  //  }
+  println("#### DIFF GAME ####")
+  
+  val avgFPTS_pitchersDiffGames = utils.MathUtils.mean {
+    season.games.groupBy(_.date).flatMap {
+      case (date, games) =>
+        val pitchers = games.flatMap { game => List(game.statsFor(game.visitingTeamStartingPitcher).get, game.statsFor(game.homeTeamStartingPitcher).get) }
+        val pairs = pitchers.combinations(2).filter { _.map(_.game.get.alias).distinct.length > 1 } // must be in different games
+        pairs.map {
+          case pitchers => 
+            pitchers.map(_.asInstanceOf[PitcherGameStats].pitchingStats.fantasyPoints(DraftKingsMLB)).sum
+        }
+    }
+  }
 
-  //  rg.StartingLineups.all.foreach(println(_))
-
-  val games = Game_MLB.loadGamesForDateRange(yesterday, yesterday)
-  println(s"Found ${games.length} games")
-  games.foreach { g => println(g + "\n\n") }
-
+  println(s"Same game: ${avgFPTS_pitchersSameGame.rounded(2)} FPTS per pair of pitchers")
+  println(s"Different games: ${avgFPTS_pitchersDiffGames.rounded(2)} FPTS per pair of pitchers")
 
 }
