@@ -543,7 +543,7 @@
 541645|Garcia|Avisail|R|R|CWS|OF
 541650|Perez|Hernan|R|R|MIL|3B
 541652|Rondon|Bruce|R|R|CWS|P
-542208|Perez|Carlos|R|R|ATL|C
+542208|Perez|Carlos|R|R|TEX|C
 542255|Inciarte|Ender|L|L|ATL|OF
 542303|Ozuna|Marcell|R|R|STL|OF
 542340|Villar|Jonathan|S|R|MIL|2B
@@ -874,7 +874,7 @@
 592314|Foltynewicz|Mike|R|R|ATL|P
 592325|Gamel|Ben|L|L|SEA|OF
 592332|Gausman|Kevin|L|R|BAL|P
-592340|Goeddel|Erik|R|R|NYM|P
+592340|Goeddel|Erik|R|R|SEA|P
 592346|Gonzalez|Chi Chi|R|R|TEX|P
 592348|Goodrum|Niko|S|R|DET|3B
 592351|Gray|Jon|R|R|COL|P
@@ -982,7 +982,7 @@
 594824|Garcia|Greg|L|R|STL|3B
 594828|Gattis|Evan|R|R|HOU|C
 594835|Gonzales|Marco|L|L|SEA|P
-594838|Gosselin|Phil|R|R|CIN|2B
+594838|Gosselin|Phil|R|R|ATL|2B
 594840|Grace|Matt|L|L|WAS|P
 594867|Jaye|Myles|S|R|DET|P
 594902|Lively|Ben|R|R|PHI|P
