@@ -163,6 +163,41 @@ case class HistoricalStats(season: Season) {
     }.toMap
   }
 
+  val bullpenStatsAllowedToAllHitters: Map[Team, HittingStatsAllowed] = {
+    Teams.allTeams.map { team =>
+      val gamesPitched = season.reliefPitchingStatsByTeam(team)
+
+      if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
+        val (recentGames, oldGames) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+
+        val atBatsAgainst = gamesPitched.map(_.atBatsAgainst()).sum
+        val weightedAtBatsAgainst = recentGames.map(_.atBatsAgainst() * 2).sum + oldGames.map(_.atBatsAgainst()).sum
+
+        val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
+        val weightedFptsAgainst_FD = recentGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
+        val fptsPerAtBatAgainst_FD = weightedFptsAgainst_FD / weightedAtBatsAgainst
+
+        val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
+        val weightedFptsAgainst_DK = recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
+        val fptsPerAtBatAgainst_DK = weightedFptsAgainst_DK / weightedAtBatsAgainst
+        (team -> HittingStatsAllowed(null, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
+      } else {
+        val atBatsAgainst = gamesPitched.map(_.atBatsAgainst()).sum
+        val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
+        val fptsPerAtBatAgainst_FD = fptsAgainst_FD / atBatsAgainst
+        val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
+        val fptsPerAtBatAgainst_DK = fptsAgainst_DK / atBatsAgainst
+        (team -> HittingStatsAllowed(null, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
+      }
+    }.toMap
+  }
+  log(s"bullpenStatsAllowedToAllHitters:\n\t${
+    bullpenStatsAllowedToAllHitters.map {
+      case (t, s) =>
+        s"$t - PA: ${s.atBatsAgainst}, FPTS/PA (FD): ${s.fptsPerAtBatAgainst_FD.rounded(2)}, FPTS/PA (DK): ${s.fptsPerAtBatAgainst_DK.rounded(2)}"
+    }.mkString("\n\t")
+  }")
+
   val numberOfGames = season.games.length
 
   val leagueAvgStatsByBattingPosition: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games).groupBy(_.battingPosition).map {

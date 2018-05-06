@@ -1497,3 +1497,5 @@
 592094|Adam|Jason|R|R|KC|P
 606988|Greiner|Grayson|R|R|DET|C
 642770|Guerra|Javy|L|R|SD|SS
+435064|Wilson|Bobby|R|R|MIN|C
+602922|Rondon|Jose|R|R|CWS|SS

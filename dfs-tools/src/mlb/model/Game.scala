@@ -37,6 +37,8 @@ case class Game(
   def involvesTeam(team: Team): Boolean = visitingTeam == team || homeTeam == team
 
   def isHomeGameFor(team: Team): Boolean = homeTeam == team
+  
+  def isFromCurrentSeason: Boolean = !(date.before(mlb.Configs.MlbDotCom.seasonStartDate))
 
   override def toString: String = alias +
     s"\n  $visitingTeam stats:\n\t" + visitingTeamPlayerStats.sortBy(p => p.battingPosition + "" + (20 - p.hittingStats.atBats)).map(_.printStats).mkString("\n\t") +

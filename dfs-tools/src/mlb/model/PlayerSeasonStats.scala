@@ -9,6 +9,7 @@ case class PlayerSeasonStats(player: Player, games: List[PlayerGameStats]) {
   lazy val isPitcher: Boolean = player.position == Pitcher
 
   lazy val gamesStarted: List[PlayerGameStats] = games.filter(_.isStarter).sortBy(_.gameDate)
+  lazy val gamesNotStarted: List[PlayerGameStats] = games.filterNot(_.isStarter).sortBy(_.gameDate)
 
   val numberOfGames: Int = games.length
   lazy val numberOfGamesStarted: Int = gamesStarted.length

@@ -22,6 +22,16 @@ case class Season(label: String, games: List[Game]) {
   lazy val allHitters: List[PlayerSeasonStats] = allPlayers.filterNot(_.isPitcher)
   lazy val allPitchers: List[PlayerSeasonStats] = allPlayers.filter(_.isPitcher)
 
+  lazy val reliefPitchingStatsByTeam: Map[Team, List[PitcherGameStats]] = allPitchers.groupBy(_.player.team).map {
+    case (team, pss) =>
+      (team, pss.flatMap(_.gamesNotStarted).flatMap {
+        _ match {
+          case hgs: HitterGameStats  => None
+          case pgs: PitcherGameStats => Some(pgs)
+        }
+      })
+  }
+
   def pitcherStatsAgainstHitter(pitcher: Player, hitter: Player): List[PitchingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
     gameStats match {
       case pgs: PitcherGameStats => pgs.pitchingStatsAgainst(hitter)

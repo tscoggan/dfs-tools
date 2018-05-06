@@ -88,10 +88,10 @@ object Draftbook extends App {
   case class PitcherStats(p: Player) {
     val opposingHitters: List[Player] = p.opposingHitters
 
-    val pitcherAtBatsPerStart: Option[Int] = season.statsByPlayer.get(p.id).map(_.gamesStarted) match {
+    val pitcherAtBatsPerStart: Option[Double] = season.statsByPlayer.get(p.id).map(_.gamesStarted) match {
       case Some(gamesStarted) =>
         if (gamesStarted.nonEmpty)
-          Some(gamesStarted.map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum / gamesStarted.length)
+          Some(gamesStarted.map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum.toDouble / gamesStarted.length)
         else None
       case None => None
     }
@@ -158,10 +158,17 @@ object Draftbook extends App {
 
   }
 
-  case class HitterStats(p: Player) {
-    val projAtBats: Double = projectedAtBats(p)
+  val startingPitcherStats: Map[Player, PitcherStats] = startingPitchers.filter(season.hasStatsFor(_)).map { p => (p, PitcherStats(p)) }.toMap
 
+  case class HitterStats(p: Player) {
     val opposingPitcher: Player = p.opposingPitcher
+
+    val projAtBats: Double = projectedAtBats(p)
+    val projAtBatsVsOpposingPitcher: Double = {
+      val pitcherStats = startingPitcherStats(opposingPitcher)
+      pitcherStats.pitcherAtBatsPerStart.getOrElse(24.0) / 9.0
+    }
+    val projAtBatsVsBullpen: Double = if (projAtBatsVsOpposingPitcher >= projAtBats) 0 else projAtBats - projAtBatsVsOpposingPitcher
 
     val hitterTotalAtBats: Int = season.hitterStatsAgainstPitcherType(opposingPitcher.throws, p).map(_.atBats).sum
     val pitcherTotalAtBats: Int = p.bats match {
@@ -186,13 +193,20 @@ object Draftbook extends App {
       case Right  => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
     }
+    val bullpenFptsPerAtBatAllowedFD: Double = bullpenStatsAllowedToAllHitters(opposingPitcher.team).fptsPerAtBatAgainst_FD
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
       val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
-      mean(combinedWeightedFptsPerAB) * projAtBats
+      val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
+      
+      val bullpenWeightedFptsPerAB = (0 to 200).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
+      val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
+      val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
+      
+      fptsVsStarter + fptsVsBullpen
     }
     val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
 
@@ -212,13 +226,20 @@ object Draftbook extends App {
       case Right  => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
     }
+    val bullpenFptsPerAtBatAllowedDK: Double = bullpenStatsAllowedToAllHitters(opposingPitcher.team).fptsPerAtBatAgainst_DK
     val projFptsDK: Option[Double] = hitterFptsPerAtBatDK.map { fptsPerAB =>
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
       val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
-      mean(combinedWeightedFptsPerAB) * projAtBats
+      val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
+      
+      val bullpenWeightedFptsPerAB = (0 to 200).toList.map(i => bullpenFptsPerAtBatAllowedDK) // should park factor apply to pitcher?
+      val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
+      val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
+      
+      fptsVsStarter + fptsVsBullpen
     }
     val projValueDK: Option[Double] = p.draftkings.map(_.salary).map(salary => (projFptsDK.getOrElse(0.0) / salary) * 1000)
 
@@ -227,8 +248,6 @@ object Draftbook extends App {
   }
 
   val startingHitterStats: Map[Player, HitterStats] = startingHitters.filter(season.hasStatsFor(_)).map { p => (p, HitterStats(p)) }.toMap
-
-  val startingPitcherStats: Map[Player, PitcherStats] = startingPitchers.filter(season.hasStatsFor(_)).map { p => (p, PitcherStats(p)) }.toMap
 
   log("\n**************************************************")
   log("*** All starters ***")
