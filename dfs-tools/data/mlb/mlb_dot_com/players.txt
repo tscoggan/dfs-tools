@@ -44,7 +44,7 @@
 430605|Raburn|Ryan|R|R|WAS|OF
 430641|Boyer|Blaine|R|R|KC|P
 430661|McGowan|Dustin|R|R|MIA|P
-430832|Bautista|Jose|R|R|TOR|OF
+430832|Bautista|Jose|R|R|ATL|OF
 430912|Cain|Matt|R|R|SF|P
 430935|Hamels|Cole|L|L|TEX|P
 430945|Jones|Adam|R|R|BAL|OF
@@ -216,7 +216,7 @@
 457768|Morris|Bryan|L|R|SF|P
 457787|Espinosa|Danny|S|R|TB|SS
 457803|Bruce|Jay|L|L|NYM|OF
-457915|Guerra|Javy|R|R|MIA|P
+457915|Guerra|Javy|R|R|SD|P
 457918|Happ|J.A.|L|L|TOR|P
 457926|Janish|Paul|R|R|BAL|SS
 458006|Albers|Matt|L|R|MIL|P
@@ -410,7 +410,7 @@
 502517|Murphy|Daniel|L|R|WAS|2B
 502523|O'Malley|Shawn|S|R|SEA|SS
 502570|Gale|Rocky|R|R|SD|C
-502593|Petricka|Jake|R|R|CWS|P
+502593|Petricka|Jake|R|R|TOR|P
 502624|Anderson|Chase|R|R|MIL|P
 502671|Goldschmidt|Paul|R|R|ARI|1B
 502706|Holland|Derek|S|L|SF|P
@@ -580,7 +580,7 @@
 543094|Decker|Jaff|L|L|OAK|OF
 543101|DeSclafani|Anthony|R|R|CIN|P
 543105|Dickerson|Alex|L|L|SD|OF
-543118|Drake|Oliver|R|R|MIL|P
+543118|Drake|Oliver|R|R|CLE|P
 543135|Eovaldi|Nathan|R|R|TB|P
 543144|Farquhar|Danny|R|R|CWS|P
 543148|Federowicz|Tim|R|R|HOU|C
@@ -1108,7 +1108,7 @@
 605338|Lindgren|Jacob|R|L|ATL|P
 605347|Lopez|Jorge|R|R|MIL|P
 605357|Marjama|Mike|R|R|SEA|C
-605359|Marshall|Evan|R|R|SEA|P
+605359|Marshall|Evan|R|R|CLE|P
 605388|Morgan|Adam|L|L|PHI|P
 605397|Musgrove|Joe|R|R|PIT|P
 605400|Nola|Aaron|R|R|PHI|P
@@ -1493,3 +1493,7 @@
 593495|Castro|Daniel|R|R|COL|SS
 450665|Medlen|Kris|S|R|ARI|P
 622864|Romero|Fernando|R|R|MIN|P
+468396|Ogando|Alexi|R|R|CLE|P
+592094|Adam|Jason|R|R|KC|P
+606988|Greiner|Grayson|R|R|DET|C
+642770|Guerra|Javy|L|R|SD|SS

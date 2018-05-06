@@ -65,7 +65,7 @@ object Game_MLB {
 
     (lineScoreXML \ "@status").text match {
       case "Postponed" | "In Progress" => None
-      case "Final" | "Completed Early" => {
+      case "Final" | "Completed Early" | "Game Over" => {
         val eventsXML = fileExists(eventsFileName) match {
           case false =>
             val xml = XML.load(url + "game_events.xml")
