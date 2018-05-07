@@ -31,4 +31,19 @@ class MathUtilsTests extends FunSuite {
       && (MathUtils.downsideDev(example, 0.01) ~= (0.0238, 0.0001)))
   }
 
+  test("Pearson correlation works") {
+    val data = Map(
+      ("1", (43, 99)),
+      ("2", (21, 65)),
+      ("3", (25, 79)),
+      ("4", (42, 75)),
+      ("5", (57, 87)),
+      ("6", (59, 81)))
+    val ds1 = data.map{case (k,(v1,v2)) => (k,v1.toDouble)}
+    val ds2 = data.map{case (k,(v1,v2)) => (k,v2.toDouble)}
+    val correlation = MathUtils.pearsonCorrelation(ds1,ds2).get
+    println("Pearson correlation: "+correlation)
+    assert(correlation ~= 0.529809)
+  }
+
 }

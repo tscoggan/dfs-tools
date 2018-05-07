@@ -22,7 +22,7 @@ object MathUtils {
     val xsAdjusted = xs.map { value => scala.math.min(value.toDouble - minAcceptableValue.toDouble, 0) }
     math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
   }
-  
+
   /**
    * A "upside deviation" measure that is similar to standard deviation but only measures variance above a specified
    * benchmark. See https://www.managedfuturesinvesting.com/a-better-measure-of-risk-standard-deviation-or-downside-deviation/
@@ -43,6 +43,39 @@ object MathUtils {
       if (isTrue(x)) matchCount += 1
     }
     (matchCount.toDouble / total.toDouble) * 100d
+  }
+
+  /**
+   * The Pearson correlation coefficient can range from +1 to -1. A value of 0 indicates that there is no association between the two variables. 
+   * A value greater than 0 indicates a positive association; that is, as the value of one variable increases, so does the value of the other variable.
+   * 
+   * In the data set maps, key = ID and value = data value that should correlate.
+   */
+  def pearsonCorrelation(
+    dataSet1: Map[String, Double],
+    dataSet2: Map[String, Double]): Option[Double] = {
+
+    def commonMapKeys[A, B](a: Map[A, B], b: Map[A, B]): Set[A] = a.keySet.intersect(b.keySet)
+
+    val commonDataElements = commonMapKeys(dataSet1, dataSet2).toSeq
+    val n = commonDataElements.size
+    if (n == 0) return None
+
+    val commonElementsFromDS1 = dataSet1.filterKeys(e => commonDataElements.contains(e))
+    val commonElementsFromDS2 = dataSet2.filterKeys(e => commonDataElements.contains(e))
+
+    val sum1 = commonElementsFromDS1.values.sum
+    val sum2 = commonElementsFromDS2.values.sum
+
+    val sum1Sq = commonElementsFromDS1.values.foldLeft(0.0)(_ + Math.pow(_, 2))
+    val sum2Sq = commonElementsFromDS2.values.foldLeft(0.0)(_ + Math.pow(_, 2))
+
+    val pSum = commonDataElements.foldLeft(0.0)((accum, element) => accum + commonElementsFromDS1(element) * commonElementsFromDS2(element))
+
+    // calculate the pearson score
+    val numerator = pSum - (sum1 * sum2 / n)
+    val denominator = Math.sqrt((sum1Sq - Math.pow(sum1, 2) / n) * (sum2Sq - Math.pow(sum2, 2) / n))
+    if (denominator == 0) None else Some(numerator / denominator)
   }
 
 }
