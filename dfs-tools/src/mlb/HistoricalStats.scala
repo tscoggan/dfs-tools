@@ -191,12 +191,12 @@ case class HistoricalStats(season: Season) {
       }
     }.toMap
   }
-  log(s"bullpenStatsAllowedToAllHitters:\n\t${
-    bullpenStatsAllowedToAllHitters.map {
-      case (t, s) =>
-        s"$t - PA: ${s.atBatsAgainst}, FPTS/PA (FD): ${s.fptsPerAtBatAgainst_FD.rounded(2)}, FPTS/PA (DK): ${s.fptsPerAtBatAgainst_DK.rounded(2)}"
-    }.mkString("\n\t")
-  }")
+  //  log(s"bullpenStatsAllowedToAllHitters:\n\t${
+  //    bullpenStatsAllowedToAllHitters.map {
+  //      case (t, s) =>
+  //        s"$t - PA: ${s.atBatsAgainst}, FPTS/PA (FD): ${s.fptsPerAtBatAgainst_FD.rounded(2)}, FPTS/PA (DK): ${s.fptsPerAtBatAgainst_DK.rounded(2)}"
+  //    }.mkString("\n\t")
+  //  }")
 
   val numberOfGames = season.games.length
 

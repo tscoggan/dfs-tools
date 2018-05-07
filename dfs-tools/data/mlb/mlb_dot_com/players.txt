@@ -807,7 +807,7 @@
 572362|Erlin|Robbie|R|L|SD|P
 572365|Goins|Ryan|L|R|KC|SS
 572403|VerHagen|Drew|R|R|DET|P
-572669|Adams|Lane|R|R|ATL|OF
+572669|Adams|Lane|R|R|CHC|OF
 572703|Bard|Luke|R|R|MIN|P
 572728|Brady|Michael|R|R|OAK|P
 572750|Butler|Eddie|R|R|CHC|P
@@ -1499,3 +1499,4 @@
 642770|Guerra|Javy|L|R|SD|SS
 435064|Wilson|Bobby|R|R|MIN|C
 602922|Rondon|Jose|R|R|CWS|SS
+664869|Conlon|P.J.|L|L|NYM|P

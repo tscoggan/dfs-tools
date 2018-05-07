@@ -44,6 +44,8 @@ object Configs {
   val recentDaysToOverweight: Int = conf.getInt("recent_number_of_days_to_overweight")
   
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
+  
+  val projectionsHistoryDir: String = conf.getString("projections_history_dir")
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {
     case "FanDuel MLB"    => FanDuelMLB

@@ -9,8 +9,11 @@ import utils.StringUtils._
 import utils.DateTimeUtils._
 import mlb.model._
 import scala.io.Source
+import java.util.Date
 
 object Players {
+
+  var projectionsDate: Date = today
 
   case class PlayerMapping(fdPlayerID: String, dkNameAndTeam: String, mlbPlayerID: MLBPlayerID)
 
@@ -42,7 +45,11 @@ object Players {
   val fanduelPlayers: List[Player_FD] = {
     val file = getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
       .filter(_.getName.startsWith("FanDuel-MLB-"))
-      .sortBy(_.getName.trimPrefix("FanDuel-MLB-").take(10).toDate())
+      .sortBy { f =>
+        val fileDate = f.getName.trimPrefix("FanDuel-MLB-").take(10).toDate()
+        projectionsDate = fileDate
+        fileDate
+      }
       .last
     log("Loading FD players from file " + file)
     Player_FD.parseFrom(file.getPath)
@@ -152,6 +159,30 @@ object Players {
   //      s"$team:\n\t" + players.sortBy(_.battingPosition.getOrElse(0))
   //        .map(p => p.battingPosition.getOrElse(0) + ") " + p).mkString("\n\t")
   //  }.mkString("\n"))
+
+  val teamsOnSlate = startingPlayersByTeam.keys.toList
+
+  val hitters_FD = startingHitters.filter(_.fanduel.map(_.salary).nonEmpty)
+  val hitters_DK = startingHitters.filter(_.draftkings.map(_.salary).nonEmpty)
+
+  val expensiveHitters_FD = hitters_FD.filter(_.fanduel.map(_.salary).get >= 3500)
+  val midrangeHitters_FD = hitters_FD.filter(p => p.fanduel.map(_.salary).get < 3500 && p.fanduel.map(_.salary).get >= 2500)
+  val cheapHitters_FD = hitters_FD.filter(p => p.fanduel.map(_.salary).get < 2500)
+
+  val expensiveHitters_DK = hitters_DK.filter(_.draftkings.map(_.salary).get >= 4000)
+  val midrangeHitters_DK = hitters_DK.filter(p => p.draftkings.map(_.salary).get < 4000 && p.draftkings.map(_.salary).get >= 3000)
+  val cheapHitters_DK = hitters_DK.filter(p => p.draftkings.map(_.salary).get < 3000)
+
+  teamsOnSlate.filter(t => !startingPitchers.map(_.team).contains(t)) match {
+    case Nil      => // OK
+    case notFound => println("\n\nWARNING: No starting pitcher found for " + notFound.mkString(", "))
+  }
+
+  teamsOnSlate.foreach { team =>
+    val pitchers = startingPitchers.filter(_.team == team)
+    if (pitchers.isEmpty) throw new Exception("No starting pitcher for " + team)
+    if (pitchers.length > 1) throw new Exception(s"Multiple starting pitchers for $team: ${pitchers.mkString(",")}")
+  }
 
   def find(playerName: String, team: Team): Option[Player] = {
     val alternateName = playerName.substringBefore(" Jr.").replaceAll("\\.", "").trim
