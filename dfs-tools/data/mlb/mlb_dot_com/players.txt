@@ -444,7 +444,7 @@
 518397|Alexander|Scott|L|L|LAD|P
 518445|Bell|Chad|R|L|DET|P
 518452|Bettis|Chad|R|R|COL|P
-518466|Blash|Jabari|R|R|SD|OF
+518466|Blash|Jabari|R|R|LAA|OF
 518468|Blazek|Michael|R|R|MIL|P
 518516|Bumgarner|Madison|R|L|SF|P
 518542|Centeno|Juan|L|R|TEX|C
@@ -1500,3 +1500,4 @@
 435064|Wilson|Bobby|R|R|MIN|C
 602922|Rondon|Jose|R|R|CWS|SS
 664869|Conlon|P.J.|L|L|NYM|P
+622554|Dominguez|Seranthony|R|R|PHI|P

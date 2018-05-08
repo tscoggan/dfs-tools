@@ -438,8 +438,7 @@ case class HistoricalStats(season: Season) {
       case (pss, stats) => (pss.player, (pss, stats))
     }.toMap
 
-  case class PitcherStats(p: Player) {
-    val opposingHitters: List[Player] = p.opposingHitters
+  case class PitcherStats(p: Player, opposingHitters: List[Player]) {
 
     val pitcherAtBatsPerStart: Option[Double] = season.statsByPlayer.get(p.id).map(_.gamesStarted) match {
       case Some(gamesStarted) =>
@@ -511,10 +510,9 @@ case class HistoricalStats(season: Season) {
 
   }
 
-  val startingPitcherStats: Map[Player, PitcherStats] = Players.startingPitchers.filter(season.hasStatsFor(_)).map { p => (p, PitcherStats(p)) }.toMap
+  val startingPitcherStats: Map[Player, PitcherStats] = Players.startingPitchers.filter(season.hasStatsFor(_)).map { p => (p, PitcherStats(p, p.opposingHitters)) }.toMap
 
-  case class HitterStats(p: Player) {
-    val opposingPitcher: Player = p.opposingPitcher
+  case class HitterStats(p: Player, opposingPitcher: Player) {
 
     val projAtBats: Double = projectedAtBats(p)
     val projAtBatsVsOpposingPitcher: Double = {
@@ -548,14 +546,14 @@ case class HistoricalStats(season: Season) {
     }
     val bullpenFptsPerAtBatAllowedFD: Double = bullpenStatsAllowedToAllHitters(opposingPitcher.team).fptsPerAtBatAgainst_FD
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
-      val hitterWeight = List(200, hitterTotalAtBats).min
-      val pitcherWeight = List(200, pitcherTotalAtBats).min
+      val hitterWeight = List(100, hitterTotalAtBats).min
+      val pitcherWeight = List(100, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
       val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-      val bullpenWeightedFptsPerAB = (0 to 200).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
+      val bullpenWeightedFptsPerAB = (0 to 100).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
@@ -600,7 +598,7 @@ case class HistoricalStats(season: Season) {
     //      s"Projected FPTS: ${projFptsDK.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueDK.map(_.rounded(2)).getOrElse("-")}")
   }
 
-  val startingHitterStats: Map[Player, HitterStats] = Players.startingHitters.filter(season.hasStatsFor(_)).map { p => (p, HitterStats(p)) }.toMap
+  val startingHitterStats: Map[Player, HitterStats] = Players.startingHitters.filter(season.hasStatsFor(_)).map { p => (p, HitterStats(p, p.opposingPitcher)) }.toMap
 
   def logSummary: Unit = {
     log(s"*************** ${season.label} Season Summary --- All players ***************")

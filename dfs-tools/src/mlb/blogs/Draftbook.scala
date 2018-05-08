@@ -173,10 +173,10 @@ object Draftbook extends App {
   }.foreach(log(_))
 
   log("\n**************************************************")
-  log("*** Value hitters - FD ***")
+  log("*** Value hitters - FD & DK ***")
   log("**************************************************\n")
 
-  log("\n### Top 10 expensive hitters ranked by value (FanDuel): ###\n")
+  log("\nh3. FanDuel – expensive hitters ($3500 or more)\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
@@ -187,7 +187,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\n### Top 10 mid-range hitters ranked by value (FanDuel): ###\n")
+  log("\nh3. FanDuel – midrange hitters ($2500 to $3500)\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
@@ -198,7 +198,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\n### Top 10 cheap hitters ranked by value (FanDuel): ###\n")
+  log("\nh3. FanDuel – cheap hitters (less than $2500)\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
@@ -209,11 +209,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\n**************************************************")
-  log("*** Value hitters - DK ***")
-  log("**************************************************\n")
-
-  log("\n### Top 10 expensive hitters ranked by value (DraftKings): ###\n")
+  log("\nh3. DraftKings – expensive hitters ($4000 or more)\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
@@ -224,7 +220,7 @@ object Draftbook extends App {
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
-  log("\n### Top 10 mid-range hitters ranked by value (DraftKings): ###\n")
+  log("\nh3. DraftKings – midrange hitters ($3000 to $4000)\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
@@ -235,7 +231,7 @@ object Draftbook extends App {
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
-  log("\n### Top 10 cheap hitters ranked by value (DraftKings): ###\n")
+  log("\nh3. DraftKings – cheap hitters (less than $3000)\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
