@@ -14,7 +14,7 @@ trait PlayerGameStats {
   val gameDate: Date
   val playerID: MLBPlayerID
   val isStarter: Boolean
-  var battingPosition: Int
+  var battingPosition: BattingPosition
 
   val hittingStats: HittingStats = new HittingStats(gameDate)
 

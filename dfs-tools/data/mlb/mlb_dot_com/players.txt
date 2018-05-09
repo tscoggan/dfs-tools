@@ -467,7 +467,7 @@
 518716|Gee|Dillon|R|R|MIN|P
 518735|Grandal|Yasmani|S|R|LAD|C
 518748|Grimm|Justin|R|R|KC|P
-518774|Harvey|Matt|R|R|NYM|P
+518774|Harvey|Matt|R|R|CIN|P
 518790|Heston|Chris|R|R|MIN|P
 518792|Heyward|Jason|L|L|CHC|OF
 518813|Holland|Greg|R|R|STL|P
@@ -479,7 +479,7 @@
 518934|LeMahieu|DJ|R|R|COL|2B
 518960|Lucroy|Jonathan|R|R|OAK|C
 519008|McFarland|T.J.|L|L|ARI|P
-519023|Mesoraco|Devin|R|R|CIN|C
+519023|Mesoraco|Devin|R|R|NYM|C
 519025|Middlebrooks|Will|R|R|TEX|3B
 519037|Moncrief|Carlos|L|R|SF|OF
 519043|Moore|Matt|L|L|TEX|P
@@ -667,7 +667,7 @@
 545332|Barrett|Jake|R|R|ARI|P
 545333|Bauer|Trevor|R|R|CLE|P
 545337|Fontana|Nolan|L|R|LAA|SS
-545338|Franklin|Nick|S|R|LAA|OF
+545338|Franklin|Nick|S|R|MIL|OF
 545341|Grichuk|Randal|R|R|TOR|OF
 545348|Maddox|Austin|R|R|BOS|P
 545350|Marisnick|Jake|R|R|HOU|OF
@@ -1501,3 +1501,4 @@
 602922|Rondon|Jose|R|R|CWS|SS
 664869|Conlon|P.J.|L|L|NYM|P
 622554|Dominguez|Seranthony|R|R|PHI|P
+488810|Cruz|Tony|R|R|CIN|C
