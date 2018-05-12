@@ -92,12 +92,12 @@ object ProjectionsBackTester extends App {
 
         val hitterWeight = List(weight.batterWeight, hitterTotalAtBats).min
         val pitcherWeight = List(weight.pitcherWeight, pitcherTotalAtBats).min
-        val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-        val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
+        val hitterWeightedFptsPerAB = (0 until hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
+        val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
         val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
         val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-        val bullpenWeightedFptsPerAB = (0 to weight.pitcherWeight).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
+        val bullpenWeightedFptsPerAB = (0 until weight.pitcherWeight).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
         val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
         val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 

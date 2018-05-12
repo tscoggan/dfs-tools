@@ -13,7 +13,7 @@ import mlb.HistoricalStats._
 
 object DoesBattingPositionMatter extends App {
   
-  import mlb.Season2017Stats.stats._
+  import mlb.Past1YearStats.stats._
 
   //  leagueAvgFptsPerAtBatByBattingPosition.toList.sortBy(_._1).tail.foreach {
   //    case (battingPosition, (atBats, avgFptsPerAB)) =>

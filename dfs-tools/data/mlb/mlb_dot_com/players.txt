@@ -474,7 +474,7 @@
 518858|Jones|Nate|R|R|CWS|P
 518875|Kelley|Shawn|R|R|WAS|P
 518886|Kimbrel|Craig|R|R|BOS|P
-518902|Kozma|Pete|R|R|TEX|SS
+518902|Kozma|Pete|R|R|DET|SS
 518927|Layne|Tommy|L|L|NYY|P
 518934|LeMahieu|DJ|R|R|COL|2B
 518960|Lucroy|Jonathan|R|R|OAK|C
@@ -710,7 +710,7 @@
 570257|Rodriguez|Joely|L|L|PHI|P
 570267|Santana|Domingo|R|R|MIL|OF
 570481|Gonzalez|Erik|R|R|CLE|2B
-570482|Urshela|Gio|R|R|CLE|3B
+570482|Urshela|Gio|R|R|TOR|3B
 570489|Alcantara|Arismendy|S|R|CIN|2B
 570560|Sanchez|Yolmer|S|R|CWS|2B
 570632|Urena|Jose|R|R|MIA|P
@@ -803,7 +803,7 @@
 572233|Walker|Christian|R|R|ARI|1B
 572241|Washington|David|L|L|BAL|1B
 572287|Zunino|Mike|R|R|SEA|C
-572308|Valdez|Jose|R|R|SD|P
+572308|Valdez|Jose|R|R|SF|P
 572362|Erlin|Robbie|R|L|SD|P
 572365|Goins|Ryan|L|R|KC|SS
 572403|VerHagen|Drew|R|R|DET|P
@@ -1210,7 +1210,7 @@
 608379|Wacha|Michael|R|R|STL|P
 608384|Williams|Nick|L|L|PHI|OF
 608385|Winker|Jesse|L|L|CIN|OF
-608421|Alvarez|Eliezer|L|R|PHI|2B
+608421|Alvarez|Eliezer|L|R|TEX|2B
 608566|Marquez|German|R|R|COL|P
 608577|Mazara|Nomar|L|L|TEX|OF
 608596|Murphy|Tom|R|R|COL|C
@@ -1433,7 +1433,7 @@
 643617|Reininger|Zac|S|R|DET|P
 643778|Webb|Tyler|L|L|SD|P
 644364|Arano|Victor|R|R|PHI|P
-644428|Scribner|Troy|R|R|LAA|P
+644428|Scribner|Troy|R|R|ARI|P
 644443|Ysla|Luis|L|L|LAD|P
 645261|Alcantara|Sandy|R|R|STL|P
 645277|Albies|Ozzie|S|R|ATL|2B
@@ -1502,3 +1502,6 @@
 664869|Conlon|P.J.|L|L|NYM|P
 622554|Dominguez|Seranthony|R|R|PHI|P
 488810|Cruz|Tony|R|R|CIN|C
+606995|Hancock|Justin|R|R|CHC|P
+641645|Guillorme|Luis|L|R|NYM|SS
+571851|Kieboom|Spencer|R|R|WAS|C

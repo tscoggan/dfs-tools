@@ -467,13 +467,9 @@ case class HistoricalStats(season: Season) {
           .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
         val fullSeasonWeight = List(200, fullSeasonAtBats).min
         val bvpWeight = List(200, pitcherBvpStats_FD.map(_.atBats).getOrElse(0)).min
-        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
-        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
+        val fullSeasonWeightedFptsPerAB = (0 until fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
+        val bvpWeightedFptsPerAB = (0 until bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
         val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
-
-        //        println(s"$p - FanDuel - fullSeason AB: $fullSeasonAtBats, fullSeason FPTS/AB: ${fullSeasonFptsPerAB.rounded(2)}, fullSeasonWeight: $fullSeasonWeight \n\t" +
-        //          s"bvp AB: ${pitcherBvpStats_FD.map(_.atBats).getOrElse(0)}, bvp FPTS/AB: ${pitcherBvpStats_FD.map(_.fptsPerAB).map(_.rounded(2)).getOrElse(0.0)}, bvpWeight: $bvpWeight \n\t" +
-        //          s"Projected FPTS = ${mean(combinedWeightedFptsPerAB).rounded(2)} FPTS/AB * $abPerStart projected AB = ${mean(combinedWeightedFptsPerAB) * abPerStart}")
 
         Some(mean(combinedWeightedFptsPerAB) * abPerStart)
       }
@@ -496,8 +492,8 @@ case class HistoricalStats(season: Season) {
           .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
         val fullSeasonWeight = List(200, fullSeasonAtBats).min
         val bvpWeight = List(200, pitcherBvpStats_DK.map(_.atBats).getOrElse(0)).min
-        val fullSeasonWeightedFptsPerAB = (0 to fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
-        val bvpWeightedFptsPerAB = (0 to bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
+        val fullSeasonWeightedFptsPerAB = (0 until fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
+        val bvpWeightedFptsPerAB = (0 until bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
         val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
         Some(mean(combinedWeightedFptsPerAB) * abPerStart)
       }
@@ -548,25 +544,26 @@ case class HistoricalStats(season: Season) {
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
       val hitterWeight = List(100, hitterTotalAtBats).min
       val pitcherWeight = List(100, pitcherTotalAtBats).min
-      val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
+      val hitterWeightedFptsPerAB = (0 until hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
+      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-      val bullpenWeightedFptsPerAB = (0 to 100).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
+      val bullpenWeightedFptsPerAB = (0 until 100).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
+
+      //      log(s"$p vs $opposingPitcher:\n\tprojAtBats: ${projAtBats.rounded(2)}\n\tprojAtBatsVsOpposingPitcher: ${projAtBatsVsOpposingPitcher.rounded(2)}"+
+      //          s"\n\tprojAtBatsVsBullpen: ${projAtBatsVsBullpen.rounded(2)}\n\thitterTotalAtBats: ${hitterTotalAtBats.rounded(2)}\n\tpitcherTotalAtBats: ${pitcherTotalAtBats.rounded(2)}"+
+      //          s"\n\tballparkFactor: ${ballparkFactor.rounded(2)}\n\thitterFptsPerAtBatFD: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("???")}"+
+      //          s"\n\tpitcherFptsPerAtBatAllowedFD ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("???")}\n\tbullpenFptsPerAtBatAllowedFD: ${bullpenFptsPerAtBatAllowedFD.rounded(2)}"+
+      //          s"\n\thitterWeight: ${hitterWeight}\n\tpitcherWeight: ${pitcherWeight}\n\thitterWeightedFptsPerAB size: ${hitterWeightedFptsPerAB.size}"+
+      //          s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}"+
+      //          s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}")
 
       fptsVsStarter + fptsVsBullpen
     }
     val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
-
-    //    if (p.id == "542340") println(s"projAtBats: $projAtBats, opposingPitcher: $opposingPitcher, hitterTotalAtBats: $hitterTotalAtBats, "+
-    //        s"pitcherTotalAtBats: $pitcherTotalAtBats, ballparkFactor: $ballparkFactor, hitterSeasonStatsFD: ${hitterSeasonStatsFD.size}, "+
-    //        s"hitterFptsPerAtBatFD: $hitterFptsPerAtBatFD, hitterVsPitcherStatsFD: ${hitterVsPitcherStatsFD.size}, pitcherFptsPerAtBatAllowedFD: ${pitcherFptsPerAtBatAllowedFD.size}")
-
-    //        println(s"$p - FanDuel - FPTS/PA: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
-    //          s"Projected FPTS: ${projFptsFD.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueFD.map(_.rounded(2)).getOrElse("-")}")
 
     val hitterSeasonStatsDK: Option[PlayerSeasonStats] = hitterStats_DK.get(p).map(_._1)
     val hitterDeviationStatsDK: Option[DeviationStats] = hitterStats_DK.get(p).map(_._2)
@@ -581,12 +578,12 @@ case class HistoricalStats(season: Season) {
     val projFptsDK: Option[Double] = hitterFptsPerAtBatDK.map { fptsPerAB =>
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
-      val hitterWeightedFptsPerAB = (0 to hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 to pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get) // should park factor apply to pitcher?
+      val hitterWeightedFptsPerAB = (0 until hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
+      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-      val bullpenWeightedFptsPerAB = (0 to 200).toList.map(i => bullpenFptsPerAtBatAllowedDK) // should park factor apply to pitcher?
+      val bullpenWeightedFptsPerAB = (0 until 200).toList.map(i => bullpenFptsPerAtBatAllowedDK) // should park factor apply to pitcher?
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
@@ -594,8 +591,6 @@ case class HistoricalStats(season: Season) {
     }
     val projValueDK: Option[Double] = p.draftkings.map(_.salary).map(salary => (projFptsDK.getOrElse(0.0) / salary) * 1000)
 
-    //    println(s"$p - DraftKings - FPTS/PA: ${hitterFptsPerAtBatDK.map(_.rounded(2)).getOrElse("-")} in $hitterTotalAtBats PA, Pitcher FPTS/PA allowed: ${pitcherFptsPerAtBatAllowedDK.map(_.rounded(2)).getOrElse("-")} in $pitcherTotalAtBats PA, " +
-    //      s"Projected FPTS: ${projFptsDK.map(_.rounded(2)).getOrElse("-")}, Projected Value: ${projValueDK.map(_.rounded(2)).getOrElse("-")}")
   }
 
   val startingHitterStats: Map[Player, HitterStats] = Players.startingHitters.filter(season.hasStatsFor(_)).map { p => (p, HitterStats(p, p.opposingPitcher)) }.toMap
