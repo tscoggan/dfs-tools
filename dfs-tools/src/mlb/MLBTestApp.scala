@@ -18,31 +18,10 @@ object MLBTestApp extends App {
   import mlb.Past1YearStats.stats._
   mlb.Past1YearStats.stats.logSummary
 
-  println("#### SAME GAME ####")
+  val hitter = Players.get("456715")
+  println("hitter: "+hitter)
   
-  val avgFPTS_pitchersSameGame = utils.MathUtils.mean {
-    season.games.map { game => List(game.statsFor(game.visitingTeamStartingPitcher).get, game.statsFor(game.homeTeamStartingPitcher).get) }
-      .map {
-        case pitchers => 
-          pitchers.map(_.asInstanceOf[PitcherGameStats].pitchingStats.fantasyPoints(DraftKingsMLB)).sum
-      }
-  }
-
-  println("#### DIFF GAME ####")
-  
-  val avgFPTS_pitchersDiffGames = utils.MathUtils.mean {
-    season.games.groupBy(_.date).flatMap {
-      case (date, games) =>
-        val pitchers = games.flatMap { game => List(game.statsFor(game.visitingTeamStartingPitcher).get, game.statsFor(game.homeTeamStartingPitcher).get) }
-        val pairs = pitchers.combinations(2).filter { _.map(_.game.get.alias).distinct.length > 1 } // must be in different games
-        pairs.map {
-          case pitchers => 
-            pitchers.map(_.asInstanceOf[PitcherGameStats].pitchingStats.fantasyPoints(DraftKingsMLB)).sum
-        }
-    }
-  }
-
-  println(s"Same game: ${avgFPTS_pitchersSameGame.rounded(2)} FPTS per pair of pitchers")
-  println(s"Different games: ${avgFPTS_pitchersDiffGames.rounded(2)} FPTS per pair of pitchers")
+  val stats = season.hitterFptsPerAB_vs_PitcherType(mlb.model.Left, hitter, FanDuelMLB)
+  stats.foreach { s => println("PA: "+s.atBats+", FPTS/PA: "+s.fptsPerAB) }
 
 }

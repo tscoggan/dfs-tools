@@ -36,18 +36,22 @@ case class HistoricalStats(season: Season) {
         }
       }
 
-      if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
-        val (recentGames, oldGames) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+      if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
+        val (latestGames, recentGames, oldGames) = {
+          val (notOld, old) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHigher)))
+          val (latest, recent) = notOld.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHighest)))
+          (latest, recent, old)
+        }
 
         val atBatsAgainst = gamesPitched.map(_.atBatsAgainst()).sum
-        val weightedAtBatsAgainst = recentGames.map(_.atBatsAgainst() * 2).sum + oldGames.map(_.atBatsAgainst()).sum
+        val weightedAtBatsAgainst = latestGames.map(_.atBatsAgainst() * Configs.highestWeight).sum + recentGames.map(_.atBatsAgainst() * Configs.higherWeight).sum + oldGames.map(_.atBatsAgainst()).sum
 
         val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
-        val weightedFptsAgainst_FD = recentGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
+        val weightedFptsAgainst_FD = latestGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
         val fptsPerAtBatAgainst_FD = weightedFptsAgainst_FD / weightedAtBatsAgainst
 
         val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
-        val weightedFptsAgainst_DK = recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
+        val weightedFptsAgainst_DK = latestGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
         val fptsPerAtBatAgainst_DK = weightedFptsAgainst_DK / weightedAtBatsAgainst
         (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
       } else {
@@ -70,18 +74,22 @@ case class HistoricalStats(season: Season) {
         }
       }
 
-      if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
-        val (recentGames, oldGames) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+      if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
+        val (latestGames, recentGames, oldGames) = {
+          val (notOld, old) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHigher)))
+          val (latest, recent) = notOld.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHighest)))
+          (latest, recent, old)
+        }
 
         val atBatsAgainst = gamesPitched.map(_.atBatsAgainst(Some(Left))).sum
-        val weightedAtBatsAgainst = recentGames.map(_.atBatsAgainst(Some(Left)) * 2).sum + oldGames.map(_.atBatsAgainst(Some(Left))).sum
+        val weightedAtBatsAgainst = latestGames.map(_.atBatsAgainst(Some(Left)) * Configs.highestWeight).sum + recentGames.map(_.atBatsAgainst(Some(Left)) * Configs.higherWeight).sum + oldGames.map(_.atBatsAgainst(Some(Left))).sum
 
         val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble).sum
-        val weightedFptsAgainst_FD = recentGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble).sum
+        val weightedFptsAgainst_FD = latestGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Left)).toDouble).sum
         val fptsPerAtBatAgainst_FD = weightedFptsAgainst_FD / weightedAtBatsAgainst
 
         val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble).sum
-        val weightedFptsAgainst_DK = recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble).sum
+        val weightedFptsAgainst_DK = latestGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Left)).toDouble).sum
         val fptsPerAtBatAgainst_DK = weightedFptsAgainst_DK / weightedAtBatsAgainst
         (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Left)))
       } else {
@@ -104,18 +112,22 @@ case class HistoricalStats(season: Season) {
         }
       }
 
-      if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
-        val (recentGames, oldGames) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+      if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
+        val (latestGames, recentGames, oldGames) = {
+          val (notOld, old) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHigher)))
+          val (latest, recent) = notOld.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHighest)))
+          (latest, recent, old)
+        }
 
         val atBatsAgainst = gamesPitched.map(_.atBatsAgainst(Some(Right))).sum
-        val weightedAtBatsAgainst = recentGames.map(_.atBatsAgainst(Some(Right)) * 2).sum + oldGames.map(_.atBatsAgainst(Some(Right))).sum
+        val weightedAtBatsAgainst = latestGames.map(_.atBatsAgainst(Some(Right)) * Configs.highestWeight).sum + recentGames.map(_.atBatsAgainst(Some(Right)) * Configs.higherWeight).sum + oldGames.map(_.atBatsAgainst(Some(Right))).sum
 
         val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble).sum
-        val weightedFptsAgainst_FD = recentGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble).sum
+        val weightedFptsAgainst_FD = latestGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Right)).toDouble).sum
         val fptsPerAtBatAgainst_FD = weightedFptsAgainst_FD / weightedAtBatsAgainst
 
         val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble).sum
-        val weightedFptsAgainst_DK = recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble).sum
+        val weightedFptsAgainst_DK = latestGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Right)).toDouble).sum
         val fptsPerAtBatAgainst_DK = weightedFptsAgainst_DK / weightedAtBatsAgainst
         (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Right)))
       } else {
@@ -138,18 +150,22 @@ case class HistoricalStats(season: Season) {
         }
       }
 
-      if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
-        val (recentGames, oldGames) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+      if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
+        val (latestGames, recentGames, oldGames) = {
+          val (notOld, old) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHigher)))
+          val (latest, recent) = notOld.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHighest)))
+          (latest, recent, old)
+        }
 
         val atBatsAgainst = gamesPitched.map(_.atBatsAgainst(Some(Switch))).sum
-        val weightedAtBatsAgainst = recentGames.map(_.atBatsAgainst(Some(Switch)) * 2).sum + oldGames.map(_.atBatsAgainst(Some(Switch))).sum
+        val weightedAtBatsAgainst = latestGames.map(_.atBatsAgainst(Some(Switch)) * Configs.highestWeight).sum + recentGames.map(_.atBatsAgainst(Some(Switch)) * Configs.higherWeight).sum + oldGames.map(_.atBatsAgainst(Some(Switch))).sum
 
         val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble).sum
-        val weightedFptsAgainst_FD = recentGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble).sum
+        val weightedFptsAgainst_FD = latestGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB, Some(Switch)).toDouble).sum
         val fptsPerAtBatAgainst_FD = weightedFptsAgainst_FD / weightedAtBatsAgainst
 
         val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble).sum
-        val weightedFptsAgainst_DK = recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble).sum
+        val weightedFptsAgainst_DK = latestGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB, Some(Switch)).toDouble).sum
         val fptsPerAtBatAgainst_DK = weightedFptsAgainst_DK / weightedAtBatsAgainst
         (pitcher -> HittingStatsAllowed(pitcher, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, Some(Switch)))
       } else {
@@ -167,18 +183,22 @@ case class HistoricalStats(season: Season) {
     Teams.allTeams.map { team =>
       val gamesPitched = season.reliefPitchingStatsByTeam(team)
 
-      if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
-        val (recentGames, oldGames) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+      if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
+        val (latestGames, recentGames, oldGames) = {
+          val (notOld, old) = gamesPitched.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHigher)))
+          val (latest, recent) = notOld.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHighest)))
+          (latest, recent, old)
+        }
 
         val atBatsAgainst = gamesPitched.map(_.atBatsAgainst()).sum
-        val weightedAtBatsAgainst = recentGames.map(_.atBatsAgainst() * 2).sum + oldGames.map(_.atBatsAgainst()).sum
+        val weightedAtBatsAgainst = latestGames.map(_.atBatsAgainst() * Configs.highestWeight).sum + recentGames.map(_.atBatsAgainst() * Configs.higherWeight).sum + oldGames.map(_.atBatsAgainst()).sum
 
         val fptsAgainst_FD = gamesPitched.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
-        val weightedFptsAgainst_FD = recentGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
+        val weightedFptsAgainst_FD = latestGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(FanDuelMLB).toDouble).sum
         val fptsPerAtBatAgainst_FD = weightedFptsAgainst_FD / weightedAtBatsAgainst
 
         val fptsAgainst_DK = gamesPitched.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
-        val weightedFptsAgainst_DK = recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * 2).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
+        val weightedFptsAgainst_DK = latestGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * Configs.highestWeight).sum + recentGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble * Configs.higherWeight).sum + oldGames.map(_.fantasyPointsAgainst(DraftKingsMLB).toDouble).sum
         val fptsPerAtBatAgainst_DK = weightedFptsAgainst_DK / weightedAtBatsAgainst
         (team -> HittingStatsAllowed(null, atBatsAgainst, fptsAgainst_FD, fptsPerAtBatAgainst_FD, fptsAgainst_DK, fptsPerAtBatAgainst_DK, None))
       } else {
@@ -553,13 +573,13 @@ case class HistoricalStats(season: Season) {
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
-      //      log(s"$p vs $opposingPitcher:\n\tprojAtBats: ${projAtBats.rounded(2)}\n\tprojAtBatsVsOpposingPitcher: ${projAtBatsVsOpposingPitcher.rounded(2)}"+
-      //          s"\n\tprojAtBatsVsBullpen: ${projAtBatsVsBullpen.rounded(2)}\n\thitterTotalAtBats: ${hitterTotalAtBats.rounded(2)}\n\tpitcherTotalAtBats: ${pitcherTotalAtBats.rounded(2)}"+
-      //          s"\n\tballparkFactor: ${ballparkFactor.rounded(2)}\n\thitterFptsPerAtBatFD: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("???")}"+
-      //          s"\n\tpitcherFptsPerAtBatAllowedFD ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("???")}\n\tbullpenFptsPerAtBatAllowedFD: ${bullpenFptsPerAtBatAllowedFD.rounded(2)}"+
-      //          s"\n\thitterWeight: ${hitterWeight}\n\tpitcherWeight: ${pitcherWeight}\n\thitterWeightedFptsPerAB size: ${hitterWeightedFptsPerAB.size}"+
-      //          s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}"+
-      //          s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}")
+      //      log(s"$p vs $opposingPitcher:\n\tprojAtBats: ${projAtBats.rounded(2)}\n\tprojAtBatsVsOpposingPitcher: ${projAtBatsVsOpposingPitcher.rounded(2)}" +
+      //        s"\n\tprojAtBatsVsBullpen: ${projAtBatsVsBullpen.rounded(2)}\n\thitterTotalAtBats: ${hitterTotalAtBats.rounded(2)}\n\tpitcherTotalAtBats: ${pitcherTotalAtBats.rounded(2)}" +
+      //        s"\n\tballparkFactor: ${ballparkFactor.rounded(2)}\n\thitterFptsPerAtBatFD: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("???")}" +
+      //        s"\n\tpitcherFptsPerAtBatAllowedFD ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("???")}\n\tbullpenFptsPerAtBatAllowedFD: ${bullpenFptsPerAtBatAllowedFD.rounded(2)}" +
+      //        s"\n\thitterWeight: ${hitterWeight}\n\tpitcherWeight: ${pitcherWeight}\n\thitterWeightedFptsPerAB size: ${hitterWeightedFptsPerAB.size}" +
+      //        s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}" +
+      //        s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}")
 
       fptsVsStarter + fptsVsBullpen
     }

@@ -117,11 +117,11 @@ case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Bo
 
   val pitchingStats: PitchingStats = new PitchingStats(gameDate)
 
-  private val pitchingStatsByHitter: mutable.Map[Player, PitchingStats] = mutable.Map.empty
+  val pitchingStatsByHitter: mutable.Map[Player, PitchingStats] = mutable.Map.empty
 
-  private val hittingStatsAllowedByHitter: mutable.Map[Player, HittingStats] = mutable.Map.empty
+  val hittingStatsAllowedByHitter: mutable.Map[Player, HittingStats] = mutable.Map.empty
 
-  def pitchingStatsAgainst(hitter: Player, updateStats: Boolean = false): PitchingStats = pitchingStatsByHitter.get(hitter) match {
+  def pitchingStatsAgainst(hitter: Player, updateStats: Boolean): PitchingStats = pitchingStatsByHitter.get(hitter) match {
     case Some(stats) => stats
     case None => synchronized {
       val stats = new PitchingStats(gameDate)
@@ -130,7 +130,7 @@ case class PitcherGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Bo
     }
   }
 
-  def hittingStatsAllowedTo(hitter: Player, updateStats: Boolean = false): HittingStats = hittingStatsAllowedByHitter.get(hitter) match {
+  def hittingStatsAllowedTo(hitter: Player, updateStats: Boolean): HittingStats = hittingStatsAllowedByHitter.get(hitter) match {
     case Some(stats) => stats
     case None => synchronized {
       val stats = new HittingStats(gameDate)

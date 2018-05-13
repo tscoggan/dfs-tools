@@ -32,9 +32,10 @@ case class Season(label: String, games: List[Game]) {
       })
   }
 
-  def pitcherStatsAgainstHitter(pitcher: Player, hitter: Player): List[PitchingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
+  def pitcherStatsAgainstHitter(pitcher: Player, hitter: Player): List[PitchingStats] = statsByPlayer(pitcher.id).games.flatMap { gameStats =>
     gameStats match {
-      case pgs: PitcherGameStats => pgs.pitchingStatsAgainst(hitter)
+      case pgs: PitcherGameStats => pgs.pitchingStatsByHitter.get(hitter)
+      case _                     => None
     }
   }
 
@@ -42,20 +43,22 @@ case class Season(label: String, games: List[Game]) {
     batterVsPitcherStatsHelper(pitcherStatsAgainstHitter(pitcher, hitter), scoringSystem)
   }
 
-  def pitcherStatsAgainstHitters(pitcher: Player, hitters: List[Player]): List[PitchingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
+  def pitcherStatsAgainstHitters(pitcher: Player, hitters: List[Player]): List[PitchingStats] = statsByPlayer(pitcher.id).games.flatMap { gameStats =>
     gameStats match {
-      case pgs: PitcherGameStats => hitters.map { hitter => pgs.pitchingStatsAgainst(hitter) }
+      case pgs: PitcherGameStats => hitters.flatMap { hitter => pgs.pitchingStatsByHitter.get(hitter) }
+      case _                     => None
     }
-  }.flatten
+  }
 
   def pitcherFptsPerAB_vs_Hitters(pitcher: Player, hitters: List[Player], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
     batterVsPitcherStatsHelper(pitcherStatsAgainstHitters(pitcher, hitters), scoringSystem)
   }
 
   def pitcherStatsAllowedToHitter(pitcher: Player, hitter: Player): List[HittingStats] = statsByPlayer.get(pitcher.id) match {
-    case Some(stats) => stats.games.collect { gameStats =>
+    case Some(stats) => stats.games.flatMap { gameStats =>
       gameStats match {
-        case pgs: PitcherGameStats => pgs.hittingStatsAllowedTo(hitter)
+        case pgs: PitcherGameStats => pgs.hittingStatsAllowedByHitter.get(hitter)
+        case _                     => None
       }
     }
     case None => Nil
@@ -77,9 +80,10 @@ case class Season(label: String, games: List[Game]) {
     batterVsPitcherStatsHelper(hitterStatsAgainstPitcherType(throws, hitter), scoringSystem)
   }
 
-  def pitcherStatsAllowedToHitters(pitcher: Player, hitters: List[Player]): List[HittingStats] = statsByPlayer(pitcher.id).games.collect { gameStats =>
+  def pitcherStatsAllowedToHitters(pitcher: Player, hitters: List[Player]): List[HittingStats] = statsByPlayer(pitcher.id).games.flatMap { gameStats =>
     gameStats match {
-      case pgs: PitcherGameStats => hitters.map { hitter => pgs.hittingStatsAllowedTo(hitter) }
+      case pgs: PitcherGameStats => hitters.map { hitter => pgs.hittingStatsAllowedByHitter.get(hitter) }
+      case _                     => None
     }
   }.flatten
 
@@ -88,15 +92,31 @@ case class Season(label: String, games: List[Game]) {
   }
 
   private def batterVsPitcherStatsHelper(stats: List[PlayerStats], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
-    if (Configs.overweightRecent && Configs.recentDaysToOverweight > 0) {
-      val (recentGames, oldGames) = stats.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToOverweight)))
+    if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
+      val (latestGames, recentGames, oldGames) = {
+        val (notOld, old) = stats.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHigher)))
+        val (latest, recent) = notOld.partition(_.gameDate.after(today.minusDays(Configs.recentDaysToWeightHighest)))
+        (latest, recent, old)
+      }
 
-      val (recentFptsPerGame, recentAtBatsPerGame) = recentGames.map { case game => (game.fantasyPoints(scoringSystem).toDouble * 2, game.atBats) }.unzip
+      val (latestFptsPerGame, latestAtBatsPerGame) = latestGames.map { case game => (game.fantasyPoints(scoringSystem).toDouble * Configs.highestWeight, game.atBats) }.unzip
+      val (recentFptsPerGame, recentAtBatsPerGame) = recentGames.map { case game => (game.fantasyPoints(scoringSystem).toDouble * Configs.higherWeight, game.atBats) }.unzip
       val (oldFptsPerGame, oldAtBatsPerGame) = oldGames.map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
 
-      val weightedTotalAtBats = recentAtBatsPerGame.map(_ * 2).sum + oldAtBatsPerGame.sum
-      val totalAtBats = recentAtBatsPerGame.sum + oldAtBatsPerGame.sum
-      if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, (recentFptsPerGame ++ oldFptsPerGame).sum / weightedTotalAtBats)) else None
+      val weightedTotalAtBats = latestAtBatsPerGame.map(_ * Configs.highestWeight).sum + recentAtBatsPerGame.map(_ * Configs.higherWeight).sum + oldAtBatsPerGame.sum
+      val totalAtBats = latestAtBatsPerGame.sum + recentAtBatsPerGame.sum + oldAtBatsPerGame.sum
+
+      //      if (logstuff) {
+      //        if (stats.isEmpty) println(s"~~~stats: -") else println(s"~~~stats: ${stats.size}")
+      //        stats.groupBy(_.gameDate).toList.sortBy(_._1).foreach{case (date, s) => println(s"\t\t${date.print()} --> ${s.length} games: \n\t\t\t${s.mkString("\n\t\t\t")}")}
+      //        if (latestGames.isEmpty) println(s"~~~latestGames: -") else println(s"~~~latestGames: ${latestGames.size} since ${latestGames.map(_.gameDate).min.print()}")
+      //        if (recentGames.isEmpty) println(s"~~~recentGames: -") else println(s"~~~recentGames: ${recentGames.size} between ${recentGames.map(_.gameDate).min.print()} & ${recentGames.map(_.gameDate).max.print()}")
+      //        if (oldGames.isEmpty) println(s"~~~oldGames: -") else println(s"~~~oldGames: ${oldGames.size} between ${oldGames.map(_.gameDate).min.print()} & ${oldGames.map(_.gameDate).max.print()}")
+      //        println(s"~~~weightedTotalAtBats: ${latestAtBatsPerGame.map(_ * 3).sum} + ${recentAtBatsPerGame.map(_ * 2).sum} + ${oldAtBatsPerGame.sum}")
+      //        println(s"~~~weighted FPTS/game: ${latestFptsPerGame.sum / latestAtBatsPerGame.map(_ * 3).sum} + ${recentFptsPerGame.sum / recentAtBatsPerGame.map(_ * 2).sum} + ${oldFptsPerGame.sum / oldAtBatsPerGame.sum}")
+      //      }
+
+      if (totalAtBats > 0) Some(BatterVsPitcherStats(totalAtBats, (latestFptsPerGame ++ recentFptsPerGame ++ oldFptsPerGame).sum / weightedTotalAtBats)) else None
     } else {
       val (fptsPerGame, atBatsPerGame) = stats.map { case game => (game.fantasyPoints(scoringSystem).toDouble, game.atBats) }.unzip
       val totalAtBats = atBatsPerGame.sum

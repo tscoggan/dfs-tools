@@ -54,8 +54,8 @@ case class Game(
       val opposingPlayers = if (visitingTeamPlayerStats.contains(hitter)) homeTeamPlayerStats else visitingTeamPlayerStats
       val opposingPitchers = opposingPlayers.filter(_.isInstanceOf[PitcherGameStats])
       //println(s"game $alias, hitter $hitter, opposing pitchers: ${opposingPitchers}")
-      (!(fptsFD ~= opposingPitchers.map(_.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(FanDuelMLB)).sum) ||
-        !(fptsDK ~= opposingPitchers.map(_.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(DraftKingsMLB)).sum))
+      (!(fptsFD ~= opposingPitchers.map(_.asInstanceOf[PitcherGameStats].hittingStatsAllowedByHitter.get(hitter.player).map(_.fantasyPoints(FanDuelMLB)).getOrElse(0f)).sum) ||
+        !(fptsDK ~= opposingPitchers.map(_.asInstanceOf[PitcherGameStats].hittingStatsAllowedByHitter.get(hitter.player).map(_.fantasyPoints(DraftKingsMLB)).getOrElse(0f)).sum))
     } match {
       case Some(hitter) => log {
         val opposingPlayers = if (visitingTeamPlayerStats.contains(hitter)) homeTeamPlayerStats else visitingTeamPlayerStats
@@ -63,9 +63,9 @@ case class Game(
         println(hitter.printStats)
         s"WARNING: Inconsistent stats for game $alias, hitter $hitter: \n" +
           s"fptsFD = ${hitter.fantasyPoints(FanDuelMLB)}\n" +
-          s"pitcher stats allowed: ${opposingPitchers.map(pitcher => pitcher + " gave up " + pitcher.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(FanDuelMLB)).mkString("\n\t")}\n" +
+          s"pitcher stats allowed: ${opposingPitchers.map(pitcher => pitcher + " gave up " + pitcher.asInstanceOf[PitcherGameStats].hittingStatsAllowedByHitter.get(hitter.player).map(_.fantasyPoints(FanDuelMLB)).getOrElse("???")).mkString("\n\t")}\n" +
           s"fptsDK = ${hitter.fantasyPoints(DraftKingsMLB)}\n" +
-          s"pitcher stats allowed: ${opposingPitchers.map(pitcher => pitcher + " gave up " + pitcher.asInstanceOf[PitcherGameStats].hittingStatsAllowedTo(hitter.player).fantasyPoints(DraftKingsMLB)).mkString("\n\t")}\n"
+          s"pitcher stats allowed: ${opposingPitchers.map(pitcher => pitcher + " gave up " + pitcher.asInstanceOf[PitcherGameStats].hittingStatsAllowedByHitter.get(hitter.player).map(_.fantasyPoints(DraftKingsMLB)).getOrElse("???")).mkString("\n\t")}\n"
       }
       case None => // OK
     }

@@ -5,6 +5,7 @@ import scala.collection.JavaConversions._
 import model._
 import utils.Logger._
 import utils.StringUtils._
+import utils.DoubleUtils._
 import java.util.Date
 
 object Configs {
@@ -15,36 +16,43 @@ object Configs {
 
     val teamsFileName: String = conf.getString("teams_file")
   }
-  
+
   object MlbDotCom {
     private val conf = Configs.conf.getConfig("mlbdotcom")
-    
+
     val baseURL: String = conf.getString("base_url")
-    
+
     val seasonStartDate: Date = conf.getString("season_start_date").toDate("yyyy-MM-dd")
     val lastSeasonEndDate: Date = conf.getString("last_season_end_date").toDate("yyyy-MM-dd")
-    
+
     val dataFileDir: String = conf.getString("data_file_dir")
-    
+
     val runSanityChecks: Boolean = conf.getBoolean("run_sanity_checks")
     if (runSanityChecks) log("#### Running MLB.com sanity checks ####")
   }
-  
+
   object Rotogrinders {
     private val conf = Configs.conf.getConfig("rotogrinders")
-    
+
     val projectedStartersFile: String = conf.getString("projected_starters_file")
-    
+
     val playerMappingsFile: String = conf.getString("player_mappings_file")
   }
-  
+
   val blogFormat: String = conf.getString("blog_format")
-  
+
   val overweightRecent: Boolean = conf.getBoolean("overweight_recent_performance")
-  val recentDaysToOverweight: Int = conf.getInt("recent_number_of_days_to_overweight")
-  
+  val recentDaysToWeightHigher: Int = conf.getInt("recent_number_of_days_to_weight_higher")
+  val higherWeight: Double = conf.getString("higher_weight").trim.trimSuffix("x").toDouble
+  val recentDaysToWeightHighest: Int = conf.getInt("recent_number_of_days_to_weight_highest")
+  val highestWeight: Double = conf.getString("highest_weight").trim.trimSuffix("x").toDouble
+
+  require(recentDaysToWeightHighest < recentDaysToWeightHigher)
+  log(s"overweightRecent: $overweightRecent --- ${highestWeight.rounded(1)}x for past ${recentDaysToWeightHighest} days, " +
+    s"${higherWeight.rounded(1)}x for past ${recentDaysToWeightHigher} days")
+
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
-  
+
   val projectionsHistoryDir: String = conf.getString("projections_history_dir")
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {
@@ -53,11 +61,11 @@ object Configs {
     case _                => throw new Exception("Invalid \"dfs_scoring_system\" value in application.conf!")
   }
   log(s"Using $dfsScoringSystem scoring system")
-  
+
   val teamMappingsFile: String = conf.getString("team_mappings_file")
-  
+
   val playerMappingsFile: String = conf.getString("player_mappings_file")
-  
+
   val teamsNotPlayingFile: String = conf.getString("teams_not_playing_file")
 
 }
