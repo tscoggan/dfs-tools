@@ -316,6 +316,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
               case "Wild Pitch"          => //???
               case "Batter Turn"         => //???
               case "Pitch Challenge"     => //???
+              case "Pitcher Switch"      => //???
               case _                     => throw new Exception("Unknown event: " + event)
             }
           }

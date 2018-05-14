@@ -28,8 +28,8 @@ object ProjectionsBackTester extends App {
     override def toString: String = s"batterWeight=$batterWeight, pitcherWeight=$pitcherWeight"
   }
 
-  val weights = List(75, 100, 125).flatMap { bWeight =>
-    List(75, 100, 125).map { pWeight =>
+  val weights = List(100).flatMap { bWeight =>
+    List(100).map { pWeight =>
       Weights(bWeight, pWeight)
     }
   }

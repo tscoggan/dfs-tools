@@ -586,7 +586,7 @@
 543148|Federowicz|Tim|R|R|HOU|C
 543169|Flynn|Brian|L|L|KC|P
 543184|Friedrich|Christian|R|L|SD|P
-543208|Gaviglio|Sam|R|R|KC|P
+543208|Gaviglio|Sam|R|R|TOR|P
 543213|Giavotella|Johnny|R|R|BAL|2B
 543216|Gillaspie|Conor|L|R|SF|3B
 543219|Gilmartin|Sean|L|L|NYM|P
@@ -620,7 +620,7 @@
 543484|Mahtook|Mikie|R|R|DET|OF
 543506|Maurer|Brandon|R|R|KC|P
 543507|May|Trevor|R|R|MIN|P
-543508|Mazzoni|Cory|R|R|SD|P
+543508|Mazzoni|Cory|R|R|CHC|P
 543510|McCann|James|R|R|DET|C
 543521|McHugh|Collin|R|R|HOU|P
 543532|Melville|Tim|R|R|SD|P
@@ -970,7 +970,7 @@
 594580|Moll|Sam|L|L|TOR|P
 594694|Difo|Wilmer|S|R|WAS|SS
 594736|Anderson|Cody|R|R|CLE|P
-594742|Asher|Alec|R|R|BAL|P
+594742|Asher|Alec|R|R|MIL|P
 594760|Blair|Aaron|R|R|ATL|P
 594772|Buchanan|Jake|R|R|CIN|P
 594777|Calhoun|Kole|L|L|LAA|OF
@@ -1177,7 +1177,7 @@
 607374|Tropeano|Nick|R|R|LAA|P
 607385|Collins|Tyler|L|L|DET|OF
 607387|Rua|Ryan|R|R|TEX|OF
-607455|Banda|Anthony|L|L|ARI|P
+607455|Banda|Anthony|L|L|TB|P
 607457|Barraclough|Kyle|R|R|MIA|P
 607468|Blandino|Alex|R|R|CIN|2B
 607471|Bostick|Christopher|R|R|PIT|OF
@@ -1505,3 +1505,6 @@
 606995|Hancock|Justin|R|R|CHC|P
 641645|Guillorme|Luis|L|R|NYM|SS
 571851|Kieboom|Spencer|R|R|WAS|C
+488786|Coleman|Louis|R|R|DET|P
+519381|Venditte|Pat|L|S|LAD|P
+642547|Peralta|Freddy|R|R|MIL|P
