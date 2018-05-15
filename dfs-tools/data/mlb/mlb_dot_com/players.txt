@@ -118,7 +118,7 @@
 448179|Hill|Rich|L|L|LAD|P
 448281|Doolittle|Sean|L|L|WAS|P
 448306|Shields|James|R|R|CWS|P
-448602|Reynolds|Mark|R|R|COL|1B
+448602|Reynolds|Mark|R|R|WAS|1B
 448605|Ruggiano|Justin|R|R|SF|OF
 448609|Sipp|Tony|L|L|HOU|P
 448614|Torres|Carlos|R|R|WAS|P
@@ -442,7 +442,7 @@
 517414|Delgado|Randall|R|R|ARI|P
 517593|Salazar|Danny|R|R|CLE|P
 518397|Alexander|Scott|L|L|LAD|P
-518445|Bell|Chad|R|L|DET|P
+518445|Bell|Chad|R|L|ATL|P
 518452|Bettis|Chad|R|R|COL|P
 518466|Blash|Jabari|R|R|LAA|OF
 518468|Blazek|Michael|R|R|MIL|P
@@ -893,7 +893,7 @@
 592518|Machado|Manny|R|R|BAL|SS
 592530|Marmolejos|Jose|L|L|WAS|1B
 592533|Martin|Cody|R|R|SEA|P
-592547|McGuire|Deck|R|R|CIN|P
+592547|McGuire|Deck|R|R|TOR|P
 592567|Moran|Colin|L|R|PIT|3B
 592570|Morris|Akeel|R|R|LAA|P
 592592|Nicholas|Brett|L|R|TEX|C
@@ -1057,7 +1057,7 @@
 600303|La Stella|Tommy|L|R|CHC|3B
 600466|Read|Raudy|R|R|WAS|C
 600474|Severino|Pedro|R|R|WAS|C
-600524|Nunez|Renato|R|R|TEX|OF
+600524|Nunez|Renato|R|R|BAL|OF
 600526|Torres|Jose|L|L|SD|P
 600869|Candelario|Jeimer|S|R|DET|3B
 600917|Leclerc|Jose|R|R|TEX|P
@@ -1508,3 +1508,6 @@
 488786|Coleman|Louis|R|R|DET|P
 519381|Venditte|Pat|L|S|LAD|P
 642547|Peralta|Freddy|R|R|MIL|P
+448167|Mann|Brandon|L|L|TEX|P
+608475|Lugo|Dawel|R|R|DET|2B
+614177|Reyes|Franmil|R|R|SD|OF
