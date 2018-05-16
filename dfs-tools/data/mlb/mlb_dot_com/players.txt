@@ -646,7 +646,7 @@
 543807|Springer|George|R|R|HOU|OF
 543829|Gordon|Dee|L|R|SEA|OF
 543859|Tonkin|Michael|R|R|MIN|P
-543867|Turley|Nik|L|L|MIN|P
+543867|Turley|Nik|L|L|PIT|P
 543877|Vazquez|Christian|R|R|BOS|C
 543883|Vincent|Nick|R|R|SEA|P
 543901|Weber|Ryan|R|R|TB|P
@@ -1140,7 +1140,7 @@
 606162|Ramirez|Yefry|R|R|BAL|P
 606167|Mejia|Adalberto|R|L|MIN|P
 606192|Hernandez|Teoscar|R|R|TOR|OF
-606273|Elias|Roenis|L|L|BOS|P
+606273|Elias|Roenis|L|L|SEA|P
 606291|Cabrera|Mauricio|R|R|ATL|P
 606299|Peraza|Jose|R|R|CIN|SS
 606424|Garcia|Jarlin|L|L|MIA|P
