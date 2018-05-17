@@ -1322,7 +1322,7 @@
 623913|Wang|Wei-Chung|L|L|MIL|P
 623993|Santander|Anthony|S|R|BAL|OF
 624407|Lin|Tzu-Wei|L|R|BOS|3B
-624414|Arroyo|Christian|R|R|SF|3B
+624414|Arroyo|Christian|R|R|TB|3B
 624424|Conforto|Michael|L|R|NYM|OF
 624428|Frazier|Adam|L|R|PIT|OF
 624507|Jones|Ryder|L|R|SF|1B

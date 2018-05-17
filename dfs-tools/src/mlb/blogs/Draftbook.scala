@@ -91,7 +91,7 @@ object Draftbook extends App {
           }))
   }
 
-  log("\n### Top 10 pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 30 PA): ###\n")
+  log("\n### Pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 30 PA): ###\n")
   log(toTable(
     List("Pitcher", "Opponent", "Against hitters who bat...", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
     startingPitchers
@@ -99,8 +99,7 @@ object Draftbook extends App {
         List(pitcherStatsAllowedToLefties.get(pitcher), pitcherStatsAllowedToRighties.get(pitcher), pitcherStatsAllowedToSwitchHitters.get(pitcher)).flatten
       }
       .sortBy(_.fptsPerAtBatAgainst_FD).reverse
-      .filter(_.atBatsAgainst >= 30)
-      .take(15)
+      .filter(s => s.atBatsAgainst >= 30 && s.fptsPerAtBatAgainst_FD > 2.4)
       .map { stats =>
         List(stats.pitcher.toStringTeamOnly,
           stats.pitcher.opponent.get,
