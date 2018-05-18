@@ -874,7 +874,7 @@
 592314|Foltynewicz|Mike|R|R|ATL|P
 592325|Gamel|Ben|L|L|SEA|OF
 592332|Gausman|Kevin|L|R|BAL|P
-592340|Goeddel|Erik|R|R|SEA|P
+592340|Goeddel|Erik|R|R|LAD|P
 592346|Gonzalez|Chi Chi|R|R|TEX|P
 592348|Goodrum|Niko|S|R|DET|3B
 592351|Gray|Jon|R|R|COL|P
@@ -1535,3 +1535,4 @@
 623434|Hauschild|Mike|R|R|TEX|P
 643316|Fry|Paul|L|L|BAL|P
 657524|Bormann|John|R|R|PIT|C
+640457|Meadows|Austin|L|L|PIT|OF

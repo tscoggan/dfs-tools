@@ -6,6 +6,13 @@ object MathUtils {
 
   def mean[T: Numeric](xs: Iterable[T]): Double = xs.sum.toDouble / xs.size
 
+  type Weight = Int
+
+  def weightedAvg[T: Numeric](xs: (T, Weight)*): Double = {
+    val values = xs.flatMap { case (value, weight) => (0 until weight).toList.map(i => value) }
+    mean(values)
+  }
+
   def variance[T: Numeric](xs: Iterable[T]): Double = {
     val avg = mean(xs)
 
@@ -46,9 +53,9 @@ object MathUtils {
   }
 
   /**
-   * The Pearson correlation coefficient can range from +1 to -1. A value of 0 indicates that there is no association between the two variables. 
+   * The Pearson correlation coefficient can range from +1 to -1. A value of 0 indicates that there is no association between the two variables.
    * A value greater than 0 indicates a positive association; that is, as the value of one variable increases, so does the value of the other variable.
-   * 
+   *
    * In the data set maps, key = ID and value = data value that should correlate.
    */
   def pearsonCorrelation(

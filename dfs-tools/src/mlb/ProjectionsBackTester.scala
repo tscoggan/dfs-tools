@@ -43,15 +43,35 @@ object ProjectionsBackTester extends App {
       else None
     }
 
+    //    val projAtBats: Double = visitingOrHomeTeam match {
+    //      case Some(vh) => vh match {
+    //        case Visiting => game.statsFor(p) match {
+    //          case Some(stats) => leagueAvgStatsByBattingPosition_VisitingTeam.get(stats.battingPosition).map(_.atBatsPerGame).getOrElse(0.0)
+    //          case None        => 0.0
+    //        }
+    //        case Home => game.statsFor(p) match {
+    //          case Some(stats) => leagueAvgStatsByBattingPosition_HomeTeam.get(stats.battingPosition).map(_.atBatsPerGame).getOrElse(0.0)
+    //          case None        => 0.0
+    //        }
+    //      }
+    //      case None => 0.0
+    //    }
+
     val projAtBats: Double = visitingOrHomeTeam match {
       case Some(vh) => vh match {
         case Visiting => game.statsFor(p) match {
-          case Some(stats) => leagueAvgStatsByBattingPosition_VisitingTeam.get(stats.battingPosition).map(_.atBatsPerGame).getOrElse(0.0)
-          case None        => 0.0
+          case Some(stats) =>
+            val leagueAvg = leagueAvgStatsByBattingPosition_VisitingTeam.get(stats.battingPosition).map(_.atBatsPerGame).getOrElse(0.0)
+            val vsPitcher = leagueAvgStatsByBattingPositionAndOpposingPitcher_VisitingTeam.get((stats.battingPosition, opposingPitcher))
+            weightedAvg((leagueAvg, 20), (vsPitcher.map(_.atBatsPerGame).getOrElse(0.0), vsPitcher.map(_.numberOfGames).getOrElse(0)))
+          case None => 0.0
         }
         case Home => game.statsFor(p) match {
-          case Some(stats) => leagueAvgStatsByBattingPosition_HomeTeam.get(stats.battingPosition).map(_.atBatsPerGame).getOrElse(0.0)
-          case None        => 0.0
+          case Some(stats) =>
+            val leagueAvg = leagueAvgStatsByBattingPosition_HomeTeam.get(stats.battingPosition).map(_.atBatsPerGame).getOrElse(0.0)
+            val vsPitcher = leagueAvgStatsByBattingPositionAndOpposingPitcher_HomeTeam.get((stats.battingPosition, opposingPitcher))
+            weightedAvg((leagueAvg, 20), (vsPitcher.map(_.atBatsPerGame).getOrElse(0.0), vsPitcher.map(_.numberOfGames).getOrElse(0)))
+          case None => 0.0
         }
       }
       case None => 0.0

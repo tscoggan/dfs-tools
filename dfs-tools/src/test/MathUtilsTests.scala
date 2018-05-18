@@ -45,5 +45,9 @@ class MathUtilsTests extends FunSuite {
     println("Pearson correlation: "+correlation)
     assert(correlation ~= 0.529809)
   }
+  
+  test("weighted avg works"){
+    assert((MathUtils.weightedAvg((5,10),(7,3)) ~= 5.46153846) && (MathUtils.weightedAvg((5,10),(7,10)) ~= 6.0))
+  }
 
 }

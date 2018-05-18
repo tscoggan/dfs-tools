@@ -225,7 +225,7 @@ case class HistoricalStats(season: Season) {
       val totalAtBats = games.map(_.hittingStats.atBats).sum
       val totalFpts = games.map(_.hittingStats.fantasyPoints().toDouble).sum
       (bp ->
-        BattingPositionStats(totalAtBats,
+        BattingPositionStats(numberOfGames * 2, totalAtBats,
           totalAtBats.toDouble / (numberOfGames * 2),
           totalFpts / totalAtBats,
           totalFpts / (numberOfGames * 2)))
@@ -238,7 +238,7 @@ case class HistoricalStats(season: Season) {
         val totalAtBats = games.map(_.hittingStats.atBats).sum
         val totalFpts = games.map(_.hittingStats.fantasyPoints().toDouble).sum
         (bp ->
-          BattingPositionStats(totalAtBats,
+          BattingPositionStats(numberOfGames, totalAtBats,
             totalAtBats.toDouble / numberOfGames,
             totalFpts / totalAtBats,
             totalFpts / numberOfGames))
@@ -251,11 +251,49 @@ case class HistoricalStats(season: Season) {
         val totalAtBats = games.map(_.hittingStats.atBats).sum
         val totalFpts = games.map(_.hittingStats.fantasyPoints().toDouble).sum
         (bp ->
-          BattingPositionStats(totalAtBats,
+          BattingPositionStats(numberOfGames, totalAtBats,
             totalAtBats.toDouble / numberOfGames,
             totalFpts / totalAtBats,
             totalFpts / numberOfGames))
     }
+
+  val leagueAvgStatsByBattingPositionAndOpposingPitcher_VisitingTeam: Map[(BattingPosition, Player), BattingPositionStats] = Players.startingPitchers.flatMap {
+    pitcher =>
+      val games = season.gamesWithStartingPitcher(pitcher).filter(_.homeTeamStartingPitcher == pitcher)
+      games.flatMap(_.visitingTeamPlayerStats).groupBy(_.battingPosition).map {
+        case (bp, pgs) =>
+          val totalAtBats = pgs.map(_.hittingStats.atBats).sum
+          val totalFpts = pgs.map(_.hittingStats.fantasyPoints().toDouble).sum
+          ((bp, pitcher) ->
+            BattingPositionStats(games.length, totalAtBats,
+              totalAtBats.toDouble / games.length,
+              totalFpts / totalAtBats,
+              totalFpts / games.length))
+      }
+  }.toMap
+
+  val leagueAvgStatsByBattingPositionAndOpposingPitcher_HomeTeam: Map[(BattingPosition, Player), BattingPositionStats] = Players.startingPitchers.flatMap {
+    pitcher =>
+      val games = season.gamesWithStartingPitcher(pitcher).filter(_.visitingTeamStartingPitcher == pitcher)
+      games.flatMap(_.homeTeamPlayerStats).groupBy(_.battingPosition).map {
+        case (bp, pgs) =>
+          val totalAtBats = pgs.map(_.hittingStats.atBats).sum
+          val totalFpts = pgs.map(_.hittingStats.fantasyPoints().toDouble).sum
+          ((bp, pitcher) ->
+            BattingPositionStats(games.length, totalAtBats,
+              totalAtBats.toDouble / games.length,
+              totalFpts / totalAtBats,
+              totalFpts / games.length))
+      }
+  }.toMap
+
+  //  log(s"### PA per batting position vs pitcher - Visiting Team: ###\n\t" + leagueAvgStatsByBattingPositionAndOpposingPitcher_VisitingTeam.toList
+  //    .sortBy { case ((bp, pitcher), stats) => s"${pitcher.id}$bp" }
+  //    .map { case ((bp, pitcher), stats) => s"${bp}) vs $pitcher - ${stats.atBatsPerGame} (${stats.numberOfGames} games)" }.mkString("\n\t"))
+  //  
+  //  log(s"### PA per batting position vs pitcher - Home Team: ###\n\t" + leagueAvgStatsByBattingPositionAndOpposingPitcher_HomeTeam.toList
+  //    .sortBy { case ((bp, pitcher), stats) => s"${pitcher.id}$bp" }
+  //    .map { case ((bp, pitcher), stats) => s"${bp}) vs $pitcher - ${stats.atBatsPerGame} (${stats.numberOfGames} games)" }.mkString("\n\t"))
 
   case class BallparkStats(homeTeam: Team, totalAtBats_Visitors: Int, totalFpts_Visitors: Double, totalAtBats_Home: Int, totalFpts_Home: Double,
                            pitchingFptsPerGame_Visitors: Double, pitchingFptsPerGame_Home: Double) {
@@ -418,15 +456,21 @@ case class HistoricalStats(season: Season) {
   //        s"L: ${pitcherBallparkFactor_HomeTeam(homeTeam).leftyMultiplier.rounded(2)}, R: ${pitcherBallparkFactor_HomeTeam(homeTeam).rightyMultiplier.rounded(2)} for home team pitchers"
   //  }.mkString("\n\t"))
 
-  def projectedAtBats(player: Player): Double = player.visitingOrHomeTeam match {
+  def projectedAtBats(hitter: Player, pitcher: Player): Double = hitter.visitingOrHomeTeam match {
     case Some(vh) => vh match {
-      case Visiting => player.battingPosition match {
-        case Some(bp) => leagueAvgStatsByBattingPosition_VisitingTeam.get(bp).map(_.atBatsPerGame).getOrElse(0.0)
-        case None     => 0.0
+      case Visiting => hitter.battingPosition match {
+        case Some(bp) =>
+          val leagueAvg = leagueAvgStatsByBattingPosition_VisitingTeam.get(bp).map(_.atBatsPerGame).getOrElse(0.0)
+          val vsPitcher = leagueAvgStatsByBattingPositionAndOpposingPitcher_VisitingTeam.get((bp, pitcher))
+          weightedAvg((leagueAvg, 20), (vsPitcher.map(_.atBatsPerGame).getOrElse(0.0), vsPitcher.map(_.numberOfGames).getOrElse(0)))
+        case None => 0.0
       }
-      case Home => player.battingPosition match {
-        case Some(bp) => leagueAvgStatsByBattingPosition_HomeTeam.get(bp).map(_.atBatsPerGame).getOrElse(0.0)
-        case None     => 0.0
+      case Home => hitter.battingPosition match {
+        case Some(bp) =>
+          val leagueAvg = leagueAvgStatsByBattingPosition_HomeTeam.get(bp).map(_.atBatsPerGame).getOrElse(0.0)
+          val vsPitcher = leagueAvgStatsByBattingPositionAndOpposingPitcher_HomeTeam.get((bp, pitcher))
+          weightedAvg((leagueAvg, 20), (vsPitcher.map(_.atBatsPerGame).getOrElse(0.0), vsPitcher.map(_.numberOfGames).getOrElse(0)))
+        case None => 0.0
       }
     }
     case None => 0.0
@@ -536,7 +580,7 @@ case class HistoricalStats(season: Season) {
 
   case class HitterStats(p: Player, opposingPitcher: Player) {
 
-    val projAtBats: Double = projectedAtBats(p)
+    val projAtBats: Double = projectedAtBats(p, opposingPitcher)
     val projAtBatsVsOpposingPitcher: Double = {
       val pitcherStats = startingPitcherStats.get(opposingPitcher)
       pitcherStats.flatMap(_.pitcherAtBatsPerStart).getOrElse(24.0) / 9.0
@@ -640,7 +684,7 @@ case class DeviationStats(stdDev: Double, downsideDev: Double, upsideDev: Double
   val netUpsideDev: Double = upsideDev - downsideDev
 }
 
-case class BattingPositionStats(totalAtBats: Int, atBatsPerGame: Double, fptsPerAtBat: Double, fptsPerGame: Double)
+case class BattingPositionStats(numberOfGames: Int, totalAtBats: Int, atBatsPerGame: Double, fptsPerAtBat: Double, fptsPerGame: Double)
 
 case class HitterBallparkFactor(leftyMultiplier: Double, switchMultiplier: Double, rightyMultiplier: Double) {
   def forHitter(player: Player): Double = player.bats match {
