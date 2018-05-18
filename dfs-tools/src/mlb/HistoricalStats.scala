@@ -222,33 +222,39 @@ case class HistoricalStats(season: Season) {
 
   val leagueAvgStatsByBattingPosition: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games).groupBy(_.battingPosition).map {
     case (bp, games) =>
+      val totalAtBats = games.map(_.hittingStats.atBats).sum
+      val totalFpts = games.map(_.hittingStats.fantasyPoints().toDouble).sum
       (bp ->
-        BattingPositionStats(games.map(_.hittingStats.atBats).sum,
-          games.map(_.hittingStats.atBats.toDouble).sum / (numberOfGames * 2),
-          games.map(_.hittingStats.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum,
-          games.map(_.hittingStats.fantasyPoints().toDouble).sum / (numberOfGames * 2)))
+        BattingPositionStats(totalAtBats,
+          totalAtBats.toDouble / (numberOfGames * 2),
+          totalFpts / totalAtBats,
+          totalFpts / (numberOfGames * 2)))
   }
 
   val leagueAvgStatsByBattingPosition_VisitingTeam: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games)
     .filter(pgs => pgs.game.get.visitingTeamPlayerStats.contains(pgs))
     .groupBy(_.battingPosition).map {
       case (bp, games) =>
+        val totalAtBats = games.map(_.hittingStats.atBats).sum
+        val totalFpts = games.map(_.hittingStats.fantasyPoints().toDouble).sum
         (bp ->
-          BattingPositionStats(games.map(_.hittingStats.atBats).sum,
-            games.map(_.hittingStats.atBats.toDouble).sum / numberOfGames,
-            games.map(_.hittingStats.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum,
-            games.map(_.hittingStats.fantasyPoints().toDouble).sum / numberOfGames))
+          BattingPositionStats(totalAtBats,
+            totalAtBats.toDouble / numberOfGames,
+            totalFpts / totalAtBats,
+            totalFpts / numberOfGames))
     }
 
   val leagueAvgStatsByBattingPosition_HomeTeam: Map[BattingPosition, BattingPositionStats] = season.allPlayers.flatMap(_.games)
     .filter(pgs => pgs.game.get.homeTeamPlayerStats.contains(pgs))
     .groupBy(_.battingPosition).map {
       case (bp, games) =>
+        val totalAtBats = games.map(_.hittingStats.atBats).sum
+        val totalFpts = games.map(_.hittingStats.fantasyPoints().toDouble).sum
         (bp ->
-          BattingPositionStats(games.map(_.hittingStats.atBats).sum,
-            games.map(_.hittingStats.atBats.toDouble).sum / numberOfGames,
-            games.map(_.hittingStats.fantasyPoints().toDouble).sum / games.map(_.hittingStats.atBats).sum,
-            games.map(_.hittingStats.fantasyPoints().toDouble).sum / numberOfGames))
+          BattingPositionStats(totalAtBats,
+            totalAtBats.toDouble / numberOfGames,
+            totalFpts / totalAtBats,
+            totalFpts / numberOfGames))
     }
 
   case class BallparkStats(homeTeam: Team, totalAtBats_Visitors: Int, totalFpts_Visitors: Double, totalAtBats_Home: Int, totalFpts_Home: Double,
