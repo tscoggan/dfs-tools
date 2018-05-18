@@ -12,9 +12,7 @@ import utils.MathUtils._
 import utils.StringUtils._
 import utils.DateTimeUtils._
 
-object Past1YearStats {
-  
-  val allStarGameDate = "2017-07-11".toDate("yyyy-MM-dd")
+object StatsPast1Year {
 
   val games = Game_MLB.past1YearGames
 

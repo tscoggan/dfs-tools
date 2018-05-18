@@ -13,8 +13,8 @@ import mlb.Players._
 
 object ProjectionsBackTester extends App {
 
-  import mlb.Past1YearStats.stats._
-  mlb.Past1YearStats.stats.logSummary
+  import mlb.StatsSinceStartOfLastSeason.stats._
+  mlb.StatsSinceStartOfLastSeason.stats.logSummary
 
   val gamesThisSeason: List[Game] = season.games.filter(g => !g.date.trimTime.before(Configs.MlbDotCom.seasonStartDate.trimTime))
   log(gamesThisSeason.length + " games this season")

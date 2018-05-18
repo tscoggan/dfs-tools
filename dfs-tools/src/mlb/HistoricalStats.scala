@@ -562,14 +562,14 @@ case class HistoricalStats(season: Season) {
     }
     val bullpenFptsPerAtBatAllowedFD: Double = bullpenStatsAllowedToAllHitters(opposingPitcher.team).fptsPerAtBatAgainst_FD
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
-      val hitterWeight = List(100, hitterTotalAtBats).min
-      val pitcherWeight = List(100, pitcherTotalAtBats).min
+      val hitterWeight = List(200, hitterTotalAtBats).min
+      val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 until hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
       val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-      val bullpenWeightedFptsPerAB = (0 until 100).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
+      val bullpenWeightedFptsPerAB = (0 until 200).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
@@ -584,6 +584,7 @@ case class HistoricalStats(season: Season) {
       fptsVsStarter + fptsVsBullpen
     }
     val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
+    val projFptsPlusValueFD: Option[Double] = projValueFD.map(value => projFptsFD.getOrElse(0.0) + value)
 
     val hitterSeasonStatsDK: Option[PlayerSeasonStats] = hitterStats_DK.get(p).map(_._1)
     val hitterDeviationStatsDK: Option[DeviationStats] = hitterStats_DK.get(p).map(_._2)
@@ -610,6 +611,7 @@ case class HistoricalStats(season: Season) {
       fptsVsStarter + fptsVsBullpen
     }
     val projValueDK: Option[Double] = p.draftkings.map(_.salary).map(salary => (projFptsDK.getOrElse(0.0) / salary) * 1000)
+    val projFptsPlusValueDK: Option[Double] = projValueDK.map(value => projFptsDK.getOrElse(0.0) + value)
 
   }
 

@@ -15,8 +15,8 @@ object MLBTestApp extends App {
   //  println(s"Found ${games.length} games")
   //  games.foreach { g => println(g + "\n\n") }
 
-  import mlb.Past1YearStats.stats._
-  mlb.Past1YearStats.stats.logSummary
+  import mlb.StatsPast1Year.stats._
+  mlb.StatsPast1Year.stats.logSummary
 
   val hitter = Players.get("456715")
   println("hitter: "+hitter)

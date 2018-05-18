@@ -493,7 +493,7 @@
 519141|Pomeranz|Drew|R|L|BOS|P
 519144|Porcello|Rick|R|R|BOS|P
 519151|Pressly|Ryan|R|R|MIN|P
-519166|Ramirez|Neil|R|R|NYM|P
+519166|Ramirez|Neil|R|R|CLE|P
 519184|Revere|Ben|L|R|LAA|OF
 519203|Rizzo|Anthony|L|L|CHC|1B
 519222|Romine|Austin|R|R|NYY|C
@@ -793,7 +793,7 @@
 572122|Seager|Kyle|L|R|SEA|3B
 572140|Skaggs|Tyler|L|L|LAA|P
 572143|Smith|Burch|R|R|KC|P
-572180|Susac|Andrew|R|R|MIL|C
+572180|Susac|Andrew|R|R|BAL|C
 572191|Taylor|Michael A.|R|R|WAS|OF
 572193|Tepera|Ryan|R|R|TOR|P
 572204|Thompson|Trayce|R|R|CWS|OF
@@ -1511,3 +1511,27 @@
 448167|Mann|Brandon|L|L|TEX|P
 608475|Lugo|Dawel|R|R|DET|2B
 614177|Reyes|Franmil|R|R|SD|OF
+475857|Cook|Ryan|R|R|SEA|P
+571467|Baron|Steven|R|R|STL|C
+425386|Guthrie|Jeremy|R|R|WAS|P
+457454|Saltalamacchia|Jarrod|S|R|TOR|C
+502029|Marrero|Chris|R|R|SF|1B
+502205|Green|Grant|R|R|WAS|2B
+506924|Cardullo|Stephen|R|R|COL|1B
+542194|Bethancourt|Christian|R|R|SD|C
+542436|Adames|Cristhian|S|R|COL|SS
+543380|Jungmann|Taylor|R|R|MIL|P
+545346|Lee|Zach|R|R|SD|P
+553883|Campos|Vicente|R|R|LAA|P
+571035|Cuevas|William|S|R|DET|P
+592341|Goforth|David|R|R|MIL|P
+592731|Selsky|Steve|R|R|BOS|3B
+594986|Ryan|Kyle|L|L|DET|P
+605222|Esch|Jake|R|R|SD|P
+605226|Faulkner|Andrew|R|L|BAL|P
+620447|De La Rosa|Frandy|S|R|SF|2B
+623143|Brown|Trevor|R|R|SF|C
+623168|Heineman|Tyler|S|R|MIL|C
+623434|Hauschild|Mike|R|R|TEX|P
+643316|Fry|Paul|L|L|BAL|P
+657524|Bormann|John|R|R|PIT|C

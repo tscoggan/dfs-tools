@@ -23,7 +23,7 @@ case class Player_MLB(
     position: Position) {
 
   val name: String = s"$firstName $lastName"
-  
+
   val alternateName = name.substringBefore(" Jr.").replaceAll("\\.", "").trim
 
   def toCSV: String = List(id, lastName, firstName, bats, throws, team, position).mkString("|")
@@ -45,7 +45,8 @@ object Player_MLB {
     val datesToLoad = {
       playersLoadedThrough match {
         case Some(lastLoadDate) => getDatesBetween(lastLoadDate.nextDay, yesterday)
-        case None               => getDatesBetween(oneYearAgo, Configs.MlbDotCom.lastSeasonEndDate) ++ getDatesBetween(Configs.MlbDotCom.seasonStartDate, yesterday)
+        case None => getDatesBetween(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++
+          getDatesBetween(Configs.MlbDotCom.seasonStartDate, yesterday)
       }
     }.sorted
     log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")

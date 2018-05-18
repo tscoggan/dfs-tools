@@ -25,6 +25,12 @@ object Game_MLB {
     loadGamesForDateRange(oneYearAgo, Configs.MlbDotCom.lastSeasonEndDate) ++ loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
   }
 
+  lazy val gamesSinceStartOfLastSeason: List[Game] = {
+    log(s"Loading MLB games from ${Configs.MlbDotCom.lastSeasonStartDate} to ${yesterday.print()}")
+    loadGamesForDateRange(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++ // last season
+      loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday) // current season
+  }
+
   def loadGamesForDateRange(from: Date, to: Date): List[Game] = getDatesBetween(from, to) flatMap { date =>
     val dayDir = s"${gamesRootDir}/year_${date.print("yyyy")}/month_${date.print("MM")}/day_${date.print("dd")}"
     if (fileExists(dayDir)) {
