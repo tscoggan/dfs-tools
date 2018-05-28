@@ -44,7 +44,7 @@
 430605|Raburn|Ryan|R|R|WAS|OF
 430641|Boyer|Blaine|R|R|KC|P
 430661|McGowan|Dustin|R|R|MIA|P
-430832|Bautista|Jose|R|R|ATL|OF
+430832|Bautista|Jose|R|R|NYM|OF
 430912|Cain|Matt|R|R|SF|P
 430935|Hamels|Cole|L|L|TEX|P
 430945|Jones|Adam|R|R|BAL|OF
@@ -151,7 +151,7 @@
 452234|Smith|Seth|L|L|BAL|OF
 452252|Lind|Adam|L|L|WAS|1B
 452254|Pence|Hunter|R|R|SF|OF
-452655|Span|Denard|L|L|TB|OF
+452655|Span|Denard|L|L|SEA|OF
 452657|Lester|Jon|L|L|CHC|P
 452666|Wilhelmsen|Tom|R|R|ARI|P
 452672|Hanigan|Ryan|R|R|COL|C
@@ -170,7 +170,7 @@
 453284|Parker|Blake|R|R|LAA|P
 453286|Scherzer|Max|R|R|WAS|P
 453311|Lincecum|Tim|L|R|TEX|P
-453329|Buchholz|Clay|L|R|PHI|P
+453329|Buchholz|Clay|L|R|ARI|P
 453343|Melancon|Mark|R|R|SF|P
 453344|Morrow|Brandon|R|R|CHC|P
 453385|Richard|Clayton|L|L|SD|P
@@ -193,7 +193,7 @@
 456034|Price|David|L|L|BOS|P
 456068|Gonzalez|Miguel|R|R|CWS|P
 456078|Castillo|Welington|R|R|CWS|C
-456124|Kratz|Erik|R|R|NYY|C
+456124|Kratz|Erik|R|R|MIL|C
 456167|Griffin|A.J.|R|R|TEX|P
 456379|Alburquerque|Al|R|R|CWS|P
 456488|Nunez|Eduardo|R|R|BOS|2B
@@ -237,11 +237,11 @@
 459964|Joyce|Matt|L|R|OAK|OF
 460026|Hundley|Nick|R|R|SF|C
 460059|Pelfrey|Mike|R|R|CWS|P
-460060|Pennington|Cliff|S|R|CIN|2B
+460060|Pennington|Cliff|S|R|TEX|2B
 460075|Braun|Ryan|R|R|MIL|OF
 460077|Butera|Drew|R|R|KC|C
 460086|Gordon|Alex|L|R|KC|OF
-460269|Gimenez|Chris|R|R|MIN|C
+460269|Gimenez|Chris|R|R|CHC|C
 460283|Blevins|Jerry|L|L|NYM|P
 460576|Gomez|Carlos|R|R|TB|OF
 461235|Moss|Brandon|L|R|KC|DH
@@ -260,7 +260,7 @@
 465629|Mujica|Edward|R|R|DET|P
 465657|Soria|Joakim|R|R|CWS|P
 465753|Florimon|Pedro|S|R|PHI|OF
-466320|Cabrera|Melky|S|L|KC|OF
+466320|Cabrera|Melky|S|L|CLE|OF
 466948|Machi|Jean|R|R|SEA|P
 466988|Bonifacio|Emilio|S|R|ATL|OF
 467008|Strop|Pedro|R|R|CHC|P
@@ -437,7 +437,7 @@
 516782|Marte|Starling|R|R|PIT|OF
 516949|Sanchez|Hector|S|R|SD|C
 516969|Herrera|Kelvin|R|R|KC|P
-517008|Colome|Alex|R|R|TB|P
+517008|Colome|Alex|R|R|SEA|P
 517369|Pirela|Jose|R|R|SD|OF
 517414|Delgado|Randall|R|R|ARI|P
 517593|Salazar|Danny|R|R|CLE|P
@@ -521,7 +521,7 @@
 520471|Galvis|Freddy|S|R|SD|SS
 520980|Baez|Pedro|R|R|LAD|P
 521230|Hendriks|Liam|R|R|OAK|P
-521655|Font|Wilmer|R|R|OAK|P
+521655|Font|Wilmer|R|R|TB|P
 521692|Perez|Salvador|R|R|KC|C
 523253|Forsythe|Logan|R|R|LAD|2B
 523260|Kelly|Joe|R|R|BOS|P
@@ -716,7 +716,7 @@
 570632|Urena|Jose|R|R|MIA|P
 570663|Robles|Hansel|R|R|NYM|P
 570666|Cessa|Luis|R|R|NYY|P
-570702|Ramirez|Carlos|R|R|TOR|P
+570702|Ramirez|Carlos|R|R|OAK|P
 570717|Flores|Ramon|L|L|LAA|OF
 570731|Schoop|Jonathan|R|R|BAL|2B
 570799|Villanueva|Christian|R|R|SD|3B
@@ -760,7 +760,7 @@
 571830|Joseph|Tommy|R|R|PHI|1B
 571841|Kelly|Ty|S|R|PHI|2B
 571863|Koch|Matt|L|R|ARI|P
-571871|Krol|Ian|L|L|ATL|P
+571871|Krol|Ian|L|L|LAA|P
 571875|Lamb|Jake|L|R|ARI|3B
 571882|Law|Derek|R|R|SF|P
 571893|Liberatore|Adam|L|L|LAD|P
@@ -816,14 +816,14 @@
 572816|Dickerson|Corey|L|R|PIT|OF
 572821|Dozier|Brian|R|R|MIN|2B
 572831|Edgin|Josh|R|L|NYM|P
-572863|Garneau|Dustin|R|R|OAK|C
+572863|Garneau|Dustin|R|R|CWS|C
 572888|Greene|Shane|R|R|DET|P
 572955|Johnson|Pierce|R|R|SF|P
 572971|Keuchel|Dallas|L|L|HOU|P
 572998|Lucas|Josh|R|R|OAK|P
 573016|Martin|Kyle|R|R|BOS|P
 573046|Morin|Mike|R|R|KC|P
-573064|Nuno|Vidal|L|L|BAL|P
+573064|Nuno|Vidal|L|L|TB|P
 573088|Perkins|Cameron|R|R|PHI|OF
 573109|Ramos|AJ|R|R|NYM|P
 573124|Rogers|Taylor|L|L|MIN|P
@@ -1064,7 +1064,7 @@
 600921|Machado|Andres|R|R|KC|P
 600944|Paulino|David|R|R|HOU|P
 600965|Rodriguez|Ricardo|R|R|TEX|P
-600968|Rosario|Randy|L|L|MIN|P
+600968|Rosario|Randy|L|L|CHC|P
 600986|Vieira|Thyago|R|R|SEA|P
 601713|Pivetta|Nick|R|R|PHI|P
 602083|Almonte|Miguel|R|R|KC|P
@@ -1536,3 +1536,16 @@
 643316|Fry|Paul|L|L|BAL|P
 657524|Bormann|John|R|R|PIT|C
 640457|Meadows|Austin|L|L|PIT|OF
+641684|Hermosillo|Michael|R|R|LAA|OF
+642558|Jurado|Ariel|R|R|TEX|P
+595909|Cave|Jake|L|L|MIN|OF
+622446|Rodriguez|Jefry|R|R|WAS|P
+665742|Soto|Juan|L|L|WAS|OF
+593993|Briceno|Jose|R|R|LAA|C
+525768|Collins|Tim|L|L|WAS|P
+642715|Adames|Willy|R|R|TB|SS
+641525|Dixon|Brandon|R|R|CIN|OF
+571503|Bollinger|Ryan|L|L|NYY|P
+607430|Andreoli|John|R|R|SEA|OF
+554054|Gonzalez|Alfredo|R|R|CWS|C
+502522|Miller|Justin|R|R|WAS|P

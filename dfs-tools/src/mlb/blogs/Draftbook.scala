@@ -13,8 +13,8 @@ import mlb.Players._
 
 object Draftbook extends App {
 
-  import mlb.StatsPast1Year.stats._
-  mlb.StatsPast1Year.stats.logSummary
+  import mlb.StatsSinceStartOfLastSeason.stats._
+  mlb.StatsSinceStartOfLastSeason.stats.logSummary
 
   log("Saving projections to file...")
   val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}.csv"
@@ -62,15 +62,21 @@ object Draftbook extends App {
           val vsSwitch = pitcherStatsAllowedToSwitchHitters.get(p)
           val vsRight = pitcherStatsAllowedToRighties.get(p)
 
-          s"|${p.toStringTeamOnly}|${p.opponent.get}|" +
-            s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
-            s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|"
+          s"|${p.toStringTeamOnly}|${p.opponent.get}|" + {
+            if (p.fanduel.nonEmpty) {
+              s"${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+                s"${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+                s"${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+                s"${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|"
+            } else "N/A|N/A|N/A|N/A|"
+          } + {
+            if (p.draftkings.nonEmpty) {
+              s"${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+                s"${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+                s"${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)_%|" +
+                s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|"
+            } else "N/A|N/A|N/A|N/A|"
+          }
         }.mkString("\n")
       log(s"|||_\\4. FPTS / PA given up (FanDuel)|_\\4. FPTS / PA given up (DraftKings)|\n" +
         s"|_. Pitcher|_. Opponent|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|\n" +
@@ -85,8 +91,8 @@ object Draftbook extends App {
             val statsAgainst = pitcherStatsAllowedToAllHitters.get(pitcher)
             List(pitcher.toStringTeamOnly,
               pitcher.opponent.get,
-              statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A"),
-              statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A"),
+              if (pitcher.fanduel.nonEmpty) statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A") else "N/A",
+              if (pitcher.draftkings.nonEmpty) statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A") else "N/A",
               statsAgainst.map(_.atBatsAgainst).getOrElse("0"))
           }))
   }
@@ -104,8 +110,8 @@ object Draftbook extends App {
         List(stats.pitcher.toStringTeamOnly,
           stats.pitcher.opponent.get,
           stats.batterHandedness.get.toVerboseString,
-          stats.fptsPerAtBatAgainst_FD.rounded(1),
-          stats.fptsPerAtBatAgainst_DK.rounded(1),
+          if (stats.pitcher.fanduel.nonEmpty) stats.fptsPerAtBatAgainst_FD.rounded(1) else "N/A",
+          if (stats.pitcher.draftkings.nonEmpty) stats.fptsPerAtBatAgainst_DK.rounded(1) else "N/A",
           stats.atBatsAgainst)
       }))
 
