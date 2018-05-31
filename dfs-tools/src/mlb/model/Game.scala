@@ -18,7 +18,9 @@ case class Game(
     losingPitcher: Player,
     savePitcher: Option[Player],
     visitingTeamPlayerStats: List[PlayerGameStats],
-    homeTeamPlayerStats: List[PlayerGameStats]) {
+    homeTeamPlayerStats: List[PlayerGameStats],
+    visitingTeamRuns: Int,
+    homeTeamRuns: Int) {
 
   visitingTeamPlayerStats.foreach { p => p.game = Some(this) }
   homeTeamPlayerStats.foreach { p => p.game = Some(this) }

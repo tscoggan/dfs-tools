@@ -44,7 +44,10 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
   var homeTeam: Team =
     Teams.get { (rawBoxScoreXML \ "team").find(_.attribute("team_flag").head.text == "home").map(_.attribute("team_code").head.text).get }
 
-  logDebug(s"### ${date.print()} $visitingTeam @ $homeTeam ###")
+  val visitingTeamRuns: Int = (lineScoreXML \ "@away_team_runs").text.toInt
+  val homeTeamRuns: Int = (lineScoreXML \ "@home_team_runs").text.toInt
+
+  logDebug(s"### ${date.print()} $visitingTeam $visitingTeamRuns @ $homeTeam $homeTeamRuns ###")
 
   val playerDisplayNames: mutable.Map[MLBPlayerID, String] = mutable.Map.empty
   val mlbPlayerIdByDisplayName: mutable.Map[(String, HomeOrAway), MLBPlayerID] = mutable.Map.empty
@@ -331,7 +334,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
   parseInnings(homeTeamInningsXML, visitingTeamPlayers ++ homeTeamPlayers, HOME_TEAM)
 
   def toGame: Game = Game(date, visitingTeam, homeTeam, gameNumber, homePlateUmpireID, winningPitcher, losingPitcher,
-    savePitcher, visitingTeamPlayers.values.toList, homeTeamPlayers.values.toList)
+    savePitcher, visitingTeamPlayers.values.toList, homeTeamPlayers.values.toList, visitingTeamRuns, homeTeamRuns)
 
   private def namesOfPlayersWhoScored(play: String): List[String] = {
     //logDebug("### namesOfPlayersWhoScored --- \n\tplay: "+play)
