@@ -513,7 +513,8 @@ case class HistoricalStats(season: Season) {
     val pitcherAtBatsPerStart: Option[Double] = season.statsByPlayer.get(p.id).map(_.gamesStarted) match {
       case Some(gamesStarted) =>
         if (gamesStarted.nonEmpty)
-          Some(gamesStarted.map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum.toDouble / gamesStarted.length)
+          Some(gamesStarted.filter(_.isInstanceOf[PitcherGameStats])
+            .map(_.asInstanceOf[PitcherGameStats].pitchingStats.atBats).sum.toDouble / gamesStarted.length)
         else None
       case None => None
     }
