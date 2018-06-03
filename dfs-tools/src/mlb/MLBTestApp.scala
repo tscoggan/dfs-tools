@@ -18,10 +18,15 @@ object MLBTestApp extends App {
   import mlb.StatsPast1Year.stats._
   mlb.StatsPast1Year.stats.logSummary
 
-  val hitter = Players.get("456715")
-  println("hitter: "+hitter)
-  
-  val stats = season.hitterFptsPerAB_vs_PitcherType(mlb.model.Left, hitter, FanDuelMLB)
-  stats.foreach { s => println("PA: "+s.atBats+", FPTS/PA: "+s.fptsPerAB) }
+  val values = season.games.flatMap{ game =>
+    val visitingTeamPAs = game.visitingTeamPlayerStats.map(_.hittingStats.atBats).sum
+    val homeTeamPAs = game.homeTeamPlayerStats.map(_.hittingStats.atBats).sum
+    List(s"${game.visitingTeamRuns},$visitingTeamPAs,${(visitingTeamPAs.toDouble / 9.0).rounded(1)},Away",
+        s"${game.homeTeamRuns},$homeTeamPAs,${(homeTeamPAs.toDouble / 9.0).rounded(1)},Home")
+  }
+
+  FileUtils.writeLinesToFile("Team Runs,Total PAs, Times Through Batting Order,Home/Away" :: values,
+    "C:/Users/Tom/Desktop/temp.csv",
+    true)
 
 }

@@ -580,7 +580,7 @@
 543094|Decker|Jaff|L|L|OAK|OF
 543101|DeSclafani|Anthony|R|R|CIN|P
 543105|Dickerson|Alex|L|L|SD|OF
-543118|Drake|Oliver|R|R|CLE|P
+543118|Drake|Oliver|R|R|LAA|P
 543135|Eovaldi|Nathan|R|R|TB|P
 543144|Farquhar|Danny|R|R|CWS|P
 543148|Federowicz|Tim|R|R|HOU|C
@@ -861,7 +861,7 @@
 592170|Bridwell|Parker|R|R|LAA|P
 592178|Bryant|Kris|R|R|CHC|3B
 592192|Canha|Mark|R|R|OAK|1B
-592200|Casali|Curt|R|R|TB|C
+592200|Casali|Curt|R|R|CIN|C
 592206|Castellanos|Nicholas|R|R|DET|OF
 592222|Claudio|Alex|L|L|TEX|P
 592229|Covey|Dylan|R|R|CWS|P
@@ -1499,7 +1499,7 @@
 642770|Guerra|Javy|L|R|SD|SS
 435064|Wilson|Bobby|R|R|MIN|C
 602922|Rondon|Jose|R|R|CWS|SS
-664869|Conlon|P.J.|L|L|NYM|P
+664869|Conlon|P.J.|L|L|LAD|P
 622554|Dominguez|Seranthony|R|R|PHI|P
 488810|Cruz|Tony|R|R|CIN|C
 606995|Hancock|Justin|R|R|CHC|P
@@ -1559,3 +1559,7 @@
 642701|Santana|Dennis|R|R|LAD|P
 571577|Copeland|Scott|R|R|NYM|P
 605520|Walding|Mitch|L|R|PHI|3B
+500135|Rodriguez|Ronny|R|R|DET|3B
+621141|Lockett|Walker|R|R|SD|P
+622226|Cozens|Dylan|L|L|PHI|OF
+681615|Liberato|Johan|L|L|COL|OF

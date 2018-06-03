@@ -624,6 +624,11 @@ case class HistoricalStats(season: Season) {
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
+      val netUpsideDeviationModifier = hitterDeviationStatsFD match {
+        case Some(stats) => (stats.netUpsideDev - hittersAvgNetUpsideDev_FD) * 0.1
+        case None        => 0.0
+      }
+
       //      log(s"$p vs $opposingPitcher:\n\tprojAtBats: ${projAtBats.rounded(2)}\n\tprojAtBatsVsOpposingPitcher: ${projAtBatsVsOpposingPitcher.rounded(2)}" +
       //        s"\n\tprojAtBatsVsBullpen: ${projAtBatsVsBullpen.rounded(2)}\n\thitterTotalAtBats: ${hitterTotalAtBats.rounded(2)}\n\tpitcherTotalAtBats: ${pitcherTotalAtBats.rounded(2)}" +
       //        s"\n\tballparkFactor: ${ballparkFactor.rounded(2)}\n\thitterFptsPerAtBatFD: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("???")}" +
@@ -632,7 +637,7 @@ case class HistoricalStats(season: Season) {
       //        s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}" +
       //        s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}")
 
-      fptsVsStarter + fptsVsBullpen
+      fptsVsStarter + fptsVsBullpen + netUpsideDeviationModifier
     }
     val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
     val projFptsPlusValueFD: Option[Double] = projValueFD.map(value => projFptsFD.getOrElse(0.0) + value)
@@ -659,7 +664,12 @@ case class HistoricalStats(season: Season) {
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
-      fptsVsStarter + fptsVsBullpen
+      val netUpsideDeviationModifier = hitterDeviationStatsDK match {
+        case Some(stats) => (stats.netUpsideDev - hittersAvgNetUpsideDev_DK) * 0.1
+        case None        => 0.0
+      }
+
+      fptsVsStarter + fptsVsBullpen + netUpsideDeviationModifier
     }
     val projValueDK: Option[Double] = p.draftkings.map(_.salary).map(salary => (projFptsDK.getOrElse(0.0) / salary) * 1000)
     val projFptsPlusValueDK: Option[Double] = projValueDK.map(value => projFptsDK.getOrElse(0.0) + value)
@@ -678,6 +688,9 @@ case class HistoricalStats(season: Season) {
     log(s"DraftKings - League avg PPG for pitchers: ${pitcherLeagueAvgPointsPerGameStarted_DK.rounded(2)}, std deviation: ${pitcherLeaguePointsPerGameStartedStdDev_DK.rounded(2)}")
     log("*******************************************************************")
   }
+
+  val hittersAvgNetUpsideDev_FD = mean(startingHitterStats.flatMap(_._2.hitterDeviationStatsFD.map(_.netUpsideDev)))
+  val hittersAvgNetUpsideDev_DK = mean(startingHitterStats.flatMap(_._2.hitterDeviationStatsDK.map(_.netUpsideDev)))
 
 }
 
