@@ -625,7 +625,7 @@ case class HistoricalStats(season: Season) {
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
       val netUpsideDeviationModifier = hitterDeviationStatsFD match {
-        case Some(stats) => (stats.netUpsideDev - hittersAvgNetUpsideDev_FD) * 0.1
+        case Some(stats) => (stats.netUpsideDev - hittersAvgNetUpsideDev_FD) * 0.2
         case None        => 0.0
       }
 
@@ -665,7 +665,7 @@ case class HistoricalStats(season: Season) {
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
       val netUpsideDeviationModifier = hitterDeviationStatsDK match {
-        case Some(stats) => (stats.netUpsideDev - hittersAvgNetUpsideDev_DK) * 0.1
+        case Some(stats) => (stats.netUpsideDev - hittersAvgNetUpsideDev_DK) * 0.2
         case None        => 0.0
       }
 
