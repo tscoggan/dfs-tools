@@ -6,6 +6,11 @@ object MathUtils {
 
   def mean[T: Numeric](xs: Iterable[T]): Double = xs.sum.toDouble / xs.size
 
+  def median[T: Numeric](xs: Iterable[T]): Double = {
+    val (lower, upper) = xs.toList.sorted.splitAt(xs.size / 2)
+    if (xs.size % 2 == 0) (lower.last.toDouble + upper.head.toDouble) / 2.0 else upper.head.toDouble
+  }
+
   type Weight = Int
 
   def weightedAvg[T: Numeric](xs: (T, Weight)*): Double = {
@@ -26,8 +31,10 @@ object MathUtils {
    * minimum threshold. See https://www.managedfuturesinvesting.com/a-better-measure-of-risk-standard-deviation-or-downside-deviation/
    */
   def downsideDev[T: Numeric](xs: Iterable[T], minAcceptableValue: T): Double = {
-    val xsAdjusted = xs.map { value => scala.math.min(value.toDouble - minAcceptableValue.toDouble, 0) }
-    math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
+    if (xs.isEmpty) 0.0 else {
+      val xsAdjusted = xs.map { value => scala.math.min(value.toDouble - minAcceptableValue.toDouble, 0) }
+      math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
+    }
   }
 
   /**
@@ -35,8 +42,10 @@ object MathUtils {
    * benchmark. See https://www.managedfuturesinvesting.com/a-better-measure-of-risk-standard-deviation-or-downside-deviation/
    */
   def upsideDev[T: Numeric](xs: Iterable[T], benchmark: T): Double = {
-    val xsAdjusted = xs.map { value => scala.math.max(value.toDouble - benchmark.toDouble, 0) }
-    math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
+    if (xs.isEmpty) 0.0 else {
+      val xsAdjusted = xs.map { value => scala.math.max(value.toDouble - benchmark.toDouble, 0) }
+      math.sqrt(xsAdjusted.map(math.pow(_, 2)).sum / xsAdjusted.size)
+    }
   }
 
   /**

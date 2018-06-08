@@ -18,9 +18,10 @@ object Draftbook extends App {
 
   log("Saving projections to file...")
   val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}.csv"
-  val header = "Player ID, Player Name, Projected FPTS (FD)"
+  val header = "Player ID, Player Name, Projected FPTS (FD), Position (FD), Salary (FD), Team"
   val projections = startingHitterStats.flatMap {
-    case (p, stats) => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)}" }
+    case (p, stats) =>
+      stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
   }.toList
   FileUtils.writeLinesToFile(header :: projections, projectionsFile, true)
 

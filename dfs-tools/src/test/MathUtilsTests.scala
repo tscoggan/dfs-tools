@@ -39,15 +39,22 @@ class MathUtilsTests extends FunSuite {
       ("4", (42, 75)),
       ("5", (57, 87)),
       ("6", (59, 81)))
-    val ds1 = data.map{case (k,(v1,v2)) => (k,v1.toDouble)}
-    val ds2 = data.map{case (k,(v1,v2)) => (k,v2.toDouble)}
-    val correlation = MathUtils.pearsonCorrelation(ds1,ds2).get
-    println("Pearson correlation: "+correlation)
+    val ds1 = data.map { case (k, (v1, v2)) => (k, v1.toDouble) }
+    val ds2 = data.map { case (k, (v1, v2)) => (k, v2.toDouble) }
+    val correlation = MathUtils.pearsonCorrelation(ds1, ds2).get
+    println("Pearson correlation: " + correlation)
     assert(correlation ~= 0.529809)
   }
-  
-  test("weighted avg works"){
-    assert((MathUtils.weightedAvg((5,10),(7,3)) ~= 5.46153846) && (MathUtils.weightedAvg((5,10),(7,10)) ~= 6.0))
+
+  test("weighted avg works") {
+    assert((MathUtils.weightedAvg((5, 10), (7, 3)) ~= 5.46153846) && (MathUtils.weightedAvg((5, 10), (7, 10)) ~= 6.0))
+  }
+
+  test("median works") {
+    val v1 = List(1, 2, 3, 4, 5, 6, 7)
+    val v2 = List(3, 2, 1, 6, 5, 7, 4)
+    val v3 = List(1, 2, 3, 4, 5, 6)
+    assert((MathUtils.median(v1) ~= 4) && (MathUtils.median(v2) ~= 4) && (MathUtils.median(v3) ~= 3.5))
   }
 
 }

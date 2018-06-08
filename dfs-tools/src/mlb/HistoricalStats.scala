@@ -508,6 +508,12 @@ case class HistoricalStats(season: Season) {
       case (pss, stats) => (pss.player, (pss, stats))
     }.toMap
 
+  val hittersAvgNetUpsideDev_FD = mean(hitterStats_FD.values.map(_._2.netUpsideDev))
+  val hittersAvgNetUpsideDev_DK = mean(hitterStats_DK.values.map(_._2.netUpsideDev))
+
+  log(s"hittersAvgNetUpsideDev_FD: ${hittersAvgNetUpsideDev_FD.rounded(2)}")
+  log(s"hittersAvgNetUpsideDev_DK: ${hittersAvgNetUpsideDev_DK.rounded(2)}")
+
   case class PitcherStats(p: Player, opposingHitters: List[Player]) {
 
     val pitcherAtBatsPerStart: Option[Double] = season.statsByPlayer.get(p.id).map(_.gamesStarted) match {
@@ -635,7 +641,8 @@ case class HistoricalStats(season: Season) {
       //        s"\n\tpitcherFptsPerAtBatAllowedFD ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("???")}\n\tbullpenFptsPerAtBatAllowedFD: ${bullpenFptsPerAtBatAllowedFD.rounded(2)}" +
       //        s"\n\thitterWeight: ${hitterWeight}\n\tpitcherWeight: ${pitcherWeight}\n\thitterWeightedFptsPerAB size: ${hitterWeightedFptsPerAB.size}" +
       //        s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}" +
-      //        s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}")
+      //        s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}" +
+      //        s"\n\tnetUpsideDeviationModifier: ${netUpsideDeviationModifier.rounded(2)}")
 
       fptsVsStarter + fptsVsBullpen + netUpsideDeviationModifier
     }
@@ -688,9 +695,6 @@ case class HistoricalStats(season: Season) {
     log(s"DraftKings - League avg PPG for pitchers: ${pitcherLeagueAvgPointsPerGameStarted_DK.rounded(2)}, std deviation: ${pitcherLeaguePointsPerGameStartedStdDev_DK.rounded(2)}")
     log("*******************************************************************")
   }
-
-  val hittersAvgNetUpsideDev_FD = mean(startingHitterStats.flatMap(_._2.hitterDeviationStatsFD.map(_.netUpsideDev)))
-  val hittersAvgNetUpsideDev_DK = mean(startingHitterStats.flatMap(_._2.hitterDeviationStatsDK.map(_.netUpsideDev)))
 
 }
 

@@ -43,16 +43,18 @@ object Players {
   //  }
 
   val fanduelPlayers: List[Player_FD] = {
-    val file = getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
-      .filter(_.getName.startsWith("FanDuel-MLB-"))
-      .sortBy { f =>
-        val fileDate = f.getName.trimPrefix("FanDuel-MLB-").take(10).toDate()
-        projectionsDate = fileDate
-        fileDate
+    getListOfFiles(Configs.dfsSalaryFileDir, ".csv")
+      .filter(_.getName.startsWith("FanDuel-MLB-")) match {
+        case Nil => Nil
+        case files =>
+          val latestFile = files.sortBy { f =>
+            val fileDate = f.getName.trimPrefix("FanDuel-MLB-").take(10).toDate()
+            projectionsDate = fileDate
+            fileDate
+          }.last
+          log("Loading FD players from file " + latestFile)
+          Player_FD.parseFrom(latestFile.getPath)
       }
-      .last
-    log("Loading FD players from file " + file)
-    Player_FD.parseFrom(file.getPath)
   } //.filterNot { p => p.position == "P" && !p.probablePitcher.exists(_ == true) } // ignore non-starting pitchers
   log(s"Found ${fanduelPlayers.length} FD players")
 
