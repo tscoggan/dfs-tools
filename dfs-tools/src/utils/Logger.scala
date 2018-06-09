@@ -6,6 +6,11 @@ object Logger {
 
   def logDebug(text: String) = if (Configs.logDebug) log(text)
 
+  def toHeader(level: Int, text: String): String = mlb.Configs.blogFormat.toUpperCase match {
+    case "RG"        => s"h${level}. ${text}"
+    case "DRAFTSHOT" => s"<h${level}>${text}</h${level}>"
+  }
+
   def toTable(header: Iterable[Any], rows: Iterable[Iterable[Any]]): String = mlb.Configs.blogFormat.toUpperCase match {
     case "RG" => (header.map(value => s"|_. $value").mkString + "|\n" + rows.map { values => s"|${values.mkString("|")}|" }.mkString("\n"))
       .replaceAll("#", "<notextile>#</notextile>")

@@ -53,15 +53,16 @@ object Draftbook extends App {
   log("**************************************************\n")
 
   log("\n### Pitchers ranked by FPTS given up per plate appearance: ###\n")
-  mlb.Configs.blogFormat.toUpperCase match {
-    case "RG" =>
-      val pitcherRows = startingPitchers
-        .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
-        .map { p =>
-          val vsAll = pitcherStatsAllowedToAllHitters.get(p)
-          val vsLeft = pitcherStatsAllowedToLefties.get(p)
-          val vsSwitch = pitcherStatsAllowedToSwitchHitters.get(p)
-          val vsRight = pitcherStatsAllowedToRighties.get(p)
+  val pitcherRows = startingPitchers
+    .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
+    .map { p =>
+      val vsAll = pitcherStatsAllowedToAllHitters.get(p)
+      val vsLeft = pitcherStatsAllowedToLefties.get(p)
+      val vsSwitch = pitcherStatsAllowedToSwitchHitters.get(p)
+      val vsRight = pitcherStatsAllowedToRighties.get(p)
+
+      mlb.Configs.blogFormat.toUpperCase match {
+        case "RG" =>
 
           s"|${p.toStringTeamOnly}|${p.opponent.get}|" + {
             if (p.fanduel.nonEmpty) {
@@ -78,25 +79,58 @@ object Draftbook extends App {
                 s"${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} %{color:blue}_(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)_%|"
             } else "N/A|N/A|N/A|N/A|"
           }
-        }.mkString("\n")
-      log(s"|||_\\4. FPTS / PA given up (FanDuel)|_\\4. FPTS / PA given up (DraftKings)|\n" +
-        s"|_. Pitcher|_. Opponent|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|\n" +
-        pitcherRows)
 
-    case "DRAFTSHOT" =>
-      log(toTable(
-        List("Pitcher", "Opponent", "FPTS/PA given up (FD)", "FPTS/PA given up (DK)", "# Plate appearances against"),
-        startingPitchers
-          .sortBy { p => pitcherStatsAllowedToAllHitters.get(p).map(_.fptsPerAtBatAgainst_FD).getOrElse(0.0d) }.reverse
-          .map { pitcher =>
-            val statsAgainst = pitcherStatsAllowedToAllHitters.get(pitcher)
-            List(pitcher.toStringTeamOnly,
-              pitcher.opponent.get,
-              if (pitcher.fanduel.nonEmpty) statsAgainst.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A") else "N/A",
-              if (pitcher.draftkings.nonEmpty) statsAgainst.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A") else "N/A",
-              statsAgainst.map(_.atBatsAgainst).getOrElse("0"))
-          }))
+        case "DRAFTSHOT" => s"<tr><td>${p.toStringTeamOnly}</td><td>${p.opponent.get}</td>" + {
+          if (p.fanduel.nonEmpty) {
+            s"""<td>${vsAll.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>""" +
+              s"""<td>${vsLeft.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>""" +
+              s"""<td>${vsSwitch.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>""" +
+              s"""<td>${vsRight.map(_.fptsPerAtBatAgainst_FD.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>"""
+          } else "<td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td>"
+        } + {
+          if (p.draftkings.nonEmpty) {
+            s"""<td>${vsAll.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsAll.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>""" +
+              s"""<td>${vsLeft.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsLeft.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>""" +
+              s"""<td>${vsSwitch.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsSwitch.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>""" +
+              s"""<td>${vsRight.map(_.fptsPerAtBatAgainst_DK.rounded(1)).getOrElse("N/A")} <span style="color: blue;"><em>(${vsRight.map(_.atBatsAgainst).getOrElse("0")} PA)</em></span></td>"""
+          } else "<td>N/A</td><td>N/A</td><td>N/A</td><td>N/A</td>"
+        } + s"</tr>"
+      }
+    }.mkString("\n")
+
+  val pitcherTableHeader = mlb.Configs.blogFormat.toUpperCase match {
+    case "RG" =>
+      s"|||_\\4. FPTS / PA given up (FanDuel)|_\\4. FPTS / PA given up (DraftKings)|\n" +
+        s"|_. Pitcher|_. Opponent|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|_. vs All|_. vs Lefties|_. vs Switch|_. vs Righties|\n"
+    case "DRAFTSHOT" => s"""<div class="table-1">
+      |<table width="100%">
+      |<tbody>
+      |<tr>
+      |<td></td>
+      |<td></td>
+      |<th colspan="4"><span class="caps">FPTS</span> / PA given up (FanDuel)</th>
+      |<th colspan="4"><span class="caps">FPTS</span> / PA given up (DraftKings)</th>
+      |</tr>
+      |<tr>
+      |<th>Pitcher</th>
+      |<th>Opponent</th>
+      |<th>vs All</th>
+      |<th>vs Lefties</th>
+      |<th>vs Switch</th>
+      |<th>vs Righties</th>
+      |<th>vs All</th>
+      |<th>vs Lefties</th>
+      |<th>vs Switch</th>
+      |<th>vs Righties</th>
+      |</tr>""".stripMargin
   }
+
+  val pitcherTableFooter = mlb.Configs.blogFormat.toUpperCase match {
+    case "RG"        => ""
+    case "DRAFTSHOT" => s"</tbody></table></div>"
+  }
+
+  log(pitcherTableHeader + pitcherRows + pitcherTableFooter)
 
   log("\n### Pitchers ranked by FPTS given up per plate appearance by batter handedness (Minimum 50 PA): ###\n")
   log(toTable(
@@ -208,7 +242,7 @@ object Draftbook extends App {
   log("*** Value hitters - FD & DK ***")
   log("**************************************************\n")
 
-  log("\nh3. FanDuel – expensive hitters ($3500 or more)\n")
+  log(s"\n${toHeader(3, "FanDuel – expensive hitters ($3500 or more)")}\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
@@ -219,7 +253,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\nh3. FanDuel – midrange hitters ($2500 to $3500)\n")
+  log(s"\n${toHeader(3, "FanDuel – midrange hitters ($2500 to $3500)")}\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
@@ -230,7 +264,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\nh3. FanDuel – cheap hitters (less than $2500)\n")
+  log(s"\n${toHeader(3, "FanDuel – cheap hitters (less than $2500)")}\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projValueFD).nonEmpty)
@@ -241,7 +275,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\nh3. DraftKings – expensive hitters ($4000 or more)\n")
+  log(s"\n${toHeader(3, "DraftKings – expensive hitters ($4000 or more)")}\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     expensiveHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
@@ -252,7 +286,7 @@ object Draftbook extends App {
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
-  log("\nh3. DraftKings – midrange hitters ($3000 to $4000)\n")
+  log(s"\n${toHeader(3, "DraftKings – midrange hitters ($3000 to $4000)")}\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
@@ -263,7 +297,7 @@ object Draftbook extends App {
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
-  log("\nh3. DraftKings – cheap hitters (less than $3000)\n")
+  log(s"\n${toHeader(3, "DraftKings – cheap hitters (less than $3000)")}\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)

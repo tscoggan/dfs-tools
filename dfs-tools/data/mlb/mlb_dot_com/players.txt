@@ -1574,3 +1574,4 @@
 641343|Bauers|Jake|L|L|TB|1B
 605361|Martini|Nick|L|L|OAK|OF
 656738|Meyer|Ben|S|R|MIA|P
+628336|Fernandez|Jose|L|R|LAA|1B
