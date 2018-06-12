@@ -39,7 +39,7 @@ object LineupBuilderApp extends App {
   print(s"\n# of lineups to build:\n>> ")
   val numberOfLineups = scala.math.max(scala.io.StdIn.readLine.trim.toInt, 1) // build at least 1 lineup
 
-  val builder = LineupIterator(players, contestType)
+  val builder = LineupIterator(players.filter(p => p.projPoints >= contestType.minPlayerFPTS && p.projValue >= contestType.minPlayerValue), contestType)
   log(builder.toString)
 
   log(s"Building top $numberOfLineups lineups...")

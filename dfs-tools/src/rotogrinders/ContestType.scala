@@ -1,6 +1,7 @@
 package rotogrinders
 
-case class ContestType(site: String, sport: String, maxSalary: Int, maxPlayersPerTeam: Int, minNumberOfGames: Int, minNumberOfTeams: Int, slots: List[LineupSlot])
+case class ContestType(site: String, sport: String, maxSalary: Int, maxPlayersPerTeam: Int, minNumberOfGames: Int, minNumberOfTeams: Int,
+                       slots: List[LineupSlot], minPlayerValue: Double, minPlayerFPTS: Double)
 
 case class LineupSlot(id: Int, name: String, positionsAccepted: List[String]) {
 

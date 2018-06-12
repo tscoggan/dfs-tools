@@ -183,7 +183,7 @@ object Draftbook extends App {
       .sortBy(_.battingPosition.getOrElse(10))
     val rankScore = mean(stack.flatMap(h => startingHitterStats.get(h).map(_.projFptsPlusValueFD.getOrElse(0.0))))
     (stack -> rankScore)
-  }.sortBy(_._2).reverse.take(5).map {
+  }.sortBy(_._2).reverse.take(Configs.numberOfStacks).map {
     case (stack, rankScore) =>
       s"${stack.head.team} hitters vs ${stack.head.opposingPitcher.toStringTeamOnly} - Score: ${rankScore.rounded(2)}, Value: ${fanduelValueOf(stack).rounded(2)} (FD):\n\t" +
         stack.map { hitter =>
@@ -205,7 +205,7 @@ object Draftbook extends App {
       .sortBy(_.battingPosition.getOrElse(10))
     val rankScore = mean(stack.flatMap(h => startingHitterStats.get(h).map(_.projFptsPlusValueDK.getOrElse(0.0))))
     (stack -> rankScore)
-  }.sortBy(_._2).reverse.take(5).map {
+  }.sortBy(_._2).reverse.take(Configs.numberOfStacks).map {
     case (stack, rankScore) =>
       s"${stack.head.team} hitters vs ${stack.head.opposingPitcher.toStringTeamOnly} - Score: ${rankScore.rounded(2)}, Value: ${draftkingsValueOf(stack).rounded(2)} (DK):\n\t" +
         stack.map { hitter =>

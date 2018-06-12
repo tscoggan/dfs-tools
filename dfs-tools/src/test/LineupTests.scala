@@ -16,7 +16,7 @@ class LineupTests extends FunSuite {
   val rbSlot2 = LineupSlot(2, "RB", List("RB"))
   val wrSlot = LineupSlot(3, "WR", List("WR"))
   val flexSlot = LineupSlot(4, "FLEX", List("RB", "WR", "TE"))
-  val contest = ContestType("FD", "NFL", 60000, 2, 2, 1, List(rbSlot, rbSlot2, wrSlot, flexSlot))
+  val contest = ContestType("FD", "NFL", 60000, 2, 2, 1, List(rbSlot, rbSlot2, wrSlot, flexSlot), 0, 0)
   val lineup1 = Lineup(1, contest, Map(rbSlot -> p1, rbSlot2 -> p2))
   val lineup2 = Lineup(2, contest, Map(rbSlot -> p1, rbSlot2 -> p2, flexSlot -> p4))
 

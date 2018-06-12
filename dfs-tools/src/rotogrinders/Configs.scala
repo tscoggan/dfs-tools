@@ -10,9 +10,9 @@ object Configs {
     private val conf = Configs.conf.getConfig("lineup_builder")
 
     val dataFileDir: String = conf.getString("data_file_dir")
-    
+
     val minPlayersDifferentPerLineup: Int = conf.getInt("min_players_different_per_lineup")
-    
+
     val maxExposurePercentage: Int = conf.getInt("max_exposure_percentage")
 
     val contestTypes: List[ContestType] = conf.getConfigList("contest_types").toList.map { cfg =>
@@ -34,8 +34,18 @@ object Configs {
           }
       }
 
+      val minPlayerValue = cfg.hasPath("min_player_value") match {
+        case true  => cfg.getDouble("min_player_value")
+        case false => 0d
+      }
+      
+      val minPlayerFPTS = cfg.hasPath("min_player_fpts") match {
+        case true  => cfg.getDouble("min_player_fpts")
+        case false => 0d
+      }
+
       ContestType(cfg.getString("site").trim.toUpperCase, cfg.getString("sport").trim.toUpperCase, cfg.getInt("max_salary"), cfg.getInt("max_players_per_team"),
-        cfg.getInt("players_from_min_games"), cfg.getInt("players_from_min_teams"), slots)
+        cfg.getInt("players_from_min_games"), cfg.getInt("players_from_min_teams"), slots, minPlayerValue, minPlayerFPTS)
     }
 
   }

@@ -43,6 +43,7 @@ object Configs {
   val blogFormat: String = conf.getString("blog_format")
   
   val stackSize: Int = conf.getInt("stack_size")
+  val numberOfStacks: Int = conf.getInt("number_of_stacks")
 
   val overweightRecent: Boolean = conf.getBoolean("overweight_recent_performance")
   val recentDaysToWeightHigher: Int = conf.getInt("recent_number_of_days_to_weight_higher")

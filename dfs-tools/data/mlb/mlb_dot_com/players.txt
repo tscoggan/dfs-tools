@@ -5,7 +5,7 @@
 276351|Grilli|Jason|R|R|TEX|P
 276520|Arroyo|Bronson|R|R|CIN|P
 276542|Benoit|Joaquin|R|R|WAS|P
-279571|Belisle|Matt|R|R|CLE|P
+279571|Belisle|Matt|R|R|MIN|P
 282332|Sabathia|CC|L|L|NYY|P
 285079|Dickey|R.A.|R|R|ATL|P
 400085|Suzuki|Ichiro|L|R|SEA|OF

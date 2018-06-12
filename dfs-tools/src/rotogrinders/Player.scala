@@ -13,7 +13,7 @@ case class Player(
     projCeiling: Option[Float],
     projPoints: Float) {
 
-  val ptsPerSalary: Double = projPoints / salary
+  val projValue: Double = (projPoints / salary) * 1000
 
   val positions: Set[String] = position.contains("/") match {
     case true  => position.split("/").toSet
@@ -32,7 +32,7 @@ object Player {
 
   import scala.io.Source
 
-  def parseFrom(projectionsFileName: String): List[Player] = Source.fromFile(projectionsFileName).getLines.toList
+  def parseFrom(projectionsFileName: String): List[Player] = Source.fromFile(projectionsFileName).getLines.toList.tail
     .map(_.trim)
     .filter(_.nonEmpty)
     .zipWithIndex
@@ -40,18 +40,25 @@ object Player {
       case (line, id) =>
         val values = line.split(",").map(_.trim)
 
-        if (values.length != 8) throw new Exception(s"Invalid projections file format: $projectionsFileName")
+        //        if (values.length != 8) throw new Exception(s"Invalid projections file format: $projectionsFileName")
+        //
+        //        Player(id, values(0), values(1).toInt, values(2), values(3), values(4),
+        //          values(6).isEmpty match {
+        //            case true  => None
+        //            case false => Some(values(6).toFloat)
+        //          },
+        //          values(5).isEmpty match {
+        //            case true  => None
+        //            case false => Some(values(5).toFloat)
+        //          },
+        //          values(7).toFloat)
 
-        Player(id, values(0), values(1).toInt, values(2), values(3), values(4),
-          values(6).isEmpty match {
-            case true  => None
-            case false => Some(values(6).toFloat)
-          },
-          values(5).isEmpty match {
-            case true  => None
-            case false => Some(values(5).toFloat)
-          },
-          values(7).toFloat)
-    }
+        if (values.length != 6) throw new Exception(s"Invalid projections file format: $projectionsFileName")
+
+        Player(id, values(1), values(4).toInt, values(5), values(3), "Opponent",
+          None,
+          None,
+          values(2).toFloat)
+    } 
 
 }
