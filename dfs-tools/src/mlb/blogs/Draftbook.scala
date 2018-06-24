@@ -179,9 +179,9 @@ object Draftbook extends App {
   print("\nh2. My App's Top-Value Hitter Stacks (FanDuel)\n\nbc=.. ")
   teamsOnSlate.map { team =>
     val stack = startingHittersByTeam(team)
-      .sortBy { h => startingHitterStats.get(h).flatMap(_.projFptsPlusValueFD).getOrElse(0.0) }.reverse.take(Configs.stackSize)
+      .sortBy { h => startingHitterStats.get(h).flatMap(_.valueScoreFD).getOrElse(0.0) }.reverse.take(Configs.stackSize)
       .sortBy(_.battingPosition.getOrElse(10))
-    val rankScore = mean(stack.flatMap(h => startingHitterStats.get(h).map(_.projFptsPlusValueFD.getOrElse(0.0))))
+    val rankScore = mean(stack.flatMap(h => startingHitterStats.get(h).map(_.valueScoreFD.getOrElse(0.0))))
     (stack -> rankScore)
   }.sortBy(_._2).reverse.take(Configs.numberOfStacks).map {
     case (stack, rankScore) =>
@@ -201,9 +201,9 @@ object Draftbook extends App {
   print("h2. My App's Top-Value Hitter Stacks (DraftKings)\n\nbc=.. ")
   teamsOnSlate.map { team =>
     val stack = startingHittersByTeam(team)
-      .sortBy { h => startingHitterStats.get(h).flatMap(_.projFptsPlusValueDK).getOrElse(0.0) }.reverse.take(Configs.stackSize)
+      .sortBy { h => startingHitterStats.get(h).flatMap(_.valueScoreDK).getOrElse(0.0) }.reverse.take(Configs.stackSize)
       .sortBy(_.battingPosition.getOrElse(10))
-    val rankScore = mean(stack.flatMap(h => startingHitterStats.get(h).map(_.projFptsPlusValueDK.getOrElse(0.0))))
+    val rankScore = mean(stack.flatMap(h => startingHitterStats.get(h).map(_.valueScoreDK.getOrElse(0.0))))
     (stack -> rankScore)
   }.sortBy(_._2).reverse.take(Configs.numberOfStacks).map {
     case (stack, rankScore) =>
