@@ -36,7 +36,7 @@
 429665|Encarnacion|Edwin|R|R|CLE|DH
 429666|Hardy|J.J.|R|R|BAL|SS
 429711|Gutierrez|Franklin|R|R|LAD|OF
-429719|Jackson|Edwin|R|R|WAS|P
+429719|Jackson|Edwin|R|R|OAK|P
 429722|Santana|Ervin|R|R|MIN|P
 430001|Weeks Jr.|Rickie|R|R|TB|1B
 430589|Qualls|Chad|R|R|COL|P
@@ -198,7 +198,7 @@
 456379|Alburquerque|Al|R|R|CWS|P
 456488|Nunez|Eduardo|R|R|BOS|2B
 456501|Cueto|Johnny|R|R|SF|P
-456665|Pearce|Steve|R|R|TOR|OF
+456665|Pearce|Steve|R|R|BOS|OF
 456696|Hernandez|David|R|R|CIN|P
 456701|Bailey|Homer|R|R|CIN|P
 456713|Bush|Matt|R|R|TEX|P
@@ -1431,11 +1431,11 @@
 643565|Tauchman|Mike|L|L|COL|OF
 643603|White|Tyler|R|R|HOU|3B
 643617|Reininger|Zac|S|R|DET|P
-643778|Webb|Tyler|L|L|SD|P
+643778|Webb|Tyler|L|L|STL|P
 644364|Arano|Victor|R|R|PHI|P
 644428|Scribner|Troy|R|R|ARI|P
 644443|Ysla|Luis|L|L|LAD|P
-645261|Alcantara|Sandy|R|R|STL|P
+645261|Alcantara|Sandy|R|R|MIA|P
 645277|Albies|Ozzie|S|R|ATL|2B
 645302|Robles|Victor|R|R|WAS|OF
 646240|Devers|Rafael|L|R|BOS|3B
@@ -1592,3 +1592,12 @@
 641571|Fillmyer|Heath|R|R|KC|P
 622075|Almonte|Yency|S|R|COL|P
 664842|Kaczmarski|Kevin|L|R|NYM|OF
+476594|Stock|Robert|L|R|SD|P
+623465|Phillips|Evan|R|R|ATL|P
+621249|Underwood|Duane|R|R|CHC|P
+621366|Borucki|Ryan|L|L|TOR|P
+641341|Bashlor|Tyler|R|R|NYM|P
+659407|Pompey|Tristan|S|R|MIA|OF
+641149|Parsons|Wes|R|R|ATL|P
+664196|Anderson|Tanner|R|R|PIT|P
+489448|Zagurski|Mike|L|L|MIL|P

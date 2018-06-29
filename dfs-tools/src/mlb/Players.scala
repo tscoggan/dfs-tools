@@ -47,11 +47,8 @@ object Players {
       .filter(_.getName.startsWith("FanDuel-MLB-")) match {
         case Nil => Nil
         case files =>
-          val latestFile = files.sortBy { f =>
-            val fileDate = f.getName.trimPrefix("FanDuel-MLB-").take(10).toDate()
-            projectionsDate = fileDate
-            fileDate
-          }.last
+          val latestFile = files.sortBy { _.getName.trimPrefix("FanDuel-MLB-").take(10).toDate() }.last
+          projectionsDate = latestFile.getName.trimPrefix("FanDuel-MLB-").take(10).toDate()
           log("Loading FD players from file " + latestFile)
           Player_FD.parseFrom(latestFile.getPath)
       }

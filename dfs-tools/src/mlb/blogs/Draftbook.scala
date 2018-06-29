@@ -16,8 +16,8 @@ object Draftbook extends App {
   import mlb.StatsSinceStartOfLastSeason.stats._
   mlb.StatsSinceStartOfLastSeason.stats.logSummary
 
-  log("Saving projections to file...")
   val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}.csv"
+  log("Saving projections to file: " + projectionsFile)
   val header = "Player ID, Player Name, Projected FPTS (FD), Position (FD), Salary (FD), Team"
   val projections = {
     startingHitterStats.flatMap {
@@ -303,6 +303,17 @@ object Draftbook extends App {
       .map {
         case (p, stats) =>
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
+      }))
+
+  log("\n### Top 10 hitters ranked by projected FPTS (DraftKings): ###\n")
+  log(toTable(
+    List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
+    hitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projFptsDK).nonEmpty)
+      .map(p => (p, startingHitterStats.get(p).get))
+      .sortBy(_._2.projFptsDK.get).reverse.take(10)
+      .map {
+        case (p, stats) =>
+          List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
   log("\n**************************************************")
