@@ -332,7 +332,7 @@
 491676|Hernandez|Gorkys|R|R|SF|OF
 491696|Sucre|Jesus|R|R|TB|C
 491703|Feliz|Neftali|R|R|KC|P
-492802|Graterol|Juan|R|R|LAA|C
+492802|Graterol|Juan|R|R|MIN|C
 492841|Martinez|Michael|S|R|TB|2B
 493114|Aoki|Norichika|L|R|NYM|OF
 493157|Uehara|Koji|R|R|CHC|P
@@ -449,7 +449,7 @@
 518516|Bumgarner|Madison|R|L|SF|P
 518542|Centeno|Juan|L|R|TEX|C
 518553|Cishek|Steve|R|R|CHC|P
-518566|Cole|Taylor|R|R|TOR|P
+518566|Cole|Taylor|R|R|LAA|P
 518567|Collmenter|Josh|R|R|ATL|P
 518568|Colon|Christian|R|R|MIA|2B
 518586|Culberson|Charlie|R|R|ATL|SS
@@ -1190,7 +1190,7 @@
 607732|Stallings|Jacob|R|R|PIT|C
 607752|Travis|Sam|R|R|BOS|1B
 607776|Williamson|Mac|R|R|SF|OF
-607951|Labourt|Jairo|L|L|DET|P
+607951|Labourt|Jairo|L|L|CWS|P
 607968|Rucinski|Drew|R|R|MIA|P
 608032|Estevez|Carlos|R|R|COL|P
 608061|Rivera|T.J.|R|R|NYM|3B
@@ -1601,3 +1601,8 @@
 641149|Parsons|Wes|R|R|ATL|P
 664196|Anderson|Tanner|R|R|PIT|P
 489448|Zagurski|Mike|L|L|MIL|P
+641154|Lopez|Pablo|L|R|MIA|P
+672335|Perez|Cionel|L|L|HOU|P
+553902|Astudillo|Willians|R|R|MIN|C
+572182|Sweeney|Darnell|S|R|TOR|OF
+664682|Meisinger|Ryan|R|R|BAL|P
