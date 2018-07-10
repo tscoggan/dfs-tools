@@ -71,7 +71,7 @@ object DoesBattingPositionMatter extends App {
     val statsPerBattingPos = seasonStats.games.groupBy(_.battingPosition).map { case (bp, games) =>
       val atBats = games.map(_.hittingStats.atBats).sum
       val fptsPerAB = games.map(_.hittingStats.fantasyPoints().toDouble).sum / atBats
-      BattingPositionStats(player, bp, atBats, fptsPerAB, seasonStats.fptsPerAtBat())
+      BattingPositionStats(player, bp, atBats, fptsPerAB, seasonStats.hitterFptsPerPA())
     }.toList.sortBy(_.batPosition).filter(_.atBats >= 20)
     //println(s"$player:\n\t${statsPerBattingPos.map{stats => s"${stats.batPosition}) ${stats.fptsPerABForThisBP.rounded(2)} FPTS/PA in ${stats.atBats} PA"}.mkString("\n\t")}")
     statsPerBattingPos

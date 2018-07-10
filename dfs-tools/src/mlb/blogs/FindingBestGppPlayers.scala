@@ -50,7 +50,7 @@ object FindingBestGppPlayers extends App {
           stats.downsideDev.rounded(2),
           stats.upsideDev.rounded(2),
           stats.stdDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
@@ -63,7 +63,7 @@ object FindingBestGppPlayers extends App {
           stats.downsideDev.rounded(2),
           stats.upsideDev.rounded(2),
           stats.stdDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
@@ -80,7 +80,7 @@ object FindingBestGppPlayers extends App {
           stats.upsideDev.rounded(2),
           stats.downsideDev.rounded(2),
           stats.stdDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
@@ -99,13 +99,13 @@ object FindingBestGppPlayers extends App {
   log("\n### Hitters with highest (upside deviation / avg FPTS/game) in fantasy points per game started (min 25 games started): ###\n")
   log(toTable(
     List("Player", "Upside Dev / FPPG", "Downside deviation", "Upside deviation", "Avg FPTS / game", "# of games started"),
-    pointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.fptsPerGameAsStarter() }.reverse.take(30).map {
+    pointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.hitterFptsPerGameAsStarter() }.reverse.take(30).map {
       case (p, stats) =>
         List(p.player,
-          (stats.upsideDev / p.fptsPerGameAsStarter()).rounded(2),
+          (stats.upsideDev / p.hitterFptsPerGameAsStarter()).rounded(2),
           stats.downsideDev.rounded(2),
           stats.upsideDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
@@ -118,13 +118,13 @@ object FindingBestGppPlayers extends App {
   log("\n### Pitchers with highest (upside deviation / avg FPTS/game) in fantasy points per game started (min 10 games started): ###\n")
   log(toTable(
     List("Player", "Upside Dev / FPPG", "Downside deviation", "Upside deviation", "Avg FPTS / game", "# of games started"),
-    pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.fptsPerGameAsStarter() }.reverse.take(30).map {
+    pitcherPointsPerGameStartedDeviation.sortBy { case (p, s) => s.upsideDev / p.hitterFptsPerGameAsStarter() }.reverse.take(30).map {
       case (p, stats) =>
         List(p.player,
-          (stats.upsideDev / p.fptsPerGameAsStarter()).rounded(2),
+          (stats.upsideDev / p.hitterFptsPerGameAsStarter()).rounded(2),
           stats.downsideDev.rounded(2),
           stats.upsideDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
@@ -137,7 +137,7 @@ object FindingBestGppPlayers extends App {
           stats.netUpsideDev.rounded(2),
           stats.upsideDev.rounded(2),
           stats.downsideDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
@@ -150,7 +150,7 @@ object FindingBestGppPlayers extends App {
           stats.netUpsideDev.rounded(2),
           stats.upsideDev.rounded(2),
           stats.downsideDev.rounded(2),
-          p.fptsPerGameAsStarter().rounded(1),
+          p.hitterFptsPerGameAsStarter().rounded(1),
           p.numberOfGamesStarted)
     }))
 
