@@ -175,6 +175,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         val outs = (eventXML \ "@o").text.toInt
         val description = (eventXML \ "@des").text
         val rbi = (eventXML \ "@rbi").headOption.map(_.text.toInt).getOrElse(0)
+        val homeTeamRuns = (eventXML \ "@home_team_runs").headOption.map(_.text.toInt).get
+        val awayTeamRuns = (eventXML \ "@away_team_runs").headOption.map(_.text.toInt).get
 
         logDebug(s"\nEVENT: $event --- ${eventXML.toString}")
 
