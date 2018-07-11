@@ -105,6 +105,6 @@ case class LineupIterator(players: List[Player], contestType: ContestType) {
     s"  slotsByID:\n\t\t${slotsByID.toList.sortBy(_._1).mkString("\n\t\t")}\n\n" +
     s"  positionGroupsByID:\n\t\t${positionGroupsByID.toList.sortBy(_._1).mkString("\n\t\t")}\n\n" +
     s"  numberOfCombosByPGID:\n\t\t${numberOfCombosByPGID.toList.sortBy(_._1).mkString("\n\t\t")}\n\n" +
-    s"  total # of lineups: ${numberOfCombosByPGID.values.map(_.toLong).reduceLeft(_ * _)}]"
+    s"  total # of lineups: ${numberOfCombosByPGID.values.map(_.toLong).reduceLeft(_ * _)}"
 
 }
