@@ -96,6 +96,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       } else None
     }.toList
 
+    if (pitchers.length == 1) pitchers.head._2.pitchingStats.completeGame = 1
+
     (hitters ++ pitchers).toMap
   }
   val homeTeamPlayers: Map[MLBPlayerID, PlayerGameStats] = {
@@ -141,6 +143,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       } else None
     }.toList
 
+    if (pitchers.length == 1) pitchers.head._2.pitchingStats.completeGame = 1
+
     (hitters ++ pitchers).toMap
   }
 
@@ -175,8 +179,13 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
         val outs = (eventXML \ "@o").text.toInt
         val description = (eventXML \ "@des").text
         val rbi = (eventXML \ "@rbi").headOption.map(_.text.toInt).getOrElse(0)
-        val homeTeamRuns = (eventXML \ "@home_team_runs").headOption.map(_.text.toInt).get
-        val awayTeamRuns = (eventXML \ "@away_team_runs").headOption.map(_.text.toInt).get
+        lazy val homeTeamRuns = (eventXML \ "@home_team_runs").headOption.map(_.text.toInt).get
+        lazy val awayTeamRuns = (eventXML \ "@away_team_runs").headOption.map(_.text.toInt).get
+
+        lazy val pitcherTeamLead = battingTeam match {
+          case VISITING_TEAM => homeTeamRuns - awayTeamRuns
+          case HOME_TEAM     => awayTeamRuns - homeTeamRuns
+        }
 
         logDebug(s"\nEVENT: $event --- ${eventXML.toString}")
 
