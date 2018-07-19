@@ -249,7 +249,7 @@
 461325|Clippard|Tyler|R|R|TOR|P
 461829|Gonzalez|Gio|R|L|WAS|P
 461833|Hughes|Phil|R|R|SD|P
-461858|Plouffe|Trevor|R|R|TB|3B
+461858|Plouffe|Trevor|R|R|PHI|3B
 461865|Romine|Andrew|S|R|SEA|SS
 461872|Swarzak|Anthony|R|R|NYM|P
 462101|Andrus|Elvis|R|R|TEX|SS
@@ -328,7 +328,7 @@
 489446|Yates|Kirby|L|R|SD|P
 490063|Garza|Matt|R|R|MIL|P
 491624|Valdez|Cesar|R|R|TOR|P
-491646|Gomez|Jeanmar|R|R|PHI|P
+491646|Gomez|Jeanmar|R|R|CWS|P
 491676|Hernandez|Gorkys|R|R|SF|OF
 491696|Sucre|Jesus|R|R|TB|C
 491703|Feliz|Neftali|R|R|KC|P
@@ -360,7 +360,7 @@
 501593|Avilan|Luis|L|L|CWS|P
 501625|Alvarez|Jose|L|L|LAA|P
 501659|Almonte|Abraham|S|R|KC|OF
-501697|Marinez|Jhan|R|R|TEX|P
+501697|Marinez|Jhan|R|R|BAL|P
 501789|Harris|Will|R|R|HOU|P
 501817|Barnette|Tony|R|R|TEX|P
 501822|Hatcher|Chris|R|R|OAK|P
@@ -659,7 +659,7 @@
 544727|Familia|Jeurys|R|R|NYM|P
 544759|Schultz|Bo|R|R|TOR|P
 544836|Romero|Enny|R|L|KC|P
-544925|den Dekker|Matt|L|L|DET|OF
+544925|den Dekker|Matt|L|L|NYM|OF
 544928|Lyons|Tyler|L|L|STL|P
 544931|Strasburg|Stephen|R|R|WAS|P
 545064|Diaz|Jairo|R|R|COL|P
@@ -1620,3 +1620,7 @@
 669203|Burnes|Corbin|R|R|MIL|P
 660853|De Los Santos|Enyel|R|R|PHI|P
 543193|Gagnon|Drew|R|R|NYM|P
+542946|Bleich|Jeremy|L|L|OAK|P
+623381|Pannone|Thomas|L|L|TOR|P
+605525|Wendelken|J.B.|R|R|OAK|P
+670036|Festa|Matt|R|R|SEA|P

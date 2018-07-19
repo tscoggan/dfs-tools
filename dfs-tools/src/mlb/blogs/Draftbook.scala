@@ -332,7 +332,7 @@ object Draftbook extends App {
 
   log("\n### Starting pitchers ranked by value (FanDuel) - minimum 30 FPTS: ###\n")
   log(toTable(
-    List("Pitcher", "FD Salary", "Opponent", "Sample Size (BvP PA)", "Projected FPTS", "Value"),
+    List("Pitcher", "Salary (FD)", "Opponent", "BvP Sample Size (PA)", "Projected FPTS (FD)", "Value (FD)"),
     startingPitcherStats.toList
       .filter { case (p, stats) => p.fanduel.nonEmpty && season.hasStatsFor(p) && stats.projFptsFD.getOrElse(0.0) >= 30 }
       .sortBy(_._2.projValueFD.getOrElse(0.0)).reverse
@@ -342,11 +342,11 @@ object Draftbook extends App {
             stats.projFptsFD.map(_.rounded(2)).getOrElse("???"), stats.projValueFD.map(_.rounded(2)).getOrElse("???"))
       }))
 
-  log("\n### Starting pitchers ranked by value (DraftKings) - minimum 20 FPTS: ###\n")
+  log("\n### Starting pitchers ranked by value (DraftKings) - minimum 15 FPTS: ###\n")
   log(toTable(
-    List("Pitcher", "DK Salary", "Opponent", "Sample Size (BvP PA)", "Projected FPTS", "Value"),
+    List("Pitcher", "Salary (DK)", "Opponent", "BvP Sample Size (PA)", "Projected FPTS (DK)", "Value (DK)"),
     startingPitcherStats.toList
-      .filter { case (p, stats) => p.draftkings.nonEmpty && season.hasStatsFor(p) && stats.projFptsDK.getOrElse(0.0) >= 20 }
+      .filter { case (p, stats) => p.draftkings.nonEmpty && season.hasStatsFor(p) && stats.projFptsDK.getOrElse(0.0) >= 15 }
       .sortBy(_._2.projValueDK.getOrElse(0.0)).reverse
       .map {
         case (p, stats) =>
