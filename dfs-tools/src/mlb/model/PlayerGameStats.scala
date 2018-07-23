@@ -109,6 +109,19 @@ case class HitterGameStats(gameDate: Date, playerID: MLBPlayerID, isStarter: Boo
 
   def fantasyPoints(scoringSystem: DFSScoringSystem = Configs.dfsScoringSystem): Float = scoringSystem.calculateFantasyPoints(this.hittingStats)
 
+  def pitchingStatsAgainst: List[PitchingStats] = {
+    val opposingTeamPlayerStats = game.get.isHomeGameFor(this.player.team) match {
+      case true  => game.get.visitingTeamPlayerStats
+      case false => game.get.homeTeamPlayerStats
+    }
+    opposingTeamPlayerStats.collect {
+      case pgs: PitcherGameStats => pgs.pitchingStatsByHitter.get(this.player) match {
+        case Some(stats) => List(stats)
+        case None        => Nil
+      }
+    }.flatten
+  }
+
   override def printStats: String = battingPosition + ") " + this.toString + " - " + hittingStats
 
 }

@@ -534,6 +534,7 @@ case class HistoricalStats(season: Season) {
 
     val pitcherFullSeasonStats_FD: Option[PlayerSeasonStats] = pitcherStats_FD.get(p).map(_._1)
     val pitcherBvpStats_FD: Option[BatterVsPitcherStats] = season.pitcherFptsPerAB_vs_Hitters(p, opposingHitters, FanDuelMLB)
+    val allPitchersStatsVsOpposingHitters_FD: Option[BatterVsPitcherStats] = season.allPitchersFptsPerAB_vs_Hitters(opposingHitters, FanDuelMLB)
     val projFptsFD: Option[Double] = pitcherAtBatsPerStart match {
       case Some(abPerStart) => {
         val fullSeasonAtBats = pitcherFullSeasonStats_FD.map(_.games.collect { case pgs: PitcherGameStats => pgs }
@@ -544,9 +545,16 @@ case class HistoricalStats(season: Season) {
           .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
         val fullSeasonWeight = List(200, fullSeasonAtBats).min
         val bvpWeight = List(200, pitcherBvpStats_FD.map(_.atBats).getOrElse(0)).min
+        val allPitchersWeight = List(50, allPitchersStatsVsOpposingHitters_FD.map(_.atBats).getOrElse(0)).min
         val fullSeasonWeightedFptsPerAB = (0 until fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
-        val bvpWeightedFptsPerAB = (0 until bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
-        val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
+        val bvpWeightedFptsPerAB = (0 until bvpWeight).toList.map(i => pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0) * ballparkFactor)
+        val allPitchersWeightedFptsPerAB = (0 until allPitchersWeight).toList.map(i => allPitchersStatsVsOpposingHitters_FD.map(_.fptsPerAB).getOrElse(0.0) * ballparkFactor)
+        val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB ++ allPitchersWeightedFptsPerAB
+
+        //        log(s"$p:\n\tfull season: ${fullSeasonFptsPerAB.rounded(2)} FPTS/PA based on $fullSeasonAtBats PA" +
+        //            s"\n\tbvp: ${pitcherBvpStats_FD.map(_.fptsPerAB).getOrElse(0.0).rounded(2)} FPTS/PA based on ${pitcherBvpStats_FD.map(_.atBats).getOrElse(0)} PA" +
+        //            s"\n\tall pitchers vs ${opposingHitters.head.team} hitters: ${allPitchersStatsVsOpposingHitters_FD.map(_.fptsPerAB).getOrElse(0.0).rounded(2)} FPTS/PA based on ${allPitchersStatsVsOpposingHitters_FD.map(_.atBats).getOrElse(0)} PA" +
+        //            s"\n\tcombinedWeightedFptsPerAB: ${mean(combinedWeightedFptsPerAB).rounded(2)} FPTS/PA")
 
         Some(mean(combinedWeightedFptsPerAB) * abPerStart)
       }
@@ -559,6 +567,7 @@ case class HistoricalStats(season: Season) {
 
     val pitcherFullSeasonStats_DK: Option[PlayerSeasonStats] = pitcherStats_DK.get(p).map(_._1)
     val pitcherBvpStats_DK: Option[BatterVsPitcherStats] = season.pitcherFptsPerAB_vs_Hitters(p, opposingHitters, DraftKingsMLB)
+    val allPitchersStatsVsOpposingHitters_DK: Option[BatterVsPitcherStats] = season.allPitchersFptsPerAB_vs_Hitters(opposingHitters, DraftKingsMLB)
     val projFptsDK: Option[Double] = pitcherAtBatsPerStart match {
       case Some(abPerStart) => {
         val fullSeasonAtBats = pitcherFullSeasonStats_DK.map(_.games.collect { case pgs: PitcherGameStats => pgs }
@@ -569,9 +578,12 @@ case class HistoricalStats(season: Season) {
           .map(_.sum / fullSeasonAtBats).getOrElse(0.0)
         val fullSeasonWeight = List(200, fullSeasonAtBats).min
         val bvpWeight = List(200, pitcherBvpStats_DK.map(_.atBats).getOrElse(0)).min
+        val allPitchersWeight = List(50, allPitchersStatsVsOpposingHitters_DK.map(_.atBats).getOrElse(0)).min
         val fullSeasonWeightedFptsPerAB = (0 until fullSeasonWeight).toList.map(i => fullSeasonFptsPerAB * ballparkFactor)
-        val bvpWeightedFptsPerAB = (0 until bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0)) // should park factor apply to BvP?
-        val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB
+        val bvpWeightedFptsPerAB = (0 until bvpWeight).toList.map(i => pitcherBvpStats_DK.map(_.fptsPerAB).getOrElse(0.0) * ballparkFactor)
+        val allPitchersWeightedFptsPerAB = (0 until allPitchersWeight).toList.map(i => allPitchersStatsVsOpposingHitters_DK.map(_.fptsPerAB).getOrElse(0.0) * ballparkFactor)
+        val combinedWeightedFptsPerAB = fullSeasonWeightedFptsPerAB ++ bvpWeightedFptsPerAB ++ allPitchersWeightedFptsPerAB
+
         Some(mean(combinedWeightedFptsPerAB) * abPerStart)
       }
       case _ => None

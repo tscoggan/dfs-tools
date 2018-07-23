@@ -93,6 +93,19 @@ case class Season(label: String, games: List[Game]) {
     batterVsPitcherStatsHelper(pitcherStatsAllowedToHitters(pitcher, hitters), scoringSystem)
   }
 
+  def allPitchingStatsVsHitters(hitters: List[Player]): List[PitchingStats] = hitters.flatMap { hitter =>
+    statsByPlayer(hitter.id).games.flatMap { gameStats =>
+      gameStats match {
+        case hgs: HitterGameStats => hgs.pitchingStatsAgainst
+        case _                    => None
+      }
+    }
+  }
+
+  def allPitchersFptsPerAB_vs_Hitters(hitters: List[Player], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
+    batterVsPitcherStatsHelper(allPitchingStatsVsHitters(hitters), scoringSystem)
+  }
+
   private def batterVsPitcherStatsHelper(stats: List[PlayerStats], scoringSystem: DFSScoringSystem): Option[BatterVsPitcherStats] = {
     if (Configs.overweightRecent && Configs.recentDaysToWeightHigher > 0) {
       val (latestGames, recentGames, oldGames) = {
