@@ -15,17 +15,20 @@ object MLBTestApp extends App {
   //  println(s"Found ${games.length} games")
   //  games.foreach { g => println(g + "\n\n") }
 
-  import mlb.StatsPast1Year.stats._
-  mlb.StatsPast1Year.stats.logSummary
+  import mlb.StatsSinceStartOfLastSeason.stats._
+  mlb.StatsSinceStartOfLastSeason.stats.logSummary
 
-  val values = season.games.flatMap{ game =>
-    val visitingTeamPAs = game.visitingTeamPlayerStats.map(_.hittingStats.atBats).sum
-    val homeTeamPAs = game.homeTeamPlayerStats.map(_.hittingStats.atBats).sum
-    List(s"${game.visitingTeamRuns},$visitingTeamPAs,${(visitingTeamPAs.toDouble / 9.0).rounded(1)},Away",
-        s"${game.homeTeamRuns},$homeTeamPAs,${(homeTeamPAs.toDouble / 9.0).rounded(1)},Home")
+  val values = season.allPitchers.filter(_.gamesStartedAsPitcher.length >= 10).flatMap { pitcher =>
+    val gamesStarted = pitcher.gamesStartedAsPitcher.length
+    val numberOfPA = pitcher.pitchingPA_asStarter
+    val fptsPerPA_FD = pitcher.pitcherFptsPerPA_asStarter(FanDuelMLB)
+    val fptsPerPA_DK = pitcher.pitcherFptsPerPA_asStarter(DraftKingsMLB)
+    val fptsAllowedPerPA_FD = pitcher.pitcherFptsAllowedPerPA_asStarter(FanDuelMLB)
+    val fptsAllowedPerPA_DK = pitcher.pitcherFptsAllowedPerPA_asStarter(DraftKingsMLB)
+    List(s"${pitcher.player.toStringTeamOnly},$gamesStarted,$numberOfPA,${fptsPerPA_FD.rounded(2)},${fptsPerPA_DK.rounded(2)},${fptsAllowedPerPA_FD.rounded(2)},${fptsAllowedPerPA_DK.rounded(2)}")
   }
 
-  FileUtils.writeLinesToFile("Team Runs,Total PAs, Times Through Batting Order,Home/Away" :: values,
+  FileUtils.writeLinesToFile("Pitcher,Games Started,# Plate Appearances, Pitcher FPTS/PA (FD), Pitcher FPTS/PA (DK), Hitter FPTS/PA Allowed (FD), Hitter FPTS/PA Allowed (DK)" :: values,
     "C:/Users/Tom/Desktop/temp.csv",
     true)
 

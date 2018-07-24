@@ -330,7 +330,7 @@ object Draftbook extends App {
   log("*** Pitchers ***")
   log("**************************************************\n")
 
-  log(s"\n${toHeader(3, "Starting pitchers ranked by value (FanDuel) - minimum 30 FPTS")}\n")
+  log(s"\n${toHeader(3, "Top starting pitchers by value (FanDuel) - min 30 FPTS")}\n")
   log(toTable(
     List("Pitcher", "Salary (FD)", "Opponent", "BvP Sample Size (# PA)", "Projected FPTS (FD)", "Value (FD)"),
     startingPitcherStats.toList
@@ -342,7 +342,7 @@ object Draftbook extends App {
             stats.projFptsFD.map(_.rounded(2)).getOrElse("???"), stats.projValueFD.map(_.rounded(2)).getOrElse("???"))
       }))
 
-  log(s"\n${toHeader(3, "Starting pitchers ranked by value (DraftKings) - minimum 15 FPTS")}\n")
+  log(s"\n${toHeader(3, "Top starting pitchers by value (DraftKings) - min 15 FPTS")}\n")
   log(toTable(
     List("Pitcher", "Salary (DK)", "Opponent", "BvP Sample Size (# PA)", "Projected FPTS (DK)", "Value (DK)"),
     startingPitcherStats.toList

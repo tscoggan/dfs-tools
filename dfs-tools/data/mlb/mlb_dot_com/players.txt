@@ -1344,7 +1344,7 @@
 630023|Chirinos|Yonny|R|R|TB|P
 630111|Tomas|Yasmany|R|R|ARI|OF
 633831|Rivero|Armando|R|R|ATL|P
-635903|Rowley|Chris|R|R|TOR|P
+635903|Rowley|Chris|R|R|TEX|P
 639373|Bautista|Gerson|R|R|NYM|P
 640447|Ervin|Phillip|R|R|CIN|OF
 640449|Frazier|Clint|R|R|NYY|OF
@@ -1628,3 +1628,4 @@
 642211|Williams|Justin|L|R|TB|OF
 641658|Hampson|Garrett|R|R|COL|SS
 642758|Acevedo|Domingo|R|R|NYY|P
+594987|Sadler|Casey|R|R|PIT|P
