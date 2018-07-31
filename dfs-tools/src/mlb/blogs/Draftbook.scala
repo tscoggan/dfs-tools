@@ -16,12 +16,12 @@ object Draftbook extends App {
   import mlb.StatsSinceStartOfLastSeason.stats._
   mlb.StatsSinceStartOfLastSeason.stats.logSummary
 
-  val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}_${Configs.projectionsSite}.csv"
+  val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}_${Configs.projectionsHistorySite}.csv"
   log("Saving projections to file: " + projectionsFile)
   val header = "Player ID, Player Name, Projected FPTS (FD), Position (FD), Salary (FD), Team"
   val projections = {
     startingHitterStats.flatMap {
-      case (p, stats) => Configs.projectionsSite match {
+      case (p, stats) => Configs.projectionsHistorySite match {
         case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
         case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
         case other =>
@@ -30,7 +30,7 @@ object Draftbook extends App {
       }
     }.toList ++
       startingPitcherStats.flatMap {
-        case (p, stats) => Configs.projectionsSite match {
+        case (p, stats) => Configs.projectionsHistorySite match {
           case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
           case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
           case other =>
@@ -330,11 +330,11 @@ object Draftbook extends App {
   log("*** Pitchers ***")
   log("**************************************************\n")
 
-  log(s"\n${toHeader(3, "Top starting pitchers by value (FanDuel) - min 30 FPTS")}\n")
+  log(s"\n${toHeader(3, "Top starting pitchers by value (FanDuel) - min 25 FPTS")}\n")
   log(toTable(
     List("Pitcher", "Salary (FD)", "Opponent", "BvP Sample Size (# PA)", "Projected FPTS (FD)", "Value (FD)"),
     startingPitcherStats.toList
-      .filter { case (p, stats) => p.fanduel.nonEmpty && season.hasStatsFor(p) && stats.projFptsFD.getOrElse(0.0) >= 30 }
+      .filter { case (p, stats) => p.fanduel.nonEmpty && season.hasStatsFor(p) && stats.projFptsFD.getOrElse(0.0) >= 25 }
       .sortBy(_._2.projValueFD.getOrElse(0.0)).reverse
       .map {
         case (p, stats) =>
