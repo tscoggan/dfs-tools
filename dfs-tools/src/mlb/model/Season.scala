@@ -94,11 +94,14 @@ case class Season(label: String, games: List[Game]) {
   }
 
   def allPitchingStatsVsHitters(hitters: List[Player]): List[PitchingStats] = hitters.flatMap { hitter =>
-    statsByPlayer(hitter.id).games.flatMap { gameStats =>
-      gameStats match {
-        case hgs: HitterGameStats => hgs.pitchingStatsAgainst
-        case _                    => None
+    statsByPlayer.get(hitter.id) match {
+      case Some(stats) => stats.games.flatMap { gameStats =>
+        gameStats match {
+          case hgs: HitterGameStats => hgs.pitchingStatsAgainst
+          case _                    => None
+        }
       }
+      case None => None
     }
   }
 

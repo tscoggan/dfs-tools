@@ -67,6 +67,7 @@ object Player_FD {
           opponent,
           injuryIndicator,
           injuryDetails,
+          tier,
           probablePitcher,
           battingOrder) = nextLine.splitCSV()
 
