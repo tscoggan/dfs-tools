@@ -243,7 +243,8 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
               case "Catcher Interference" =>
               case "Double" =>
                 hitter.addDoubleAgainst(pitcher)
-              case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Sacrifice Bunt DP" | "Triple Play" => // outs already recorded --- do nothing
+              case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Sacrifice Bunt DP" | "Triple Play"
+                | "Base Running Double Play" => // outs already recorded --- do nothing
               case "Fan interference" =>
                 if (description.contains(s"${playerDisplayNames(hitter.playerID)} singles")) hitter.addSingleAgainst(pitcher)
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} doubles")) hitter.addDoubleAgainst(pitcher)
@@ -325,13 +326,14 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
                     player.addStolenBaseAgainst(pitcher)
                     if (stoleHome) player.addRunAgainst(pitcher)
                 }
-              case "Umpire Review"       => //???
-              case "Umpire Substitution" => //???
-              case "Wild Pitch"          => //???
-              case "Batter Turn"         => //???
-              case "Pitch Challenge"     => //???
-              case "Pitcher Switch"      => //???
-              case _                     => throw new Exception("Unknown event: " + event)
+              case "Umpire Review"            => //???
+              case "Umpire Substitution"      => //???
+              case "Wild Pitch"               => //???
+              case "Batter Turn"              => //???
+              case "Pitch Challenge"          => //???
+              case "Pitcher Switch"           => //???
+              case "Base Running Double Play" => //???
+              case _                          => throw new Exception("Unknown event: " + event)
             }
           }
         }

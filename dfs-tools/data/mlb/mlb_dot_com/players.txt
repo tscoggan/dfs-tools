@@ -13,8 +13,8 @@
 400284|Utley|Chase|L|R|LAD|2B
 405395|Pujols|Albert|R|R|LAA|DH
 407793|Lackey|John|R|R|CHC|P
-407812|Holliday|Matt|R|R|NYY|DH
-407822|De La Rosa|Jorge|L|L|ARI|P
+407812|Holliday|Matt|R|R|COL|DH
+407822|De La Rosa|Jorge|L|L|CHC|P
 407845|Rodney|Fernando|R|R|OAK|P
 408045|Mauer|Joe|L|R|MIN|1B
 408061|Rodriguez|Francisco|R|R|DET|P
@@ -357,7 +357,7 @@
 501381|Pineda|Michael|R|R|MIN|P
 501563|Castro|Simon|R|R|OAK|P
 501571|Lagares|Juan|R|R|NYM|OF
-501593|Avilan|Luis|L|L|CWS|P
+501593|Avilan|Luis|L|L|PHI|P
 501625|Alvarez|Jose|L|L|LAA|P
 501659|Almonte|Abraham|S|R|KC|OF
 501697|Marinez|Jhan|R|R|BAL|P
@@ -407,7 +407,7 @@
 502327|Santiago|Hector|R|L|CWS|P
 502381|Gregerson|Luke|L|R|STL|P
 502481|Dyson|Jarrod|L|R|ARI|OF
-502517|Murphy|Daniel|L|R|WAS|2B
+502517|Murphy|Daniel|L|R|CHC|2B
 502523|O'Malley|Shawn|S|R|SEA|SS
 502570|Gale|Rocky|R|R|SD|C
 502593|Petricka|Jake|R|R|TOR|P
@@ -721,7 +721,7 @@
 570731|Schoop|Jonathan|R|R|MIL|2B
 570799|Villanueva|Christian|R|R|SD|3B
 570810|Bonilla|Lisalverto|S|R|CIN|P
-571431|Adams|Matt|L|R|WAS|1B
+571431|Adams|Matt|L|R|STL|1B
 571437|Altherr|Aaron|R|R|PHI|OF
 571448|Arenado|Nolan|R|R|COL|3B
 571466|Barnhart|Tucker|S|R|CIN|C
@@ -1282,7 +1282,7 @@
 621563|Wendle|Joey|L|R|TB|2B
 621566|Olson|Matt|L|R|OAK|1B
 622072|Wood|Alex|R|L|LAD|P
-622097|Thompson|Jake|R|R|PHI|P
+622097|Thompson|Jake|R|R|MIL|P
 622098|Smith|Drew|R|R|NYM|P
 622110|Duffy|Matt|R|R|TB|3B
 622161|Paredes|Eduardo|R|R|LAA|P
@@ -1336,7 +1336,7 @@
 627894|Gohara|Luiz|L|L|ATL|P
 628317|Maeda|Kenta|R|R|LAD|P
 628318|Makita|Kazuhisa|R|R|SD|P
-628333|Despaigne|Odrisamer|R|R|MIA|P
+628333|Despaigne|Odrisamer|R|R|LAA|P
 628338|Heredia|Guillermo|R|L|SEA|OF
 628452|Iglesias|Raisel|R|R|CIN|P
 628711|Urias|Julio|L|L|LAD|P
@@ -1546,7 +1546,7 @@
 642715|Adames|Willy|R|R|TB|SS
 641525|Dixon|Brandon|R|R|CIN|OF
 571503|Bollinger|Ryan|L|L|NYY|P
-607430|Andreoli|John|R|R|SEA|OF
+607430|Andreoli|John|R|R|BAL|OF
 554054|Gonzalez|Alfredo|R|R|CWS|C
 502522|Miller|Justin|R|R|WAS|P
 621289|Schultz|Jaime|R|R|TB|P
@@ -1682,3 +1682,18 @@
 657053|Toussaint|Touki|R|R|ATL|P
 656887|Reid-Foley|Sean|R|R|TOR|P
 657624|James|Josh|R|R|HOU|P
+591672|Morales|Osmer|R|R|LAA|P
+621493|Ward|Taylor|R|R|LAA|3B
+621573|Dean|Austin|R|R|MIA|OF
+621028|Newman|Kevin|R|R|PIT|2B
+621142|Buttrey|Ty|L|R|LAA|P
+606157|Aquino|Aristides|R|R|CIN|OF
+596101|Shafer|Justin|R|R|TOR|P
+623354|Zamora|Daniel|L|L|NYM|P
+623470|Newberry|Jake|R|R|KC|P
+624427|Gonsalves|Stephen|L|L|MIN|P
+669060|Wilson|Bryse|R|R|ATL|P
+656629|Kopech|Michael|R|R|CWS|P
+446321|Detwiler|Ross|R|L|SEA|P
+664285|Valdez|Framber|L|L|HOU|P
+621114|Burr|Ryan|R|R|CWS|P
