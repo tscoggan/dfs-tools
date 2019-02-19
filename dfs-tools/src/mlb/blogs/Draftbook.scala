@@ -342,11 +342,11 @@ object Draftbook extends App {
             stats.projFptsFD.map(_.rounded(2)).getOrElse("???"), stats.projValueFD.map(_.rounded(2)).getOrElse("???"))
       }))
 
-  log(s"\n${toHeader(3, "Top starting pitchers by value (DraftKings) - min 15 FPTS")}\n")
+  log(s"\n${toHeader(3, "Top starting pitchers by value (DraftKings) - min 10 FPTS")}\n")
   log(toTable(
     List("Pitcher", "Salary (DK)", "Opponent", "BvP Sample Size (# PA)", "Projected FPTS (DK)", "Value (DK)"),
     startingPitcherStats.toList
-      .filter { case (p, stats) => p.draftkings.nonEmpty && season.hasStatsFor(p) && stats.projFptsDK.getOrElse(0.0) >= 15 }
+      .filter { case (p, stats) => p.draftkings.nonEmpty && season.hasStatsFor(p) && stats.projFptsDK.getOrElse(0.0) >= 10 }
       .sortBy(_._2.projValueDK.getOrElse(0.0)).reverse
       .map {
         case (p, stats) =>
