@@ -12,7 +12,8 @@ case class Team(
     city: String,
     name: String,
     fanduelID: String,
-    draftkingsID: String) {
+    draftkingsID: String,
+    mlbID: String) {
 
   override def toString: String = draftkingsID
 }

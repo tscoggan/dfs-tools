@@ -6,5 +6,6 @@
         <dependency org="org.scalaj" name="scalaj-time_2.11" rev="0.8"/>
         <dependency org="joda-time" name="joda-time" rev="2.2"/>
         <dependency org="org.scalatest" name="scalatest_2.11" rev="3.0.4"/>
+        <dependency org="org.json4s" name="json4s-jackson_2.11" rev="3.6.4"/>
     </dependencies>
 </ivy-module>
