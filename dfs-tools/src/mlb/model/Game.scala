@@ -13,7 +13,6 @@ case class Game(
     visitingTeam: Team,
     homeTeam: Team,
     gameNumber: GameNumber, // e.g. 1 or 2 if part of a double-header
-    homePlateUmpireID: String,
     winningPitcher: Player,
     losingPitcher: Player,
     savePitcher: Option[Player],

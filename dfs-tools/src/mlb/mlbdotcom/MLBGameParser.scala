@@ -11,7 +11,7 @@ import java.util.Date
 import scala.collection.mutable
 import scala.annotation.tailrec
 
-class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
+class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
 
   type HomeOrAway = Int
   private val VISITING_TEAM: HomeOrAway = 0
@@ -22,12 +22,9 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
     case None         => throw new Exception("Couldn't find player with MLB.com ID " + playerID)
   }
 
-  var date: Date = (rawBoxScoreXML \ "@date").text.toDate("MMM dd, yyyy")
+  var date: Date = (boxScoreXML \ "@date").text.toDate("MMM dd, yyyy")
 
-  var gameNumber: GameNumber = (rawBoxScoreXML \ "@game_id").text.substringAfterLast("-").toInt
-
-  var homePlateUmpireID: String =
-    (rawBoxScoreXML \ "umpires" \ "umpire").find(_.attribute("position").head.text == "HP").map(_.attribute("id").head.text).get
+  var gameNumber: GameNumber = (boxScoreXML \ "@game_id").text.substringAfterLast("-").toInt
 
   var winningPitcher: Player =
     (lineScoreXML \ "winning_pitcher").find(_.attribute("id").head.text.trim.nonEmpty).map(_.attribute("id").head.text).get
@@ -38,11 +35,9 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
   var savePitcher: Option[Player] =
     (lineScoreXML \ "save_pitcher").find(_.attribute("id").head.text.trim.nonEmpty).map(_.attribute("id").head.text)
 
-  var visitingTeam: Team =
-    Teams.get { (rawBoxScoreXML \ "team").find(_.attribute("team_flag").head.text == "away").map(_.attribute("team_code").head.text).get }
+  var visitingTeam: Team = Teams.get { (boxScoreXML \ "@away_team_code").text }
 
-  var homeTeam: Team =
-    Teams.get { (rawBoxScoreXML \ "team").find(_.attribute("team_flag").head.text == "home").map(_.attribute("team_code").head.text).get }
+  var homeTeam: Team = Teams.get { (boxScoreXML \ "@home_team_code").text }
 
   val visitingTeamRuns: Int = (lineScoreXML \ "@away_team_runs").text.toInt
   val homeTeamRuns: Int = (lineScoreXML \ "@home_team_runs").text.toInt
@@ -54,15 +49,14 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
 
   // all players who played in this game
   val visitingTeamPlayers: Map[MLBPlayerID, PlayerGameStats] = {
-    val teamXML = (rawBoxScoreXML \ "team").find(_.attribute("team_flag").head.text == "away").get
-    val hittersXML = teamXML \ "batting" \ "batter"
-    val pitchersXML = teamXML \ "pitching" \ "pitcher"
+    val hittersXML = (boxScoreXML \ "batting").find(_.attribute("team_flag").head.text == "away").get \ "batter"
+    val pitchersXML = (boxScoreXML \ "pitching").find(_.attribute("team_flag").head.text == "away").get \ "pitcher"
 
     val hitters = hittersXML.flatMap { p =>
       val mlbPlayerID = (p \ "@id").text
       val player = playerIDToPlayer(mlbPlayerID)
       val displayName = (p \ "@name_display_first_last").text
-      val batOrder = (p \ "@bat_order").text
+      val batOrder = (p \ "@bo").text
       if (batOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
@@ -74,26 +68,24 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       } else None
     }.toList
 
-    val pitchers = pitchersXML.flatMap { p =>
-      val mlbPlayerID = (p \ "@id").text
-      val player = playerIDToPlayer(mlbPlayerID)
-      val displayName = (p \ "@name_display_first_last").text
-      val pitchOrder = (p \ "@pitch_order").text
-      val battingPosition = hitters.find { case (name, p) => p.playerID == player.id }.map { case (name, p) => p.battingPosition }.getOrElse(0)
-      if (pitchOrder.length == 3) { // only include players who played
+    val pitchers = pitchersXML.zipWithIndex.map {
+      case (p, pitchOrder) =>
+        val mlbPlayerID = (p \ "@id").text
+        val player = playerIDToPlayer(mlbPlayerID)
+        val displayName = (p \ "@name_display_first_last").text
+        val battingPosition = hitters.find { case (name, p) => p.playerID == player.id }.map { case (name, p) => p.battingPosition }.getOrElse(0)
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
         mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
 
-        val pitcher = PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)
+        val pitcher = PitcherGameStats(date, player.id, pitchOrder == 0, battingPosition)
         if (pitcher.playerID == winningPitcher.id) pitcher.pitchingStats.win = 1
         if (pitcher.playerID == losingPitcher.id) pitcher.pitchingStats.loss = 1
         if (pitcher.playerID == savePitcher.map(_.id).getOrElse("")) pitcher.pitchingStats.save = 1
         pitcher.addEarnedRuns((p \ "@er").text.toInt)
-        Some((mlbPlayerID, pitcher))
-      } else None
+        (mlbPlayerID, pitcher)
     }.toList
 
     if (pitchers.length == 1) pitchers.head._2.pitchingStats.completeGame = 1
@@ -101,15 +93,14 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
     (hitters ++ pitchers).toMap
   }
   val homeTeamPlayers: Map[MLBPlayerID, PlayerGameStats] = {
-    val teamXML = (rawBoxScoreXML \ "team").find(_.attribute("team_flag").head.text == "home").get
-    val hittersXML = teamXML \ "batting" \ "batter"
-    val pitchersXML = teamXML \ "pitching" \ "pitcher"
+    val hittersXML = (boxScoreXML \ "batting").find(_.attribute("team_flag").head.text == "home").get \ "batter"
+    val pitchersXML = (boxScoreXML \ "pitching").find(_.attribute("team_flag").head.text == "home").get \ "pitcher"
 
     val hitters = hittersXML.flatMap { p =>
       val mlbPlayerID = (p \ "@id").text
       val player = playerIDToPlayer(mlbPlayerID)
       val displayName = (p \ "@name_display_first_last").text
-      val batOrder = (p \ "@bat_order").text
+      val batOrder = (p \ "@bo").text
       if (batOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
@@ -121,26 +112,24 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
       } else None
     }.toList
 
-    val pitchers = pitchersXML.flatMap { p =>
-      val mlbPlayerID = (p \ "@id").text
-      val player = playerIDToPlayer(mlbPlayerID)
-      val displayName = (p \ "@name_display_first_last").text
-      val pitchOrder = (p \ "@pitch_order").text
-      val battingPosition = hitters.find { case (name, p) => p.playerID == player.id }.map { case (name, p) => p.battingPosition }.getOrElse(0)
-      if (pitchOrder.length == 3) { // only include players who played
+    val pitchers = pitchersXML.zipWithIndex.map {
+      case (p, pitchOrder) =>
+        val mlbPlayerID = (p \ "@id").text
+        val player = playerIDToPlayer(mlbPlayerID)
+        val displayName = (p \ "@name_display_first_last").text
+        val battingPosition = hitters.find { case (name, p) => p.playerID == player.id }.map { case (name, p) => p.battingPosition }.getOrElse(0)
         playerDisplayNames += (player.id -> displayName)
         mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
         mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
         mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
         if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
 
-        val pitcher = PitcherGameStats(date, player.id, pitchOrder == "100", battingPosition)
+        val pitcher = PitcherGameStats(date, player.id, pitchOrder == 0, battingPosition)
         if (pitcher.playerID == winningPitcher.id) pitcher.pitchingStats.win = 1
         if (pitcher.playerID == losingPitcher.id) pitcher.pitchingStats.loss = 1
         if (pitcher.playerID == savePitcher.map(_.id).getOrElse("")) pitcher.pitchingStats.save = 1
         pitcher.addEarnedRuns((p \ "@er").text.toInt)
-        Some((mlbPlayerID, pitcher))
-      } else None
+        (mlbPlayerID, pitcher)
     }.toList
 
     if (pitchers.length == 1) pitchers.head._2.pitchingStats.completeGame = 1
@@ -346,7 +335,7 @@ class MLBGameParser(eventsXML: Elem, rawBoxScoreXML: Elem, lineScoreXML: Elem) {
   parseInnings(visitingTeamInningsXML, visitingTeamPlayers ++ homeTeamPlayers, VISITING_TEAM)
   parseInnings(homeTeamInningsXML, visitingTeamPlayers ++ homeTeamPlayers, HOME_TEAM)
 
-  def toGame: Game = Game(date, visitingTeam, homeTeam, gameNumber, homePlateUmpireID, winningPitcher, losingPitcher,
+  def toGame: Game = Game(date, visitingTeam, homeTeam, gameNumber, winningPitcher, losingPitcher,
     savePitcher, visitingTeamPlayers.values.toList, homeTeamPlayers.values.toList, visitingTeamRuns, homeTeamRuns)
 
   private def namesOfPlayersWhoScored(play: String): List[String] = {

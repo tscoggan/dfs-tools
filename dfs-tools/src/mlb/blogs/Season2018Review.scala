@@ -163,8 +163,8 @@ object Season2018Review extends App {
   val pitcherPointsPerGameStartedDeviation: List[(PlayerSeasonStats, Stats)] = season.allPitchers
     .filter(p => p.numberOfGamesStarted >= 10)
     .map(p => (p, Stats(stdDev(p.gamesStarted.map(_.fantasyPoints())),
-      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev),
-      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev))))
+      downsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted),
+      upsideDev(p.gamesStarted.map(_.fantasyPoints().toDouble), pitcherLeagueAvgPointsPerGameStarted))))
   log(toTable(
     List("Player", "Net upside deviation (FPTS / game)", "Downside deviation", "Upside deviation", "Std deviation", "Avg FPTS / game", "# of games started"),
     pitcherPointsPerGameStartedDeviation.sortBy(_._2.netUpsideDev).reverse.take(30).map {
@@ -186,10 +186,26 @@ object Season2018Review extends App {
     .map(p => (p, percent(p.gamesStarted, (pgs: PlayerGameStats) => pgs.fantasyPoints() > hitter1PPGLeagueAvgPlus1StdDev)))
     .sortBy(_._2).reverse
   log("1 std deviation above avg FPTS for all starters = " + hitter1PPGLeagueAvgPlus1StdDev.rounded(1))
-  hitterPercentOfGamesAboveLeagueAvgPlus1StdDev.take(10).map {
-    case (p, percent) =>
-      s"${p.player} - ${percent.rounded(1)}% (${p.numberOfGamesStarted} games started)"
-  }.zipWithIndex.map { case (str, i) => s"${i + 1}) $str" }.foreach(log(_))
+  log(toTable(
+    List("Player", "% of games started > 1 std deviation above avg FPTS for all starters", "# of games started"),
+    hitterPercentOfGamesAboveLeagueAvgPlus1StdDev.take(10).map {
+      case (p, percent) =>
+        List(p.player, s"${percent.rounded(1)}%", p.numberOfGamesStarted)
+    }))
+
+  log("\n### Pitchers with highest % of games started > 1 std deviation above avg FPTS for all starters (min 10 games started): ###\n")
+  val pitcher1PPGLeagueAvgPlus1StdDev = pitcherLeagueAvgPointsPerGameStarted + pitcherLeaguePointsPerGameStartedStdDev
+  val pitcherPercentOfGamesAboveLeagueAvgPlus1StdDev = season.allPitchers
+    .filter(p => p.numberOfGamesStarted >= 10)
+    .map(p => (p, percent(p.gamesStarted, (pgs: PlayerGameStats) => pgs.fantasyPoints() > pitcher1PPGLeagueAvgPlus1StdDev)))
+    .sortBy(_._2).reverse
+  log("1 std deviation above avg FPTS for all starters = " + pitcher1PPGLeagueAvgPlus1StdDev.rounded(1))
+  log(toTable(
+    List("Player", "% of games started > 1 std deviation above avg FPTS for all starters", "# of games started"),
+    pitcherPercentOfGamesAboveLeagueAvgPlus1StdDev.take(10).map {
+      case (p, percent) =>
+        List(p.player, s"${percent.rounded(1)}%", p.numberOfGamesStarted)
+    }))
 
   log("\n**************************************************************")
   log("***Who were the safest (low floor) players for cash games? ***")
