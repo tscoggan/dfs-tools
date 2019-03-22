@@ -98,27 +98,28 @@ object Player_MLB {
   private val baseURL = Configs.MlbDotCom.baseURL
 
   val allPlayers: List[Player_MLB] = {
-    val existingPlayers = loadPlayersFromFile
-    val datesToLoad = {
-      playersLoadedThrough match {
-        case Some(lastLoadDate) => getDatesBetween(lastLoadDate.nextDay, yesterday)
-        case None => getDatesBetween(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++
-          getDatesBetween(Configs.MlbDotCom.seasonStartDate, yesterday)
-      }
-    }.sorted
-    log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")
-    val playerURLs = datesToLoad.flatMap(Game_MLB.getGameURLs(_)).flatMap(getPlayerURLs(_))
-      .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map {
-        case (playerID, urls) =>
-          urls.sortBy(_.substringAfter("gid_").take(10).toDate("yyyy_MM_dd")).last // load player from most recent URL to ensure current team
-      }
-    log(s"Found ${playerURLs.length} distinct player URL's")
-    val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
-      .flatMap(loadPlayerFromURL(_)).distinct
-    log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
-    if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, false) // save new players to file
-    writeToFile(yesterday.print("yyyy-MM-dd"), loadedThroughfileName, true)
-    (existingPlayers ++ newPlayers).distinct
+    //    val existingPlayers = loadPlayersFromFile
+    //    val datesToLoad = {
+    //      playersLoadedThrough match {
+    //        case Some(lastLoadDate) => getDatesBetween(lastLoadDate.nextDay, yesterday)
+    //        case None => getDatesBetween(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++
+    //          getDatesBetween(Configs.MlbDotCom.seasonStartDate, yesterday)
+    //      }
+    //    }.sorted
+    //    log(s"Loading MLB.com players for games on ${datesToLoad.map(_.print("yyyy-MM-dd")).mkString(", ")}")
+    //    val playerURLs = datesToLoad.flatMap(Game_MLB.getGameURLs(_)).flatMap(getPlayerURLs(_))
+    //      .groupBy(_.substringAfterLast("/")).toList.sortBy(_._1).map {
+    //        case (playerID, urls) =>
+    //          urls.sortBy(_.substringAfter("gid_").take(10).toDate("yyyy_MM_dd")).last // load player from most recent URL to ensure current team
+    //      }
+    //    log(s"Found ${playerURLs.length} distinct player URL's")
+    //    val newPlayers = playerURLs.filter(url => !existingPlayers.exists(_.id == url.substringAfterLast("/").substringBefore(".")))
+    //      .flatMap(loadPlayerFromURL(_)).distinct
+    //    log(s"...found ${newPlayers.length} new players and ${existingPlayers.length} existing players")
+    //    if (newPlayers.nonEmpty) savePlayersToFile(newPlayers, false) // save new players to file
+    //    writeToFile(yesterday.print("yyyy-MM-dd"), loadedThroughfileName, true)
+    //    (existingPlayers ++ newPlayers).distinct
+    loadPlayersFromFile
   }.sortBy(_.id)
 
   def getPlayerURLs(gameURL: String): List[String] = try {

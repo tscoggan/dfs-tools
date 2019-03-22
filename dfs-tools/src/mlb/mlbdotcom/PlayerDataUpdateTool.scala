@@ -12,15 +12,14 @@ import org.json4s.jackson.JsonMethods._
 
 /**
  * App for downloading the latest data for all known players from MLB.com and updating the /data/mlb/mlb_dot_com/players.txt
- * file.  This should be run ad hoc whenever players have been traded to new teams, etc.  It will NOT download new players
- * not yet in the file.
+ * file.  This should be run ad hoc whenever players have been traded to new teams, etc.  
  */
 
 object PlayerDataUpdateTool extends App {
 
   implicit val formats = DefaultFormats
 
-  case class PlayerData(player_id: String, name_use: String, name_last: String, primary_position_txt: String, team_abbrev: String, bats: String, throws: String) {
+  case class PlayerData(player_id: MLBPlayerID, name_use: String, name_last: String, primary_position_txt: String, team_abbrev: String, bats: String, throws: String) {
 
     def toPlayerMLB: Player_MLB = Player_MLB(
       player_id,
@@ -33,49 +32,19 @@ object PlayerDataUpdateTool extends App {
 
   }
 
-  private var unchanged = 0
-  private var changed = 0
+  case class PlayerID(player_id: MLBPlayerID)
 
-  private val updatedPlayers: List[Player_MLB] = {
-    log("Retrieving latest player data from MLB.com...")
-    Player_MLB.allPlayers.map { player =>
-      val newData: Player_MLB = {
-        val url = "http://lookup-service-prod.mlb.com/json/named.player_info.bam?sport_code='mlb'&player_id=" + player.id
-        //log(s"Getting player data for $player from URL: $url")
-        val json = parse(scala.io.Source.fromURL(url)("ISO-8859-1").mkString) \ "player_info" \ "queryResults"
-        (json \ "totalSize").extract[String].toInt match {
-          case 1   => (json \ "row").extract[PlayerData].toPlayerMLB
-          case num => throw new Exception(s"Found $num records for player $player")
-        }
-      }
-      if (player == newData) {
-        unchanged += 1
-        player
-      } else {
-        log(s"${player.toStringVerbose} has new data:\n\t${newData.toStringVerbose}")
-        changed += 1
-        newData
-      }
+  def getLatestPlayerData(id: MLBPlayerID): Player_MLB = {
+    val url = "http://lookup-service-prod.mlb.com/json/named.player_info.bam?sport_code='mlb'&player_id=" + id
+    val json = parse(scala.io.Source.fromURL(url)("ISO-8859-1").mkString) \ "player_info" \ "queryResults"
+    (json \ "totalSize").extract[String].toInt match {
+      case 1   => (json \ "row").extract[PlayerData].toPlayerMLB
+      case num => throw new Exception(s"Found $num records for player ID $id")
     }
   }
 
-  log(s"\nDONE --- $unchanged unchanged players, $changed changed players")
-  
-  case class PlayerData2(player_id: String, name_use: String, name_last: String, position: String, team_abbrev: String, bats: String, throws: String) {
-
-    def toPlayerMLB: Player_MLB = Player_MLB(
-      player_id,
-      name_last,
-      name_use,
-      bats,
-      throws,
-      mlb.Teams.get(team_abbrev),
-      position)
-
-  }
-
-  private val allActivePlayers: List[Player_MLB] = {
-    log("Retrieving all active players from MLB.com...")
+  private val allActivePlayerIDs: List[PlayerID] = {
+    log("Retrieving ID's for all active players from MLB.com...")
 
     val url = "http://lookup-service-prod.mlb.com/json/named.search_player_all.bam?sport_code='mlb'&active_sw='Y'&name_part='%25'"
 
@@ -86,17 +55,20 @@ object PlayerDataUpdateTool extends App {
       case num => log(s"Query returned $num players")
     }
 
-    (json \ "row").extract[List[PlayerData2]].map(_.toPlayerMLB)
+    (json \ "row").extract[List[PlayerID]]
   }
-  
-  val distinctPlayers = (updatedPlayers ++ allActivePlayers).distinct
-  
-  log(s"${distinctPlayers.length} distinct players")
 
-  if (changed > 0) {
-    log("Updating player data file...")
-    Player_MLB.savePlayersToFile(distinctPlayers.sortBy(_.id), true)
-    log("DONE")
+  private val distinctPlayerIDs = (Player_MLB.allPlayers.map(_.id) ++ allActivePlayerIDs.map(_.player_id)).distinct
+
+  log(s"Found ${distinctPlayerIDs.length} distinct player IDs")
+
+  private val updatedPlayers: List[Player_MLB] = {
+    log("Retrieving latest player data from MLB.com for existing players...")
+    distinctPlayerIDs.map { id => getLatestPlayerData(id) }
   }
+
+  Player_MLB.savePlayersToFile(updatedPlayers.sortBy(_.id), true)
+  
+  log("DONE")
 
 }

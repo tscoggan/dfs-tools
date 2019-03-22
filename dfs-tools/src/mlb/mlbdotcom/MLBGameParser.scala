@@ -322,6 +322,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Pitch Challenge"          => //???
               case "Pitcher Switch"           => //???
               case "Base Running Double Play" => //???
+              case "Offensive Substitution"   => //???
               case _                          => throw new Exception("Unknown event: " + event)
             }
           }
