@@ -28,6 +28,63 @@ case class Player_MLB(
 
   def toCSV: String = List(id, lastName, firstName, bats, throws, team, position).mkString("|")
 
+  def toPlayer: Player = {
+    val fanduel = Players.fanduelPlayers.find(_.mlbPlayerID.getOrElse("") == this.id)
+
+    val draftkings = Players.draftkingsPlayers.find(_.mlbPlayerID.getOrElse("") == this.id)
+
+    val newOpponent = fanduel.map(_.opponent).orElse(draftkings.map(_.opponent))
+
+    val newBattingPosition = fanduel.flatMap(_.battingOrder) match {
+      case None if (fanduel.flatMap(_.probablePitcher).getOrElse(false) == true) =>
+        val filledSpots = Players.fanduelPlayers.filter(_.team == this.team).flatMap(_.battingOrder).filterNot(_ == 0)
+        val unfilledSpots = (1 to 9).toList.diff(filledSpots)
+        //println(s"$player --> ${filledSpots.length} filled lineup spots: ${filledSpots.sorted.mkString(",")}\n\tunfilled: ${unfilledSpots.sorted.mkString(",")}")
+        if (unfilledSpots.length == 1) Some(unfilledSpots.head)
+        else None
+      case bp => bp
+    }
+
+    val visitingOrHomeTeam: Option[VisitingOrHomeTeam] = fanduel.map(_.game) match {
+      case Some(gameInfo) =>
+        val visitingTeam = Teams.get(gameInfo.trim.substringBefore("@"))
+        val homeTeam = Teams.get(gameInfo.trim.substringAfter("@"))
+        fanduel.map(_.team) match {
+          case Some(team) =>
+            if (team == visitingTeam) Some(Visiting)
+            else if (team == homeTeam) Some(Home)
+            else None
+          case None => throw new Exception(this + " has no FD team!")
+        }
+      case None => draftkings.map(_.game) match {
+        case Some(gameInfo) =>
+          val visitingTeam = Teams.get(gameInfo.trim.substringBefore("@"))
+          val homeTeam = Teams.get(gameInfo.trim.substringsBetween("@", " ").head)
+          draftkings.map(_.team) match {
+            case Some(team) =>
+              if (team == visitingTeam) Some(Visiting)
+              else if (team == homeTeam) Some(Home)
+              else None
+            case None => throw new Exception(this + " has no DK team!")
+          }
+        case None => None
+      }
+    }
+
+    Player(
+      this.id,
+      this.name,
+      this.bats,
+      this.throws,
+      this.team,
+      this.position,
+      newOpponent,
+      visitingOrHomeTeam,
+      this,
+      fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.probablePitcher.orElse(p.battingOrder.map(_ > 0)), newBattingPosition)),
+      draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
+  }
+
   override def toString: String = s"MLB[$name ($position, $team)]"
 
   def toStringVerbose: String = s"Player_MLB[id=$id, name=$name, team=$team, position=$position, bats=$bats, throws=$throws]"
@@ -102,6 +159,11 @@ object Player_MLB {
   def savePlayersToFile(players: List[Player_MLB], overwrite: Boolean = false): Unit = {
     writeLinesToFile(players.map(_.toCSV), playersFileName, overwrite)
     log(s"Saved ${players.length} MLB.com players to file ${if (overwrite) "--- overwrote existing file" else ""}")
+  }
+
+  def savePlayerToFile(player: Player_MLB): Unit = {
+    writeLinesToFile(List(player.toCSV), playersFileName, false)
+    log(s"Saved $player to player file")
   }
 
   def playersLoadedThrough: Option[Date] = fileExists(loadedThroughfileName) match {

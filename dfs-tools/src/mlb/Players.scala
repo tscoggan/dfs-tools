@@ -76,62 +76,7 @@ object Players {
   //    case (name, players) => if (players.length > 1) log(s"WARNING: ${players.length} DK players with same name: ${players.mkString(", ")}")
   //  }
 
-  val allPlayers: List[Player] = mlbDotComPlayers map { player =>
-    val fanduel = fanduelPlayers.find(_.mlbPlayerID.getOrElse("") == player.id)
-
-    val draftkings = draftkingsPlayers.find(_.mlbPlayerID.getOrElse("") == player.id)
-
-    val newOpponent = fanduel.map(_.opponent).orElse(draftkings.map(_.opponent))
-
-    val newBattingPosition = fanduel.flatMap(_.battingOrder) match {
-      case None if (fanduel.flatMap(_.probablePitcher).getOrElse(false) == true) =>
-        val filledSpots = fanduelPlayers.filter(_.team == player.team).flatMap(_.battingOrder).filterNot(_ == 0)
-        val unfilledSpots = (1 to 9).toList.diff(filledSpots)
-        //println(s"$player --> ${filledSpots.length} filled lineup spots: ${filledSpots.sorted.mkString(",")}\n\tunfilled: ${unfilledSpots.sorted.mkString(",")}")
-        if (unfilledSpots.length == 1) Some(unfilledSpots.head)
-        else None
-      case bp => bp
-    }
-
-    val visitingOrHomeTeam: Option[VisitingOrHomeTeam] = fanduel.map(_.game) match {
-      case Some(gameInfo) =>
-        val visitingTeam = Teams.get(gameInfo.trim.substringBefore("@"))
-        val homeTeam = Teams.get(gameInfo.trim.substringAfter("@"))
-        fanduel.map(_.team) match {
-          case Some(team) =>
-            if (team == visitingTeam) Some(Visiting)
-            else if (team == homeTeam) Some(Home)
-            else None
-          case None => throw new Exception(player + " has no FD team!")
-        }
-      case None => draftkings.map(_.game) match {
-        case Some(gameInfo) =>
-          val visitingTeam = Teams.get(gameInfo.trim.substringBefore("@"))
-          val homeTeam = Teams.get(gameInfo.trim.substringsBetween("@", " ").head)
-          draftkings.map(_.team) match {
-            case Some(team) =>
-              if (team == visitingTeam) Some(Visiting)
-              else if (team == homeTeam) Some(Home)
-              else None
-            case None => throw new Exception(player + " has no DK team!")
-          }
-        case None => None
-      }
-    }
-
-    Player(
-      player.id,
-      player.name,
-      player.bats,
-      player.throws,
-      player.team,
-      player.position,
-      newOpponent,
-      visitingOrHomeTeam,
-      player,
-      fanduel.map(p => PlayerSiteInfo(p.nickname, p.team, p.position, p.salary, p.probablePitcher.orElse(p.battingOrder.map(_ > 0)), newBattingPosition)),
-      draftkings.map(p => PlayerSiteInfo(p.name, p.team, p.position, p.salary, None, None)))
-  }
+  val allPlayers: List[Player] = mlbDotComPlayers map (_.toPlayer)
 
   fanduelPlayers.filter(_.mlbPlayerID.isEmpty).foreach { p => throw new Exception(s"WARNING: No MLB player found for FD player $p with alternate name [${p.alternateName}]") }
 

@@ -30,6 +30,10 @@ case object Outfield extends Position {
   override def toString: String = "OF"
 }
 
+case object Infield extends Position {
+  override def toString: String = "IF"
+}
+
 case object DesignatedHitter extends Position {
   override def toString: String = "DH"
 }
@@ -49,6 +53,7 @@ object Position {
     case "SS"                      => ShortStop
     case "OF" | "RF" | "LF" | "CF" => Outfield
     case "DH"                      => DesignatedHitter
+    case "IF" => Infield
     case other =>
       if (other.contains("/")) {
         val positions = other.split("/").map(p => stringToPosition(p))
