@@ -78,7 +78,7 @@ object Players {
 
   val allPlayers: List[Player] = mlbDotComPlayers map (_.toPlayer)
 
-  fanduelPlayers.filter(_.mlbPlayerID.isEmpty).foreach { p => throw new Exception(s"WARNING: No MLB player found for FD player $p with alternate name [${p.alternateName}]") }
+  fanduelPlayers.filter(_.mlbPlayerID.isEmpty).foreach { p => log(s"WARNING: No MLB player found for FD player $p with alternate name [${p.alternateName}]") }
 
   val playersByID: Map[MLBPlayerID, Player] = allPlayers.map { p => (p.id, p) }.toMap
 
