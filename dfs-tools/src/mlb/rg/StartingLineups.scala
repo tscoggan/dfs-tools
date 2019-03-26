@@ -30,7 +30,7 @@ import scala.annotation.tailrec
  * 4 Lucas Duda 1B L  0
  * 5 Paulo Orlando OF R  0
  * 6 Jorge Soler OF R  0
- * 7 Alex Gordon OF L  0
+ * 7 "Tommy La" Stella OF L  0    <--- Use double quotes if names contain spaces
  * 8 Alcides Escobar SS R  0
  * 9 Drew Butera C R  0
  * P Ian Kennedy                  <--- Add this line if pitcher isn't found because he's only on DK and isn't batting
