@@ -58,7 +58,6 @@ object Configs {
   val dfsSalaryFileDir: String = conf.getString("dfs_salary_file_dir")
 
   val projectionsHistoryDir: String = conf.getString("projections_history_dir")
-  val projectionsHistorySite: String = conf.getString("projections_history_site").trim.toUpperCase // should be "FD" or "DK"
 
   val dfsScoringSystem: DFSScoringSystem = conf.getString("dfs_scoring_system") match {
     case "FanDuel MLB"    => FanDuelMLB

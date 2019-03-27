@@ -16,30 +16,32 @@ object Draftbook extends App {
   import mlb.StatsSinceStartOfLastSeason.stats._
   mlb.StatsSinceStartOfLastSeason.stats.logSummary
 
-  val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}_${Configs.projectionsHistorySite}.csv"
-  log("Saving projections to file: " + projectionsFile)
-  val header = "Player ID, Player Name, Projected FPTS (FD), Position (FD), Salary (FD), Team"
-  val projections = {
-    startingHitterStats.flatMap {
-      case (p, stats) => Configs.projectionsHistorySite match {
-        case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
-        case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
-        case other =>
-          log("ERROR: Invalid 'projections_site' config value: " + other)
-          None
-      }
-    }.toList ++
-      startingPitcherStats.flatMap {
-        case (p, stats) => Configs.projectionsHistorySite match {
+  List("FD", "DK").foreach { site =>
+    val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}_${site}.csv"
+    log("Saving projections to file: " + projectionsFile)
+    val header = s"Player ID, Player Name, Projected FPTS (${site}), Position (${site}), Salary (${site}), Team"
+    val projections = {
+      startingHitterStats.flatMap {
+        case (p, stats) => site match {
           case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
           case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
           case other =>
-            log("ERROR: Invalid 'projections_site' config value: " + other)
+            log("ERROR: Invalid projections site: " + other)
             None
         }
-      }.toList
+      }.toList ++
+        startingPitcherStats.flatMap {
+          case (p, stats) => site match {
+            case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
+            case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
+            case other =>
+              log("ERROR: Invalid projections site: " + other)
+              None
+          }
+        }.toList
+    }
+    FileUtils.writeLinesToFile(header :: projections, projectionsFile, true)
   }
-  FileUtils.writeLinesToFile(header :: projections, projectionsFile, true)
 
   log("\n**************************************************")
   log("*** All starters ***")

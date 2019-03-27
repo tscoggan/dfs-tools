@@ -26,7 +26,7 @@ object Game_MLB {
   }
 
   lazy val gamesSinceStartOfLastSeason: List[Game] = {
-    log(s"Loading MLB games from ${Configs.MlbDotCom.lastSeasonStartDate} to ${yesterday.print()}")
+    log(s"Loading MLB games from ${Configs.MlbDotCom.lastSeasonStartDate.print()} to ${yesterday.print()}")
     loadGamesForDateRange(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++ // last season
       loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday) // current season
   }
@@ -114,7 +114,7 @@ object Game_MLB {
 
       (lineScoreXML \ "@status").text match {
         case "Postponed" | "Suspended" | "Cancelled" => None
-        case "In Progress"             => throw new Exception(s"Tried to load 'In Progress' game from file --- need to re-load from URL: " + gameDirectory)
+        case "In Progress"                           => throw new Exception(s"Tried to load 'In Progress' game from file --- need to re-load from URL: " + gameDirectory)
         case "Final" | "Completed Early" | "Completed Early: Rain" => {
           val eventsXML = XML.loadFile(eventsFileName)
           val boxScoreXML = XML.loadFile(boxScoreFileName)
