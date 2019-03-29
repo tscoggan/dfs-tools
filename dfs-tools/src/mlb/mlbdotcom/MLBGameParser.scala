@@ -228,7 +228,9 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Batter Interference" =>
                 if (description.contains("strikes out") || description.contains("called out on strikes")) hitter.addStrikeoutAgainst(pitcher)
               case "Bunt Groundout" | "Bunt Lineout" | "Bunt Pop Out" | "Fielders Choice" | "Fielders Choice Out"
-                | "Flyout" | "Forceout" | "Groundout" | "Lineout" | "Pop Out" | "Sac Bunt" | "Sac Fly" =>
+                | "Flyout" | "Forceout" | "Groundout" | "Lineout" | "Pop Out" | "Sac Bunt" | "Sac Fly"
+                | "Caught Stealing 2B" | "Caught Stealing 3B" | "Caught Stealing Home" | "Pickoff 1B"
+                | "Pickoff 2B" | "Pickoff 3B" | "Pickoff Caught Stealing 2B" | "Pickoff Caught Stealing 3B" | "Pickoff Caught Stealing Home" =>
               case "Catcher Interference" =>
               case "Double" =>
                 hitter.addDoubleAgainst(pitcher)
