@@ -6,6 +6,7 @@ import model._
 import utils.Logger._
 import utils.StringUtils._
 import utils.DoubleUtils._
+import utils.DateTimeUtils._
 import java.util.Date
 
 object Configs {
@@ -30,6 +31,8 @@ object Configs {
 
     val runSanityChecks: Boolean = conf.getBoolean("run_sanity_checks")
     if (runSanityChecks) log("#### Running MLB.com sanity checks ####")
+    
+    val ignoreSanityChecksForDates: List[Date] = conf.getStringList("ignore_sanity_checks_for_dates").map(_.toDate("yyyy-MM-dd").trimTime).toList
   }
 
   object Rotogrinders {

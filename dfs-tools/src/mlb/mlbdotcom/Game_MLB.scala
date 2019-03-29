@@ -37,7 +37,8 @@ object Game_MLB {
       val gameDirs = getSubdirectories(dayDir)
       log(s"Found ${gameDirs.length} games for ${date.print()}")
       if (Configs.MlbDotCom.runSanityChecks || date.trimTime == yesterday.trimTime || date.trimTime == today.trimTime) {
-        if (getGameURLs(date).length != gameDirs.length) throw new Exception(s"Should have found ${getGameURLs(date).length} games for ${date.print()}")
+        if (!Configs.MlbDotCom.ignoreSanityChecksForDates.contains(date.trimTime) &&
+          getGameURLs(date).length != gameDirs.length) throw new Exception(s"Should have found ${getGameURLs(date).length} games for ${date.print()}")
         else log("...correct # of games")
       }
       gameDirs.flatMap { dir => loadGameFromFile(dir.toString) }
