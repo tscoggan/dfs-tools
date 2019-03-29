@@ -66,6 +66,9 @@ object Draftbook extends App {
       }"
   }.mkString("\n"))
 
+  val teamsWithMissingStarters = startingHittersByTeam.filter { case (team, hitters) => hitters.length < 8 }.map(_._1)
+  if (teamsWithMissingStarters.nonEmpty) throw new Exception(teamsWithMissingStarters.mkString(", ") + " don't have enough starting hitters --- try deleting 0's from FD \"Batting Order\" column in Excel")
+
   log("\n**************************************************")
   log("*** Hitter stacks ***")
   log("**************************************************\n")

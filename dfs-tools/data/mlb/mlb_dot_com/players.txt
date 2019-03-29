@@ -117,7 +117,7 @@
 425769|Alfonzo|Eliezer|R|R|LAD|C
 425772|Mathis|Jeff|R|R|TEX|C
 425783|Choo|Shin-Soo|L|L|TEX|OF
-425784|Rivera|Rene|R|R|SF|C
+425784|Rivera|Rene|R|R|NYM|C
 425786|Atchison|Scott|R|R|MIN|P
 425789|Sweeney|Brian|R|R|SEA|P
 425792|Castro|Ramon|R|R|KC|2B
@@ -230,7 +230,7 @@
 434665|Masset|Nick|R|R|WAS|P
 434668|Delcarmen|Manny|R|R|WAS|P
 434669|Mendoza|Luis|R|R|KC|P
-434670|Ramirez|Hanley|R|R|CLE|SS
+434670|Ramirez|Hanley|R|R|CLE|1B
 434671|Sanchez|Anibal|R|R|WAS|P
 434672|Smith|Chris|R|R|OAK|P
 434678|Davies|Kyle|R|R|NYY|P
@@ -238,7 +238,7 @@
 434682|Hernandez|Luis|S|R|KC|SS
 434704|Young|Delwyn|S|R|WAS|OF
 434718|Street|Huston|R|R|LAA|P
-434778|Morales|Kendrys|S|R|TOR|DH
+434778|Morales|Kendrys|S|R|OAK|DH
 434884|Rowland-Smith|Ryan|L|L|CIN|P
 435038|Hernandez|Anderson|S|R|PIT|2B
 435041|Quentin|Carlos|R|R|BOS|OF
@@ -266,7 +266,7 @@
 435559|Suzuki|Kurt|R|R|WAS|C
 435560|Quintanilla|Omar|L|R|COL|SS
 435619|Misch|Pat|R|L|MIL|P
-435622|Desmond|Ian|R|R|COL|1B
+435622|Desmond|Ian|R|R|COL|OF
 435623|Frandsen|Kevin|R|R|SF|3B
 435624|Bowker|John|L|L|SF|1B
 436913|Decaster|Yurendell|R|R|WAS|3B
@@ -507,7 +507,7 @@
 453974|Marson|Lou|R|R|LAA|C
 454560|Ellis|A.J.|R|R|SD|C
 454972|Sanchez|Romulo|R|R|LAD|P
-454975|Iribarren|Hernan|L|R|CIN|1B
+454975|Iribarren|Hernan|L|R|CIN|2B
 454998|Carson|Matt|R|R|OAK|OF
 455009|Broxton|Jonathan|R|R|STL|P
 455077|Carp|Mike|L|R|BAL|1B
@@ -826,7 +826,7 @@
 476601|Bowden|Michael|R|R|MIN|P
 476633|Parmelee|Chris|L|L|LAD|1B
 476704|Lowrie|Jed|S|R|NYM|2B
-476883|Alvarez|Pedro|L|R|MIA|1B
+476883|Alvarez|Pedro|L|R|MIA|3B
 477003|Niese|Jonathon|L|L|TEX|P
 477054|Robinson|Trayvon|S|R|PIT|OF
 477132|Kershaw|Clayton|L|L|LAD|P
@@ -953,7 +953,7 @@
 501625|Alvarez|Jose|L|L|PHI|P
 501627|Cabral|Cesar|L|L|BOS|P
 501638|Viola|Pedro|R|L|OAK|P
-501647|Rosario|Wilin|R|R|MIN|1B
+501647|Rosario|Wilin|R|R|MIN|C
 501659|Almonte|Abraham|S|R|ARI|OF
 501660|Almonte|Zoilo|S|R|ATL|OF
 501697|Marinez|Jhan|R|R|BAL|P
@@ -1048,7 +1048,7 @@
 502457|Hayes|Drew|R|R|CIN|P
 502462|Kelly|Ryan|R|R|SEA|P
 502481|Dyson|Jarrod|L|R|ARI|OF
-502517|Murphy|Daniel|L|R|COL|2B
+502517|Murphy|Daniel|L|R|COL|1B
 502522|Miller|Justin|R|R|WAS|P
 502523|O'Malley|Shawn|S|R|COL|SS
 502544|Buss|Nick|L|R|MIN|OF
@@ -1067,7 +1067,7 @@
 503437|Beresford|James|L|R|MIN|2B
 503444|De La Cruz|Joel|R|R|ATL|P
 503449|Peralta|Wily|R|R|KC|P
-503556|Gonzalez|Marwin|S|R|MIN|OF
+503556|Gonzalez|Marwin|S|R|MIN|3B
 503566|Castillo|Fabio|R|R|LAD|P
 503569|Dolis|Rafael|R|R|DET|P
 504083|Rondon|Jorge|R|R|CWS|P
@@ -1405,7 +1405,7 @@
 543294|Hendricks|Kyle|R|R|CHC|P
 543302|Herrmann|Chris|L|R|OAK|C
 543305|Hicks|Aaron|S|R|NYY|OF
-543308|Hicks|John|R|R|DET|1B
+543308|Hicks|John|R|R|DET|C
 543309|Higashioka|Kyle|R|R|NYY|C
 543321|Hoes|L.J.|R|R|BAL|OF
 543328|Holman|David|R|R|COL|P
@@ -1552,7 +1552,7 @@
 547874|Iwakuma|Hisashi|R|R|SEA|P
 547887|Tanaka|Kensuke|L|R|TEX|OF
 547888|Tanaka|Masahiro|R|R|NYY|P
-547912|Ngoepe|Gift|R|R|PHI|3B
+547912|Ngoepe|Gift|R|R|PHI|2B
 547939|Lim|Chang-Yong|R|R|CHC|P
 547943|Ryu|Hyun-Jin|R|L|LAD|P
 547957|Kim|Hyun Soo|L|R|PHI|OF
@@ -1574,7 +1574,7 @@
 553883|Campos|Vicente|R|R|PIT|P
 553902|Astudillo|Willians|R|R|MIN|C
 553970|Nesbitt|Angel|R|R|DET|P
-553988|Machado|Dixon|R|R|MIA|SS
+553988|Machado|Dixon|R|R|MIA|2B
 553993|Suarez|Eugenio|R|R|CIN|3B
 554054|Gonzalez|Alfredo|R|R|CWS|C
 554234|Perez|Williams|R|R|STL|P
@@ -1628,7 +1628,7 @@
 571578|Corbin|Patrick|L|L|WAS|P
 571584|Cotham|Caleb|R|R|CIN|P
 571595|Cuevas|Noel|R|R|COL|OF
-571602|Davidson|Matt|R|R|TEX|1B
+571602|Davidson|Matt|R|R|TEX|DH
 571616|Dermody|Matt|R|L|TOR|P
 571656|Farmer|Buck|L|R|DET|P
 571657|Farmer|Kyle|R|R|CIN|C
@@ -1643,7 +1643,7 @@
 571697|Gennett|Scooter|L|R|CIN|2B
 571704|Giles|Ken|R|R|TOR|P
 571710|Givens|Mychal|R|R|BAL|P
-571718|Goodwin|Brian|L|R|KC|OF
+571718|Goodwin|Brian|L|R|LAA|OF
 571727|Griggs|Scott|R|R|COL|P
 571735|Hale|David|R|R|NYY|P
 571740|Hamilton|Billy|S|R|KC|OF
@@ -1893,7 +1893,7 @@
 592665|Reed|Addison|L|R|MIN|P
 592669|Renfroe|Hunter|R|R|SD|OF
 592677|Riefenhauser|C.J.|L|L|HOU|P
-592680|Rivera|Yadiel|R|R|MIA|3B
+592680|Rivera|Yadiel|R|R|MIA|SS
 592685|Robinson|Drew|L|R|STL|3B
 592696|Rosario|Eddie|L|R|MIN|OF
 592705|Rumbelow|Nick|R|R|SEA|P
@@ -1955,7 +1955,7 @@
 593604|Baldonado|Alberto|L|L|CHC|P
 593619|Tapia|Domingo|R|R|BOS|P
 593643|Alberto|Hanser|R|R|BAL|SS
-593647|Brito|Socrates|L|L|ARI|OF
+593647|Brito|Socrates|L|L|SD|OF
 593679|Ynoa|Gabriel|R|R|BAL|P
 593700|Hanson|Alen|S|R|SF|2B
 593833|Suero|Wander|R|R|WAS|P
@@ -2183,7 +2183,7 @@
 605439|Reed|Michael|R|R|SF|OF
 605441|Rios|Yacksel|R|R|PHI|P
 605446|Rodriguez|Dereck|R|R|SF|P
-605447|Romano|Jordan|R|R|TEX|P
+605447|Romano|Jordan|R|R|TOR|P
 605452|Ross|Joe|R|R|WAS|P
 605463|Scott|Tayler|R|R|SEA|P
 605469|Shepherd|Chandler|R|R|BOS|P
@@ -2201,7 +2201,7 @@
 605501|Tarpley|Stephen|R|L|NYY|P
 605507|Thompson|Zach|R|R|CWS|P
 605508|Tilson|Charlie|L|L|CWS|OF
-605509|Tomlinson|Kelby|R|R|ARI|SS
+605509|Tomlinson|Kelby|R|R|ARI|2B
 605512|Tucker|Preston|L|L|CWS|OF
 605513|Turnbull|Spencer|R|R|DET|P
 605520|Walding|Mitch|L|R|PHI|3B
@@ -2351,9 +2351,9 @@
 608685|Marzilli|Evan|L|L|CHC|OF
 608686|Mayfield|Jack|R|R|HOU|2B
 608700|Plawecki|Kevin|R|R|CLE|C
-608701|Refsnyder|Rob|R|R|ARI|OF
+608701|Refsnyder|Rob|R|R|ARI|2B
 608703|Reynolds|Matt|R|R|WAS|SS
-608715|Stamets|Eric|R|R|CLE|2B
+608715|Stamets|Eric|R|R|CLE|SS
 608716|Steckenrider|Drew|R|R|MIA|P
 608717|Stratton|Chris|R|R|LAA|P
 608718|Suter|Brent|L|L|MIL|P
@@ -2703,7 +2703,7 @@
 641851|McGowin|Kyle|R|R|WAS|P
 641853|McKay|David|R|R|SEA|P
 641856|McKinney|Billy|L|L|TOR|OF
-641857|McMahon|Ryan|L|R|COL|1B
+641857|McMahon|Ryan|L|R|COL|2B
 641871|Middleton|Keynan|R|R|LAA|P
 641889|Moats|Dalton|L|L|TB|P
 641907|Murphy|Patrick|R|R|TOR|P
@@ -2759,7 +2759,7 @@
 642547|Peralta|Freddy|R|R|MIL|P
 642558|Jurado|Ariel|R|R|TEX|P
 642564|Martes|Francis|R|R|HOU|P
-642571|Gonzalez|Merandy|R|R|SF|P
+642571|Gonzalez|Merandy|R|R|STL|P
 642584|Kilome|Franklyn|R|R|NYM|P
 642601|De La Cruz|Oscar|R|R|CHC|P
 642607|Agrazal|Dario|R|R|PIT|P
@@ -2899,10 +2899,10 @@
 656550|Holmes|Grant|L|R|OAK|P
 656555|Hoskins|Rhys|R|R|PHI|1B
 656577|Jackson|Alex|R|R|ATL|C
-656582|Joe|Connor|R|R|SF|3B
+656582|Joe|Connor|R|R|SF|OF
 656605|Keller|Mitch|R|R|PIT|P
 656629|Kopech|Michael|R|R|CWS|P
-656661|Lopez|Jose|R|R|SF|P
+656661|Lopez|Jose|R|R|CIN|P
 656669|Luplow|Jordan|R|R|CLE|OF
 656685|Martin|Brett|L|L|TEX|P
 656686|Martin|Corbin|R|R|HOU|P
@@ -2941,7 +2941,7 @@
 657061|Tucker|Cole|S|R|PIT|SS
 657077|Verdugo|Alex|L|L|LAD|OF
 657081|Voelker|Paul|R|R|DET|P
-657088|Wall|Forrest|L|R|TOR|OF
+657088|Wall|Forrest|L|R|TOR|2B
 657097|Webb|Jacob|R|R|ATL|P
 657108|White|Evan|R|L|SEA|1B
 657117|Williams|Austen|R|R|WAS|P
@@ -3009,13 +3009,13 @@
 661536|Adon|Melvin|R|R|SF|P
 662139|Varsho|Daulton|L|R|ARI|C
 663319|Brooks|Craig|R|R|CHC|P
-663330|Jones|Jahmai|R|R|LAA|2B
+663330|Jones|Jahmai|R|R|LAA|OF
 663399|Waddell|Brandon|L|L|PIT|P
 663411|McCarthy|Joe|L|L|TB|OF
 663423|Thornton|Trent|R|R|TOR|P
 663432|Rainey|Tanner|R|R|WAS|P
 663465|Allard|Kolby|L|L|ATL|P
-663527|Nevin|Tyler|R|R|COL|1B
+663527|Nevin|Tyler|R|R|COL|3B
 663531|Allen|Logan|R|L|SD|P
 663541|Dodson|Tanner|S|R|TB|OF
 663554|Mize|Casey|R|R|DET|P
@@ -3023,7 +3023,7 @@
 663574|Santillan|Tony|R|R|CIN|P
 663586|Riley|Austin|R|R|ATL|3B
 663611|Madrigal|Nick|R|R|CWS|SS
-663624|Mountcastle|Ryan|R|R|BAL|3B
+663624|Mountcastle|Ryan|R|R|BAL|SS
 663630|McKenna|Ryan|R|R|BAL|OF
 663647|Hayes|Ke'Bryan|R|R|PIT|3B
 663656|Tucker|Kyle|L|R|HOU|OF
@@ -3125,7 +3125,7 @@
 666560|Park|ByungHo|R|R|MIN|DH
 666561|Hwang|Jae-Gyun|R|R|SF|3B
 666783|Diaz|Yusniel|R|R|BAL|OF
-666784|Estevez|Omar|R|R|LAD|SS
+666784|Estevez|Omar|R|R|LAD|2B
 666915|Dalbec|Bobby|R|R|BOS|3B
 666969|Garcia|Adolis|R|R|STL|OF
 666971|Gurriel Jr.|Lourdes|R|R|TOR|2B
@@ -3163,13 +3163,13 @@
 669257|Smith|Will|R|R|LAD|C
 669276|Lee|Dylan|L|L|MIA|P
 669288|Johnson|Daniel|L|L|CLE|OF
-669289|Espinal|Santiago|R|R|TOR|SS
+669289|Espinal|Santiago|R|R|TOR|2B
 669374|Hiura|Keston|R|R|MIL|2B
 669424|Lambert|Jimmy|R|R|CWS|P
 669456|Bieber|Shane|R|R|CLE|P
 669720|Hays|Austin|R|R|BAL|OF
 669728|Mekkes|Dakota|R|R|CHC|P
-669738|Noll|Jake|R|R|WAS|2B
+669738|Noll|Jake|R|R|WAS|3B
 669746|Eveld|Tommy|R|R|MIA|P
 669916|Nolan|Nate|R|R|CWS|C
 669947|Scholtens|Jesse|R|R|SD|P
@@ -3188,7 +3188,7 @@
 670394|Gold|Ryan|L|R|TOR|C
 670426|Diehl|Phillip|L|L|COL|P
 670443|Anderson|Jack|R|R|SEA|P
-670541|Alvarez|Yordan|L|R|HOU|OF
+670541|Alvarez|Yordan|L|R|HOU|1B
 670712|Brosseau|Michael|R|R|TB|3B
 670768|Gonzalez|Luis|L|L|CWS|OF
 670770|Friedl|TJ|L|L|CIN|OF
@@ -3218,4 +3218,4 @@
 680769|Alexander|CJ|L|R|ATL|3B
 681615|Liberato|Johan|L|L|COL|OF
 681944|Nevarez|Dean|R|R|SEA|C
-682162|Johnson|Kaleo|R|R|TB|IF
+682162|Johnson|Kaleo|R|R|TB|3B
