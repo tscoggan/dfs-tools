@@ -234,9 +234,9 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Catcher Interference" =>
               case "Double" =>
                 hitter.addDoubleAgainst(pitcher)
-              case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Sacrifice Bunt DP" | "Triple Play"
-                | "Base Running Double Play" => // outs already recorded --- do nothing
-              case "Fan interference" =>
+              case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Sacrifice Bunt DP" | "Triple Play" | "Strikeout Double Play"
+                | "Base Running Double Play" | "Sac Bunt Double Play" => // outs already recorded --- do nothing
+              case "Fan interference" | "Fan Interference" =>
                 if (description.contains(s"${playerDisplayNames(hitter.playerID)} singles")) hitter.addSingleAgainst(pitcher)
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} doubles")) hitter.addDoubleAgainst(pitcher)
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} triples")) hitter.addTripleAgainst(pitcher)
@@ -253,7 +253,8 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Strikeout" | "Strikeout - DP" => hitter.addStrikeoutAgainst(pitcher)
               case "Triple" =>
                 hitter.addTripleAgainst(pitcher)
-              case _ => throw new Exception("Unknown event: " + event)
+              case "Wild Pitch" => // do nothing
+              case _            => throw new Exception("Unknown event: " + event)
             }
 
             hitter.addRBIAgainst(pitcher, rbi)
@@ -275,35 +276,38 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
             }
 
             event match {
-              case "Balk"                     => //???
-              case "Caught Stealing 2B"       => //???
-              case "Caught Stealing 3B"       => //???
-              case "Caught Stealing Home"     => //???
-              case "Defensive Indiff"         => //???
-              case "Defensive Sub"            => //???
-              case "Defensive Switch"         => //???
-              case "Ejection"                 => //???
-              case "Error"                    => //???
-              case "Game Advisory"            => //???
-              case "Manager Review"           => //???
-              case "Offensive Sub"            => //???
-              case "Passed Ball"              => //???
-              case "Picked off stealing 2B"   => //???
-              case "Picked off stealing 3B"   => //???
-              case "Picked off stealing home" => //???
-              case "Pickoff 1B"               => //???
-              case "Pickoff 2B"               => //???
-              case "Pickoff 3B"               => //???
-              case "Pickoff Attempt 1B"       => //???
-              case "Pickoff Attempt 2B"       => //???
-              case "Pickoff Attempt 3B"       => //???
-              case "Pickoff Error 1B"         => //???
-              case "Pickoff Error 2B"         => //???
-              case "Pickoff Error 3B"         => //???
-              case "Pitching Substitution"    => //???
-              case "Player Injured"           => //???
-              case "Runner Advance"           => //???
-              case "Runner Out"               => //???
+              case "Balk"                         => //???
+              case "Caught Stealing 2B"           => //???
+              case "Caught Stealing 3B"           => //???
+              case "Caught Stealing Home"         => //???
+              case "Defensive Indiff"             => //???
+              case "Defensive Sub"                => //???
+              case "Defensive Switch"             => //???
+              case "Ejection"                     => //???
+              case "Error"                        => //???
+              case "Game Advisory"                => //???
+              case "Manager Review"               => //???
+              case "Offensive Sub"                => //???
+              case "Passed Ball"                  => //???
+              case "Picked off stealing 2B"       => //???
+              case "Picked off stealing 3B"       => //???
+              case "Picked off stealing home"     => //???
+              case "Pickoff Caught Stealing 2B"   => //???
+              case "Pickoff Caught Stealing 3B"   => //???
+              case "Pickoff Caught Stealing home" => //???
+              case "Pickoff 1B"                   => //???
+              case "Pickoff 2B"                   => //???
+              case "Pickoff 3B"                   => //???
+              case "Pickoff Attempt 1B"           => //???
+              case "Pickoff Attempt 2B"           => //???
+              case "Pickoff Attempt 3B"           => //???
+              case "Pickoff Error 1B"             => //???
+              case "Pickoff Error 2B"             => //???
+              case "Pickoff Error 3B"             => //???
+              case "Pitching Substitution"        => //???
+              case "Player Injured"               => //???
+              case "Runner Advance"               => //???
+              case "Runner Out"                   => //???
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
                 namesOfPlayersWhoStoleBase(description).map {
                   case (playerDisplayName, stoleHome) =>
@@ -325,6 +329,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Pitcher Switch"           => //???
               case "Base Running Double Play" => //???
               case "Offensive Substitution"   => //???
+              case "Injury"                   => //???
               case _                          => throw new Exception("Unknown event: " + event)
             }
           }
@@ -359,7 +364,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
     //logDebug("### namesOfPlayersWhoStoleBase --- \n\tplay: "+play)
     def next(play: String, playerNames: List[(String, Boolean)]): List[(String, Boolean)] = play.contains("steals") match {
       case true =>
-        val playerName = play.substringBefore("steals").substringAfterLast(",").trim.substringAfterLast("  ")
+        val playerName = play.substringBefore("steals").substringAfterLast(",").substringAfterLast(":").trim.substringAfterLast("  ")
         //logDebug("\tplayer: "+playerName)
         val remainingPlay = play.substringAfter("steals")
         val stoleHome: Boolean = play.substringAfter("steals").substringBefore("  ").contains("home")

@@ -283,7 +283,7 @@ object Draftbook extends App {
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
-  log(s"\n${toHeader(3, "DraftKings – midrange hitters ($3000 to $4000)")}\n")
+  log(s"\n${toHeader(3, "DraftKings – midrange hitters ($3500 to $4000)")}\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     midrangeHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
@@ -294,7 +294,7 @@ object Draftbook extends App {
           List(p.toString_DK, p.draftkings.map(dk => "$" + dk.salary).get, stats.opposingPitcher, stats.projFptsDK.get.rounded(2), stats.projValueDK.get.rounded(2))
       }))
 
-  log(s"\n${toHeader(3, "DraftKings – cheap hitters (less than $3000)")}\n")
+  log(s"\n${toHeader(3, "DraftKings – cheap hitters (less than $3500)")}\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     cheapHitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projValueDK).nonEmpty)
