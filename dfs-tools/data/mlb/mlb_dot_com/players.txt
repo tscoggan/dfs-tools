@@ -1029,7 +1029,7 @@
 502211|Bolsinger|Mike|R|R|TOR|P
 502212|Bibens-Dirkx|Austin|R|R|TEX|P
 502213|Ashley|Nevin|R|R|SEA|C
-502226|Gentry|Craig|R|R|SF|OF
+502226|Gentry|Craig|R|R|COL|OF
 502229|White|Alex|R|R|ATL|P
 502239|Cahill|Trevor|R|R|LAA|P
 502249|Anderson|Lars|L|L|LAD|1B
@@ -1321,7 +1321,7 @@
 542369|Cabrera|Edwar|L|L|HOU|P
 542432|Ramirez|Jose|R|R|ATL|P
 542436|Adames|Cristhian|S|R|CHC|SS
-542454|Santana|Danny|S|R|TEX|SS
+542454|Santana|Danny|S|R|TEX|2B
 542455|Arcia|Oswaldo|L|R|ARI|OF
 542513|Telis|Tomas|S|R|MIN|C
 542583|Aguilar|Jesus|R|R|MIL|1B
@@ -1638,7 +1638,7 @@
 571666|Fiers|Mike|R|R|OAK|P
 571670|Floro|Dylan|L|R|LAD|P
 571676|Frankoff|Seth|R|R|SEA|P
-571679|Freitas|David|R|R|SEA|C
+571679|Freitas|David|R|R|MIL|C
 571681|Fuentes|Rey|L|L|ARI|OF
 571685|Garcia|Anthony|R|R|SF|OF
 571687|Gardeck|Ian|R|R|TB|P
@@ -2903,7 +2903,7 @@
 656550|Holmes|Grant|L|R|OAK|P
 656555|Hoskins|Rhys|R|R|PHI|1B
 656577|Jackson|Alex|R|R|ATL|C
-656582|Joe|Connor|R|R|SF|OF
+656582|Joe|Connor|R|R|SF|3B
 656605|Keller|Mitch|R|R|PIT|P
 656629|Kopech|Michael|R|R|CWS|P
 656661|Lopez|Jose|R|R|CIN|P
