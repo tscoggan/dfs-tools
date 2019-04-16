@@ -114,6 +114,7 @@
 425646|Ayala|Luis|R|R|TOR|P
 425656|Ledezma|Wilfredo|L|L|MIN|P
 425661|Paulino|Ronny|R|R|DET|C
+425766|Loney|James|L|L|ATL|1B
 425769|Alfonzo|Eliezer|R|R|LAD|C
 425772|Mathis|Jeff|R|R|TEX|C
 425783|Choo|Shin-Soo|L|L|TEX|OF

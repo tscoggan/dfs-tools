@@ -309,7 +309,7 @@ object Draftbook extends App {
   log("*** Top projected hitters - FD ***")
   log("**************************************************\n")
 
-  log("\n### Top 10 hitters ranked by projected FPTS (FanDuel): ###\n")
+  log(s"\n${toHeader(3, "Top 10 hitters ranked by projected FPTS (FanDuel)")}\n")
   log(toTable(
     List("Hitter", "FD Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     hitters_FD.filter(p => startingHitterStats.get(p).flatMap(_.projFptsFD).nonEmpty)
@@ -320,7 +320,7 @@ object Draftbook extends App {
           List(p.toString_FD, p.fanduel.map(fd => "$" + fd.salary).get, stats.opposingPitcher, stats.projFptsFD.get.rounded(2), stats.projValueFD.get.rounded(2))
       }))
 
-  log("\n### Top 10 hitters ranked by projected FPTS (DraftKings): ###\n")
+  log(s"\n${toHeader(3, "Top 10 hitters ranked by projected FPTS (DraftKings)")}\n")
   log(toTable(
     List("Hitter", "DK Salary", "Opposing Pitcher", "Projected FPTS", "Value"),
     hitters_DK.filter(p => startingHitterStats.get(p).flatMap(_.projFptsDK).nonEmpty)
