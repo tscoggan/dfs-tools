@@ -235,7 +235,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Double" =>
                 hitter.addDoubleAgainst(pitcher)
               case "Double Play" | "Grounded Into DP" | "Sac Fly DP" | "Sacrifice Bunt DP" | "Triple Play" | "Strikeout Double Play"
-                | "Base Running Double Play" | "Sac Bunt Double Play" => // outs already recorded --- do nothing
+                | "Base Running Double Play" | "Sac Bunt Double Play" | "Sac Fly Double Play" | "Runner Double Play" => // outs already recorded --- do nothing
               case "Fan interference" | "Fan Interference" =>
                 if (description.contains(s"${playerDisplayNames(hitter.playerID)} singles")) hitter.addSingleAgainst(pitcher)
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} doubles")) hitter.addDoubleAgainst(pitcher)
