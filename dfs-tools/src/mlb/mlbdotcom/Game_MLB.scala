@@ -25,9 +25,18 @@ object Game_MLB {
     loadGamesForDateRange(oneYearAgo, Configs.MlbDotCom.lastSeasonEndDate) ++ loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday)
   }
 
+  // past 1+ seasons
   lazy val gamesSinceStartOfLastSeason: List[Game] = {
     log(s"Loading MLB games from ${Configs.MlbDotCom.lastSeasonStartDate.print()} to ${yesterday.print()}")
     loadGamesForDateRange(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++ // last season
+      loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday) // current season
+  }
+
+  // past 2+ seasons
+  lazy val gamesSinceStartOfSeasonBeforeLast: List[Game] = {
+    log(s"Loading MLB games from ${Configs.MlbDotCom.previousSeasonStartDate.print()} to ${yesterday.print()}")
+    loadGamesForDateRange(Configs.MlbDotCom.previousSeasonStartDate, Configs.MlbDotCom.previousSeasonEndDate) ++ // season before last
+      loadGamesForDateRange(Configs.MlbDotCom.lastSeasonStartDate, Configs.MlbDotCom.lastSeasonEndDate) ++ // last season
       loadGamesForDateRange(Configs.MlbDotCom.seasonStartDate, yesterday) // current season
   }
 

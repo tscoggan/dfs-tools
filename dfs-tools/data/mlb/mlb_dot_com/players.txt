@@ -932,7 +932,7 @@
 460265|Sowers|Jeremy|L|L|CLE|P
 460267|Boggs|Brandon|S|R|ATL|OF
 460269|Gimenez|Chris|R|R|MIN|C
-460283|Blevins|Jerry|L|L|OAK|P
+460283|Blevins|Jerry|L|L|ATL|P
 460322|Richardson|Antoan|S|R|LAD|OF
 460349|Rosa|Carlos|R|R|ARI|P
 460370|Perez|Rafael|L|L|SEA|P
@@ -950,7 +950,7 @@
 461334|Braun|Ryan|R|R|LAA|P
 461377|Musser|Neal|L|L|NYM|P
 461766|Arredondo|Jose|R|R|CIN|P
-461829|Gonzalez|Gio|R|L|NYY|P
+461829|Gonzalez|Gio|R|L|MIL|P
 461833|Hughes|Phil|R|R|SD|P
 461848|Miller|Jim|R|R|MIN|P
 461856|Patton|Troy|S|L|MIA|P
@@ -1103,7 +1103,7 @@
 476589|Warren|Adam|R|R|SD|P
 476594|Stock|Robert|L|R|SD|P
 476595|Luetge|Lucas|L|L|ARI|P
-476601|Bowden|Michael|R|R|MIN|P
+476601|Bowden|Michael|R|R|LAD|P
 476633|Parmelee|Chris|L|L|LAD|1B
 476704|Lowrie|Jed|S|R|NYM|2B
 476883|Alvarez|Pedro|L|R|MIA|3B
@@ -1527,7 +1527,7 @@
 519168|Ranaudo|Anthony|R|R|CWS|P
 519169|Rasmussen|Rob|R|L|LAA|P
 519175|Reed|Evan|R|R|DET|P
-519184|Revere|Ben|L|R|TEX|OF
+519184|Revere|Ben|L|R|TOR|OF
 519186|Reynolds|Matt|L|L|SF|P
 519203|Rizzo|Anthony|L|L|CHC|1B
 519208|Robinson|Clint|L|L|WAS|1B
@@ -1639,7 +1639,7 @@
 542882|Andriese|Matt|R|R|ARI|P
 542883|Anna|Dean|L|R|MIN|SS
 542884|Antolin|Dustin|R|R|CWS|P
-542888|Armstrong|Shawn|R|R|SEA|P
+542888|Armstrong|Shawn|R|R|BAL|P
 542897|Avery|Xavier|L|L|ATL|OF
 542908|Bandy|Jett|R|R|TEX|C
 542914|Bass|Anthony|R|R|CIN|P
@@ -1924,7 +1924,7 @@
 571467|Baron|Steven|R|R|PIT|C
 571473|Baumann|Buddy|L|L|NYM|P
 571476|Beck|Chris|R|R|STL|P
-571479|Bellatti|Andrew|R|R|BAL|P
+571479|Bellatti|Andrew|R|R|NYY|P
 571503|Bollinger|Ryan|L|L|SD|P
 571506|Bour|Justin|L|R|LAA|1B
 571510|Boyd|Matthew|L|L|DET|P
@@ -2000,7 +2000,7 @@
 572017|Patterson|Red|R|R|LAD|P
 572019|Paulsen|Ben|L|R|MIN|1B
 572020|Paxton|James|L|L|NYY|P
-572021|Pazos|James|R|L|PHI|P
+572021|Pazos|James|R|L|COL|P
 572033|Phegley|Josh|R|R|OAK|C
 572038|Pinder|Branden|R|R|LAA|P
 572039|Piscotty|Stephen|R|R|OAK|OF
@@ -3222,7 +3222,7 @@
 656725|McRae|Alex|R|R|PIT|P
 656726|McWilliams|Sam|R|R|TB|P
 656727|Medeiros|Kodi|L|L|CWS|P
-656738|Meyer|Ben|R|R|MIA|P
+656738|Meyer|Ben|L|R|MIA|P
 656756|Montgomery|Jordan|L|L|NYY|P
 656762|Morales|Andrew|R|R|STL|P
 656775|Mullins|Cedric|S|L|BAL|OF

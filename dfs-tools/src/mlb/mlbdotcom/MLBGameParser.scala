@@ -308,6 +308,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Pitching Substitution" => //???
               case "Player Injured" => //???
               case "Runner Advance" => //???
+              case "Other Advance" => //???
               case "Runner Out" => //???
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
                 namesOfPlayersWhoStoleBase(description).map {

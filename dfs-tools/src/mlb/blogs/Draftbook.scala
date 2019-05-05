@@ -13,8 +13,8 @@ import mlb.Players._
 
 object Draftbook extends App {
 
-  import mlb.StatsSinceStartOfLastSeason.stats._
-  mlb.StatsSinceStartOfLastSeason.stats.logSummary
+  import mlb.StatsSinceStartOfSeasonBeforeLast.stats._
+  mlb.StatsSinceStartOfSeasonBeforeLast.stats.logSummary
 
   List("FD", "DK").foreach { site =>
     val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}_${site}.csv"

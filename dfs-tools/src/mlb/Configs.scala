@@ -26,6 +26,8 @@ object Configs {
     val seasonStartDate: Date = conf.getString("season_start_date").toDate("yyyy-MM-dd")
     val lastSeasonStartDate: Date = conf.getString("last_season_start_date").toDate("yyyy-MM-dd")
     val lastSeasonEndDate: Date = conf.getString("last_season_end_date").toDate("yyyy-MM-dd")
+    val previousSeasonStartDate: Date = conf.getString("previous_season_start_date").toDate("yyyy-MM-dd")
+    val previousSeasonEndDate: Date = conf.getString("previous_season_end_date").toDate("yyyy-MM-dd")
 
     val dataFileDir: String = conf.getString("data_file_dir")
 
