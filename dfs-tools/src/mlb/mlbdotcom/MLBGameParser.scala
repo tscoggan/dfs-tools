@@ -253,9 +253,10 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Strikeout" | "Strikeout - DP" => hitter.addStrikeoutAgainst(pitcher)
               case "Triple" =>
                 hitter.addTripleAgainst(pitcher)
-              case "Wild Pitch" => // do nothing
-              case ""           => // should only see this for a game that ended before completion
-              case _            => throw new Exception("Unknown event: " + event)
+              case "Wild Pitch"    => // do nothing
+              case "Game Advisory" => // do nothing
+              case ""              => // should only see this for a game that ended before completion
+              case _               => throw new Exception("Unknown event: " + event)
             }
 
             hitter.addRBIAgainst(pitcher, rbi)
