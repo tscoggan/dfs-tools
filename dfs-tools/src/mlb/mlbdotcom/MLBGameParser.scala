@@ -241,7 +241,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} doubles")) hitter.addDoubleAgainst(pitcher)
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} triples")) hitter.addTripleAgainst(pitcher)
                 else if (description.contains(s"${playerDisplayNames(hitter.playerID)} homers")) hitter.addHomeRunAgainst(pitcher)
-              case "Field Error" => // do nothing
+              case "Field Error" | "Pickoff Error 1B" | "Pickoff Error 2B" | "Pickoff Error 3B" => // do nothing
               case "Home Run" =>
                 hitter.addHomeRunAgainst(pitcher)
                 hitter.addRunAgainst(pitcher)
