@@ -613,10 +613,13 @@ case class HistoricalStats(season: Season) {
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.atBatsAgainst).getOrElse(0)
     }
 
+    // accounts for ballpark shift
     val ballparkFactor: Double = p.visitingOrHomeTeam match {
       case Some(vOrH) =>
-        if (vOrH == Home) hitterBallparkFactor_HomeTeam(p.team).forHitter(p)
-        else hitterBallparkFactor_VisitingTeam(p.opponent.get).forHitter(p)
+        if (vOrH == Home)
+          hitterBallparkFactor_HomeTeam(p.team).forHitter(p) / ((1.0 + hitterBallparkFactor_HomeTeam(p.team).forHitter(p)) / 2.0)
+        else
+          hitterBallparkFactor_VisitingTeam(p.opponent.get).forHitter(p) / ((1.0 + hitterBallparkFactor_HomeTeam(p.team).forHitter(p)) / 2.0)
       case None => 1.0
     }
 
