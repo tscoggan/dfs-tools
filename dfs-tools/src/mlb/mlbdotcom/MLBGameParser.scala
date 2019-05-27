@@ -255,6 +255,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
                 hitter.addTripleAgainst(pitcher)
               case "Wild Pitch"    => // do nothing
               case "Game Advisory" => // do nothing
+              case "Passed Ball" => // do nothing
               case ""              => // should only see this for a game that ended before completion
               case _               => throw new Exception("Unknown event: " + event)
             }

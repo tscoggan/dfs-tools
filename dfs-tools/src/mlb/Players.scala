@@ -113,8 +113,8 @@ object Players {
   val midrangeHitters_FD = hitters_FD.filter(p => p.fanduel.map(_.salary).get < 3500 && p.fanduel.map(_.salary).get >= 2500)
   val cheapHitters_FD = hitters_FD.filter(p => p.fanduel.map(_.salary).get < 2500)
 
-  val expensiveHitters_DK = hitters_DK.filter(_.draftkings.map(_.salary).get >= 4000)
-  val midrangeHitters_DK = hitters_DK.filter(p => p.draftkings.map(_.salary).get < 4000 && p.draftkings.map(_.salary).get >= 3500)
+  val expensiveHitters_DK = hitters_DK.filter(_.draftkings.map(_.salary).get >= 4500)
+  val midrangeHitters_DK = hitters_DK.filter(p => p.draftkings.map(_.salary).get < 4500 && p.draftkings.map(_.salary).get >= 3500)
   val cheapHitters_DK = hitters_DK.filter(p => p.draftkings.map(_.salary).get < 3500)
 
   teamsOnSlate.filter(t => !startingPitchers.map(_.team).contains(t)) match {
