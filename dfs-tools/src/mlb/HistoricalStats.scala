@@ -628,9 +628,19 @@ case class HistoricalStats(season: Season) {
     val hitterFptsPerAtBatFD: Option[Double] = season.hitterFptsPerAB_vs_PitcherType(opposingPitcher.throws, p, FanDuelMLB).map(_.fptsPerAB)
     val hitterVsPitcherStatsFD: Option[BatterVsPitcherStats] = season.hitterFptsPerAB_vs_Pitcher(opposingPitcher, p, FanDuelMLB)
     val pitcherFptsPerAtBatAllowedFD: Option[Double] = p.bats match {
-      case Left   => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
-      case Right  => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
-      case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
+      case Left  => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
+      case Right => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD)
+      case Switch =>
+        // use weighted avg of pitcher FPTS/PA against switch hitters and max(righties, lefties) due to small sample sizes vs switch hitters
+        pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map { switchStats =>
+          val rightLeftStats = if (pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD).get >
+            pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_FD).orElse(hitterFptsPerAtBatFD).get) {
+            pitcherStatsAllowedToLefties.get(opposingPitcher).get
+          } else pitcherStatsAllowedToRighties.get(opposingPitcher).get
+
+          weightedAvg((switchStats.fptsPerAtBatAgainst_FD, switchStats.atBatsAgainst),
+            (rightLeftStats.fptsPerAtBatAgainst_FD, rightLeftStats.atBatsAgainst))
+        }
     }
     val bullpenFptsPerAtBatAllowedFD: Double = bullpenStatsAllowedToAllHitters(opposingPitcher.team).fptsPerAtBatAgainst_FD
     val projFptsFD: Option[Double] = hitterFptsPerAtBatFD.map { fptsPerAB =>
@@ -669,9 +679,19 @@ case class HistoricalStats(season: Season) {
     val hitterFptsPerAtBatDK: Option[Double] = season.hitterFptsPerAB_vs_PitcherType(opposingPitcher.throws, p, DraftKingsMLB).map(_.fptsPerAB)
     val hitterVsPitcherStatsDK: Option[BatterVsPitcherStats] = season.hitterFptsPerAB_vs_Pitcher(opposingPitcher, p, DraftKingsMLB)
     val pitcherFptsPerAtBatAllowedDK: Option[Double] = p.bats match {
-      case Left   => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
-      case Right  => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
-      case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
+      case Left  => pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
+      case Right => pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK)
+      case Switch =>
+        // use weighted avg of pitcher FPTS/PA against switch hitters and max(righties, lefties) due to small sample sizes vs switch hitters
+        pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map { switchStats =>
+          val rightLeftStats = if (pitcherStatsAllowedToLefties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK).get >
+            pitcherStatsAllowedToRighties.get(opposingPitcher).map(_.fptsPerAtBatAgainst_DK).orElse(hitterFptsPerAtBatDK).get) {
+            pitcherStatsAllowedToLefties.get(opposingPitcher).get
+          } else pitcherStatsAllowedToRighties.get(opposingPitcher).get
+
+          weightedAvg((switchStats.fptsPerAtBatAgainst_DK, switchStats.atBatsAgainst),
+            (rightLeftStats.fptsPerAtBatAgainst_DK, rightLeftStats.atBatsAgainst))
+        }
     }
     val bullpenFptsPerAtBatAllowedDK: Double = bullpenStatsAllowedToAllHitters(opposingPitcher.team).fptsPerAtBatAgainst_DK
     val projFptsDK: Option[Double] = hitterFptsPerAtBatDK.map { fptsPerAB =>

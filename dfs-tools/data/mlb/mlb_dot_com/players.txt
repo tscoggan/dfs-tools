@@ -576,7 +576,7 @@
 448602|Reynolds|Mark|R|R|COL|1B
 448605|Ruggiano|Justin|R|R|SF|OF
 448609|Sipp|Tony|L|L|WAS|P
-448614|Torres|Carlos|R|R|SD|P
+448614|Torres|Carlos|R|R|DET|P
 448674|Bernier|Doug|R|R|TEX|SS
 448693|Wolf|Ross|R|R|TEX|P
 448722|Perez|Juan Pablo|R|L|TEX|P
@@ -1275,7 +1275,7 @@
 501993|Kimball|Cole|R|R|NYY|P
 501994|Benson|Joe|R|R|MIN|OF
 502003|Sizemore|Scott|R|R|WAS|3B
-502004|Kontos|George|R|R|CHC|P
+502004|Kontos|George|R|R|WAS|P
 502009|Latos|Mat|R|R|TOR|P
 502010|Brigham|Jake|R|R|DET|P
 502011|Claiborne|Preston|R|R|CLE|P
@@ -1417,7 +1417,7 @@
 517060|Hernandez|Pedro|L|L|COL|P
 517369|Pirela|Jose|R|R|SD|OF
 517370|Paredes|Jimmy|S|R|PHI|DH
-517414|Delgado|Randall|R|R|CWS|P
+517414|Delgado|Randall|R|R|NYY|P
 517448|Boscan|Wilfredo|R|R|NYM|P
 517451|Ortiz|Joe|L|L|CHC|P
 517593|Salazar|Danny|R|R|CLE|P
@@ -1634,7 +1634,7 @@
 542642|Liriano|Rymer|R|R|NYM|OF
 542669|Mendez|Roman|R|R|WAS|P
 542674|Germen|Gonzalez|R|R|CWS|P
-542866|Adams|Austin|R|R|MIN|P
+542866|Adams|Austin|R|R|DET|P
 542881|Anderson|Tyler|L|L|COL|P
 542882|Andriese|Matt|R|R|ARI|P
 542883|Anna|Dean|L|R|MIN|SS
@@ -2534,7 +2534,7 @@
 606149|Gallegos|Giovanny|R|R|STL|P
 606157|Aquino|Aristides|R|R|CIN|OF
 606160|Montero|Rafael|R|R|TEX|P
-606162|Ramirez|Yefry|R|R|BAL|P
+606162|Ramirez|Yefry|R|R|PIT|P
 606167|Mejia|Adalberto|R|L|MIN|P
 606189|Marte|Hamlet|R|R|SF|C
 606190|Cavanerio|Jorgan|R|R|CWS|P
@@ -2829,7 +2829,7 @@
 622747|Vera|Eduardo|R|R|PIT|P
 622761|Mateo|Jorge|R|R|OAK|SS
 622766|Diaz|Miguel|R|R|SD|P
-622772|Cordero|Jimmy|R|R|TOR|P
+622772|Cordero|Jimmy|R|R|SEA|P
 622774|Fernandez|Jose Manuel|L|L|DET|P
 622780|Perdomo|Angel|L|L|MIL|P
 622783|Baez|Sandy|R|R|DET|P
@@ -3245,6 +3245,7 @@
 656941|Schwarber|Kyle|L|R|CHC|OF
 656945|Scott|Tanner|R|L|BAL|P
 656954|Sheffield|Justus|L|L|SEA|P
+656970|Smeltzer|Devin|R|L|MIN|P
 656977|Sobotka|Chad|R|R|ATL|P
 657006|Steele|Justin|L|L|CHC|P
 657011|Stokes|Troy|R|R|MIL|OF
@@ -3458,6 +3459,7 @@
 668663|Barrera|Tres|R|R|WAS|C
 668670|Rogers|Jake|R|R|DET|C
 668674|Erceg|Lucas|L|R|MIL|3B
+668676|Plesac|Zach|R|R|CLE|P
 668678|Gallen|Zac|R|R|MIA|P
 668721|Henry|Payton|R|R|MIL|C
 668800|Knizner|Andrew|R|R|STL|C
@@ -3506,6 +3508,7 @@
 670394|Gold|Ryan|L|R|TOR|C
 670426|Diehl|Phillip|L|L|COL|P
 670443|Anderson|Jack|R|R|SEA|P
+670456|Hammer|JD|R|R|PHI|P
 670541|Alvarez|Yordan|L|R|HOU|1B
 670712|Brosseau|Michael|R|R|TB|3B
 670768|Gonzalez|Luis|L|L|CWS|OF
