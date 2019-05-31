@@ -613,13 +613,23 @@ case class HistoricalStats(season: Season) {
       case Switch => pitcherStatsAllowedToSwitchHitters.get(opposingPitcher).map(_.atBatsAgainst).getOrElse(0)
     }
 
-    // accounts for ballpark shift
+    // for hitter FPTS/PA --- accounts for ballpark shift
     val ballparkFactor: Double = p.visitingOrHomeTeam match {
       case Some(vOrH) =>
         if (vOrH == Home)
           hitterBallparkFactor_HomeTeam(p.team).forHitter(p) / ((1.0 + hitterBallparkFactor_HomeTeam(p.team).forHitter(p)) / 2.0)
         else
           hitterBallparkFactor_VisitingTeam(p.opponent.get).forHitter(p) / ((1.0 + hitterBallparkFactor_HomeTeam(p.team).forHitter(p)) / 2.0)
+      case None => 1.0
+    }
+
+    // for opposing pitcher FPTS/PA allowed --- accounts for ballpark shift
+    val ballparkFactor_vsOppPitcher: Double = p.visitingOrHomeTeam match {
+      case Some(vOrH) =>
+        if (vOrH == Home)
+          hitterBallparkFactor_HomeTeam(p.team).forHitter(p) / ((1.0 + hitterBallparkFactor_HomeTeam(opposingPitcher.team).forHitter(p)) / 2.0)
+        else
+          hitterBallparkFactor_VisitingTeam(p.opponent.get).forHitter(p) / ((1.0 + hitterBallparkFactor_HomeTeam(opposingPitcher.team).forHitter(p)) / 2.0)
       case None => 1.0
     }
 
@@ -647,11 +657,11 @@ case class HistoricalStats(season: Season) {
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 until hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get) // should park factor apply to pitcher?
+      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedFD.get * ballparkFactor_vsOppPitcher)
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-      val bullpenWeightedFptsPerAB = (0 until 200).toList.map(i => bullpenFptsPerAtBatAllowedFD) // should park factor apply to pitcher?
+      val bullpenWeightedFptsPerAB = (0 until 200).toList.map(i => bullpenFptsPerAtBatAllowedFD * ballparkFactor_vsOppPitcher)
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
@@ -660,14 +670,16 @@ case class HistoricalStats(season: Season) {
         case None        => 0.0
       }
 
-      //      log(s"$p vs $opposingPitcher:\n\tprojAtBats: ${projAtBats.rounded(2)}\n\tprojAtBatsVsOpposingPitcher: ${projAtBatsVsOpposingPitcher.rounded(2)}" +
-      //        s"\n\tprojAtBatsVsBullpen: ${projAtBatsVsBullpen.rounded(2)}\n\thitterTotalAtBats: ${hitterTotalAtBats.rounded(2)}\n\tpitcherTotalAtBats: ${pitcherTotalAtBats.rounded(2)}" +
-      //        s"\n\tballparkFactor: ${ballparkFactor.rounded(2)}\n\thitterFptsPerAtBatFD: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("???")}" +
-      //        s"\n\tpitcherFptsPerAtBatAllowedFD ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("???")}\n\tbullpenFptsPerAtBatAllowedFD: ${bullpenFptsPerAtBatAllowedFD.rounded(2)}" +
-      //        s"\n\thitterWeight: ${hitterWeight}\n\tpitcherWeight: ${pitcherWeight}\n\thitterWeightedFptsPerAB size: ${hitterWeightedFptsPerAB.size}" +
-      //        s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}" +
-      //        s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}" +
-      //        s"\n\tnetUpsideDeviationModifier: ${netUpsideDeviationModifier.rounded(2)}")
+      //      if (opposingPitcher.id == "429719") {
+      //        log(s"$p vs $opposingPitcher:\n\tprojAtBats: ${projAtBats.rounded(2)}\n\tprojAtBatsVsOpposingPitcher: ${projAtBatsVsOpposingPitcher.rounded(2)}" +
+      //          s"\n\tprojAtBatsVsBullpen: ${projAtBatsVsBullpen.rounded(2)}\n\thitterTotalAtBats: ${hitterTotalAtBats.rounded(2)}\n\tpitcherTotalAtBats: ${pitcherTotalAtBats.rounded(2)}" +
+      //          s"\n\tballparkFactor: ${ballparkFactor.rounded(2)}\n\tballparkFactor_vsOppPitcher: ${ballparkFactor_vsOppPitcher.rounded(2)}\n\thitterFptsPerAtBatFD: ${hitterFptsPerAtBatFD.map(_.rounded(2)).getOrElse("???")}" +
+      //          s"\n\tpitcherFptsPerAtBatAllowedFD ${pitcherFptsPerAtBatAllowedFD.map(_.rounded(2)).getOrElse("???")}\n\tbullpenFptsPerAtBatAllowedFD: ${bullpenFptsPerAtBatAllowedFD.rounded(2)}" +
+      //          s"\n\thitterWeight: ${hitterWeight}\n\tpitcherWeight: ${pitcherWeight}\n\thitterWeightedFptsPerAB size: ${hitterWeightedFptsPerAB.size}" +
+      //          s"\n\tpitcherWeightedFptsPerAB size: ${pitcherWeightedFptsPerAB.size}\n\tfptsVsStarter: ${fptsVsStarter.rounded(2)}" +
+      //          s"\n\tbullpenWeightedFptsPerAB size: ${bullpenWeightedFptsPerAB.size}\n\tfptsVsBullpen: ${fptsVsBullpen.rounded(2)}" +
+      //          s"\n\tnetUpsideDeviationModifier: ${netUpsideDeviationModifier.rounded(2)}")
+      //      }
 
       fptsVsStarter + fptsVsBullpen + netUpsideDeviationModifier
     }
@@ -698,11 +710,11 @@ case class HistoricalStats(season: Season) {
       val hitterWeight = List(200, hitterTotalAtBats).min
       val pitcherWeight = List(200, pitcherTotalAtBats).min
       val hitterWeightedFptsPerAB = (0 until hitterWeight).toList.map(i => fptsPerAB * ballparkFactor)
-      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get) // should park factor apply to pitcher?
+      val pitcherWeightedFptsPerAB = if (pitcherTotalAtBats == 0) Nil else (0 until pitcherWeight).toList.map(i => pitcherFptsPerAtBatAllowedDK.get * ballparkFactor_vsOppPitcher)
       val combinedWeightedFptsPerAB = hitterWeightedFptsPerAB ++ pitcherWeightedFptsPerAB
       val fptsVsStarter = mean(combinedWeightedFptsPerAB) * projAtBatsVsOpposingPitcher
 
-      val bullpenWeightedFptsPerAB = (0 until 200).toList.map(i => bullpenFptsPerAtBatAllowedDK) // should park factor apply to pitcher?
+      val bullpenWeightedFptsPerAB = (0 until 200).toList.map(i => bullpenFptsPerAtBatAllowedDK * ballparkFactor_vsOppPitcher)
       val combinedWeightedFptsPerABVsBullpen = hitterWeightedFptsPerAB ++ bullpenWeightedFptsPerAB
       val fptsVsBullpen = mean(combinedWeightedFptsPerABVsBullpen) * projAtBatsVsBullpen
 
