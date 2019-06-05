@@ -684,7 +684,7 @@ case class HistoricalStats(season: Season) {
       fptsVsStarter + fptsVsBullpen + netUpsideDeviationModifier
     }
     val projValueFD: Option[Double] = p.fanduel.map(_.salary).map(salary => (projFptsFD.getOrElse(0.0) / salary) * 1000)
-    val valueScoreFD: Option[Double] = projValueFD.map(value => (projFptsFD.getOrElse(0.0) * 0.75) + value)
+    val valueScoreFD: Option[Double] = projValueFD.map(value => (projFptsFD.getOrElse(0.0) * Configs.stackValueScoreFptsMultiplier) + value)
 
     val hitterSeasonStatsDK: Option[PlayerSeasonStats] = hitterStats_DK.get(p).map(_._1)
     val hitterDeviationStatsDK: Option[DeviationStats] = hitterStats_DK.get(p).map(_._2)
@@ -726,7 +726,7 @@ case class HistoricalStats(season: Season) {
       fptsVsStarter + fptsVsBullpen + netUpsideDeviationModifier
     }
     val projValueDK: Option[Double] = p.draftkings.map(_.salary).map(salary => (projFptsDK.getOrElse(0.0) / salary) * 1000)
-    val valueScoreDK: Option[Double] = projValueDK.map(value => (projFptsDK.getOrElse(0.0) * 0.75) + value)
+    val valueScoreDK: Option[Double] = projValueDK.map(value => (projFptsDK.getOrElse(0.0) * Configs.stackValueScoreFptsMultiplier) + value)
 
   }
 

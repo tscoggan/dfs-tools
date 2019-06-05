@@ -845,7 +845,7 @@
 457787|Espinosa|Danny|S|R|NYM|2B
 457788|Schafer|Jordan|L|L|SF|OF
 457789|Weeks|Jemile|S|R|CHC|2B
-457803|Bruce|Jay|L|L|SEA|OF
+457803|Bruce|Jay|L|L|PHI|OF
 457812|Marquez|Jeff|R|R|CIN|P
 457821|Bankston|Wes|R|R|TEX|1B
 457826|Mastny|Tom|R|R|CLE|P
@@ -1046,7 +1046,7 @@
 471803|Gabino|Armando|R|R|BAL|P
 471822|Diaz|Jumbo|R|R|MIA|P
 471863|Hughes|Luke|R|R|TOR|2B
-471865|Gonzalez|Carlos|L|L|CLE|OF
+471865|Gonzalez|Carlos|L|L|CHC|OF
 471868|Gonzalez|Alberto|R|R|DET|2B
 471897|Halman|Greg|R|R|SEA|OF
 471911|Carrasco|Carlos|R|R|CLE|P
@@ -1135,7 +1135,7 @@
 488771|Castro|Jason|L|R|MIN|C
 488776|Chapman|Jaye|R|R|TEX|P
 488782|Claggett|Anthony|S|R|PIT|P
-488786|Coleman|Louis|R|R|DET|P
+488786|Coleman|Louis|R|R|NYM|P
 488787|Coleman|Casey|L|R|NYM|P
 488810|Cruz|Tony|R|R|CIN|C
 488818|d'Arnaud|Chase|R|R|TEX|SS
@@ -2324,7 +2324,7 @@
 595023|Walsh|Colin|S|R|LAA|3B
 595025|Walters|Zach|S|R|KC|DH
 595032|Whitley|Chase|R|R|ATL|P
-595144|Brugman|Jaycob|L|L|BAL|OF
+595144|Brugman|Jaycob|L|L|SEA|OF
 595191|Eickhoff|Jerad|R|R|PHI|P
 595222|Gerber|Mike|L|R|SF|OF
 595234|Haley|Justin|R|R|BOS|P
@@ -2346,7 +2346,7 @@
 595465|Winkler|Dan|R|R|ATL|P
 595751|Alfaro|Jorge|R|R|MIA|C
 595777|Profar|Jurickson|S|R|OAK|2B
-595798|Alaniz|R.J.|R|R|SEA|P
+595798|Alaniz|R.J.|R|R|CIN|P
 595879|Baez|Javier|R|R|CHC|SS
 595881|Beede|Tyler|R|R|SF|P
 595885|Bird|Greg|L|R|NYY|1B
@@ -2514,7 +2514,7 @@
 605501|Tarpley|Stephen|R|L|NYY|P
 605507|Thompson|Zach|R|R|CWS|P
 605508|Tilson|Charlie|L|L|CWS|OF
-605509|Tomlinson|Kelby|R|R|ARI|2B
+605509|Tomlinson|Kelby|R|R|SEA|2B
 605512|Tucker|Preston|L|L|CWS|OF
 605513|Turnbull|Spencer|R|R|DET|P
 605520|Walding|Mitch|L|R|PHI|3B
@@ -2596,7 +2596,7 @@
 607385|Collins|Tyler|L|L|KC|OF
 607387|Rua|Ryan|R|R|TEX|OF
 607405|Cornely|John|R|R|BOS|P
-607430|Andreoli|John|R|R|MIN|OF
+607430|Andreoli|John|R|R|SEA|OF
 607455|Banda|Anthony|L|L|TB|P
 607457|Barraclough|Kyle|R|R|WAS|P
 607461|Beaty|Matt|L|R|LAD|1B
@@ -3201,7 +3201,7 @@
 656371|Diaz|Isan|L|R|MIA|2B
 656427|Flaherty|Jack|R|R|STL|P
 656457|Gilbert|Tyler|L|L|PHI|P
-656464|Ginkel|Kevin|R|R|ARI|P
+656464|Ginkel|Kevin|L|R|ARI|P
 656492|Griffin|Foster|R|L|KC|P
 656494|Gushue|Taylor|S|R|WAS|C
 656501|Harding|Junior|R|R|CIN|P
@@ -3291,7 +3291,7 @@
 657681|McGrath|Kyle|L|L|SD|P
 657697|Nittoli|Vinny|R|R|TOR|P
 657739|Ritchie|Jamie|R|R|HOU|C
-657770|Stout|Eric|L|L|SD|P
+657770|Stout|Eric|L|L|CIN|P
 657779|Thompson-Williams|Dom|L|L|SEA|OF
 657786|Vasto|Jerry|L|L|CHC|P
 657798|Weir|T.J.|R|R|SD|P

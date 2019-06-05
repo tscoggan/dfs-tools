@@ -33,7 +33,7 @@ object Configs {
 
     val runSanityChecks: Boolean = conf.getBoolean("run_sanity_checks")
     if (runSanityChecks) log("#### Running MLB.com sanity checks ####")
-    
+
     val ignoreSanityChecksForDates: List[Date] = conf.getStringList("ignore_sanity_checks_for_dates").map(_.toDate("yyyy-MM-dd").trimTime).toList
   }
 
@@ -46,9 +46,11 @@ object Configs {
   }
 
   val blogFormat: String = conf.getString("blog_format")
-  
+
   val stackSize: Int = conf.getInt("stack_size")
   val numberOfStacks: Int = conf.getInt("number_of_stacks")
+
+  val stackValueScoreFptsMultiplier: Double = conf.getDouble("stack_value_score_fpts_multiplier")
 
   val overweightRecent: Boolean = conf.getBoolean("overweight_recent_performance")
   val recentDaysToWeightHigher: Int = conf.getInt("recent_number_of_days_to_weight_higher")
