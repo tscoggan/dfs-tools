@@ -19,12 +19,12 @@ object Draftbook extends App {
   List("FD", "DK").foreach { site =>
     val projectionsFile = s"${Configs.projectionsHistoryDir}/${Players.projectionsDate.print()}_${site}.csv"
     log("Saving projections to file: " + projectionsFile)
-    val header = s"Player ID, Player Name, Projected FPTS (${site}), Position (${site}), Salary (${site}), Team"
+    val header = s"Player ID, Player Name, Projected FPTS (${site}), Position (${site}), Salary (${site}), Team, Value"
     val projections = {
       startingHitterStats.flatMap {
         case (p, stats) => site match {
-          case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
-          case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
+          case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team},${(1000d * (projFptsDK / p.draftkings.map(_.salary).getOrElse(99999).toDouble)).rounded(2)}" }
+          case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team},${(1000d * (projFptsFD / p.fanduel.map(_.salary).getOrElse(99999).toDouble)).rounded(2)}" }
           case other =>
             log("ERROR: Invalid projections site: " + other)
             None
@@ -32,8 +32,8 @@ object Draftbook extends App {
       }.toList ++
         startingPitcherStats.flatMap {
           case (p, stats) => site match {
-            case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team}" }
-            case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team}" }
+            case "DK" => stats.projFptsDK.map { projFptsDK => s"${p.id},${p.name.replaceAll(",", "")},${projFptsDK.rounded(2)},${p.draftkings.map(_.position).getOrElse("")},${p.draftkings.map(_.salary).getOrElse("99999")},${p.team},${(1000d * (projFptsDK / p.draftkings.map(_.salary).getOrElse(99999).toDouble)).rounded(2)}" }
+            case "FD" => stats.projFptsFD.map { projFptsFD => s"${p.id},${p.name.replaceAll(",", "")},${projFptsFD.rounded(2)},${p.fanduel.map(_.position).getOrElse("")},${p.fanduel.map(_.salary).getOrElse("99999")},${p.team},${(1000d * (projFptsFD / p.fanduel.map(_.salary).getOrElse(99999).toDouble)).rounded(2)}" }
             case other =>
               log("ERROR: Invalid projections site: " + other)
               None
