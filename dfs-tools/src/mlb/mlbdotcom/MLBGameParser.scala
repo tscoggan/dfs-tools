@@ -255,9 +255,22 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
                 hitter.addTripleAgainst(pitcher)
               case "Wild Pitch"    => // do nothing
               case "Game Advisory" => // do nothing
-              case "Passed Ball" => // do nothing
-              case ""              => // should only see this for a game that ended before completion
-              case _               => throw new Exception("Unknown event: " + event)
+              case "Passed Ball"   => // do nothing
+              case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
+                namesOfPlayersWhoStoleBase(description).map {
+                  case (playerDisplayName, stoleHome) =>
+                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((playerDisplayName, battingTeam),
+                      mlbPlayerIdByDisplayName((playerDisplayName.head + " " + playerDisplayName.substringAfterLast(" "), battingTeam)))
+                    val player = battingTeam match {
+                      case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
+                      case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
+                    }
+                    //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
+                    player.addStolenBaseAgainst(pitcher)
+                    if (stoleHome) player.addRunAgainst(pitcher)
+                }
+              case "" => // should only see this for a game that ended before completion
+              case _  => throw new Exception("Unknown event: " + event)
             }
 
             hitter.addRBIAgainst(pitcher, rbi)
