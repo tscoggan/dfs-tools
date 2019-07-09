@@ -59,10 +59,9 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
       val batOrder = (p \ "@bo").text
       if (batOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
-        mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
-        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName), VISITING_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).head + " " + cleanName(displayName).substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
 
         Some((mlbPlayerID, HitterGameStats(date, player.id, batOrder.tail == "00", batOrder.head.asDigit)))
       } else None
@@ -75,10 +74,9 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
         val displayName = (p \ "@name_display_first_last").text
         val battingPosition = hitters.find { case (name, p) => p.playerID == player.id }.map { case (name, p) => p.battingPosition }.getOrElse(0)
         playerDisplayNames += (player.id -> displayName)
-        mlbPlayerIdByDisplayName += ((displayName, VISITING_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
-        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), VISITING_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName), VISITING_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).head + " " + cleanName(displayName).substringAfterLast(" "), VISITING_TEAM) -> mlbPlayerID) // first letter of first name + last name
 
         val pitcher = PitcherGameStats(date, player.id, pitchOrder == 0, battingPosition)
         if (pitcher.playerID == winningPitcher.id) pitcher.pitchingStats.win = 1
@@ -103,10 +101,9 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
       val batOrder = (p \ "@bo").text
       if (batOrder.length == 3) { // only include players who played
         playerDisplayNames += (player.id -> displayName)
-        mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
-        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName), HOME_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).head + " " + cleanName(displayName).substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
 
         Some((mlbPlayerID, HitterGameStats(date, player.id, batOrder.tail == "00", batOrder.head.asDigit)))
       } else None
@@ -119,10 +116,9 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
         val displayName = (p \ "@name_display_first_last").text
         val battingPosition = hitters.find { case (name, p) => p.playerID == player.id }.map { case (name, p) => p.battingPosition }.getOrElse(0)
         playerDisplayNames += (player.id -> displayName)
-        mlbPlayerIdByDisplayName += ((displayName, HOME_TEAM) -> mlbPlayerID)
-        mlbPlayerIdByDisplayName += ((displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
-        mlbPlayerIdByDisplayName += ((displayName.head + " " + displayName.substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
-        if (displayName.endsWith(" Jr.")) mlbPlayerIdByDisplayName += ((displayName.substringBefore(" Jr."), HOME_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName), HOME_TEAM) -> mlbPlayerID)
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // last name
+        mlbPlayerIdByDisplayName += ((cleanName(displayName).head + " " + cleanName(displayName).substringAfterLast(" "), HOME_TEAM) -> mlbPlayerID) // first letter of first name + last name
 
         val pitcher = PitcherGameStats(date, player.id, pitchOrder == 0, battingPosition)
         if (pitcher.playerID == winningPitcher.id) pitcher.pitchingStats.win = 1
@@ -198,8 +194,8 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
         val runnersWhoScored: List[PlayerGameStats] = if (description.contains("scores")) {
           namesOfPlayersWhoScored(description).map {
             case playerDisplayName =>
-              val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((playerDisplayName, battingTeam),
-                mlbPlayerIdByDisplayName((playerDisplayName.head + " " + playerDisplayName.substringAfterLast(" "), battingTeam)))
+              val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
+                mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
               val player = battingTeam match {
                 case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
                 case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
@@ -259,8 +255,8 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
                 namesOfPlayersWhoStoleBase(description).map {
                   case (playerDisplayName, stoleHome) =>
-                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((playerDisplayName, battingTeam),
-                      mlbPlayerIdByDisplayName((playerDisplayName.head + " " + playerDisplayName.substringAfterLast(" "), battingTeam)))
+                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
+                      mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
                     val player = battingTeam match {
                       case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
                       case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
@@ -328,8 +324,8 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
                 namesOfPlayersWhoStoleBase(description).map {
                   case (playerDisplayName, stoleHome) =>
-                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((playerDisplayName, battingTeam),
-                      mlbPlayerIdByDisplayName((playerDisplayName.head + " " + playerDisplayName.substringAfterLast(" "), battingTeam)))
+                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
+                      mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
                     val player = battingTeam match {
                       case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
                       case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
@@ -389,6 +385,11 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
       case false => playerNames
     }
     next(play, Nil)
+  }
+
+  private def cleanName(name: String): String = {
+    if (name.endsWith(" Jr.") || name.endsWith(" Jr")) name.substringBefore(" Jr")
+    else name
   }
 
 }
