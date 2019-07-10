@@ -12,6 +12,8 @@ class MLBParserTests extends FunSuite {
   val game2 = mlb.mlbdotcom.Game_MLB.loadGameFromURL("""http://gd2.mlb.com/components/game/mlb/year_2019/month_07/day_04/gid_2019_07_04_minmlb_oakmlb_1/""").get
   val game3 = mlb.mlbdotcom.Game_MLB.loadGameFromURL("""http://gd2.mlb.com/components/game/mlb/year_2019/month_06/day_21/gid_2019_06_21_miamlb_phimlb_1/""").get
   val game4 = mlb.mlbdotcom.Game_MLB.loadGameFromURL("""http://gd2.mlb.com/components/game/mlb/year_2019/month_07/day_07/gid_2019_07_07_anamlb_houmlb_1/""").get
+  val game5 = mlb.mlbdotcom.Game_MLB.loadGameFromURL("""http://gd2.mlb.com/components/game/mlb/year_2018/month_09/day_12/gid_2018_09_12_sdnmlb_seamlb_1/""").get
+  val game6 = mlb.mlbdotcom.Game_MLB.loadGameFromURL("""http://gd2.mlb.com/components/game/mlb/year_2018/month_08/day_22/gid_2018_08_22_sdnmlb_colmlb_1/""").get
 
   test("cleanName works") {
     assert(cleanName("Tim Smith") == "Tim Smith" && cleanName("Tim Smith Jr") == "Tim Smith" &&
@@ -44,6 +46,13 @@ class MLBParserTests extends FunSuite {
     assert(game.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 12 &&
       game.statsFor(p2).get.fantasyPoints(FanDuelMLB) == 52)
   }
+  
+  test("Correct pitcher FPTS - old format") {
+    val p1 = game6.visitingTeamStartingPitcher // Nix
+    val p2 = game6.homeTeamStartingPitcher // Jon Gray
+    assert(game6.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 12 &&
+      game6.statsFor(p2).get.fantasyPoints(FanDuelMLB) == 38)
+  }
 
   test("Correct hitter FPTS") {
     val p1 = Players.get("593934") // Miguel Sano
@@ -57,16 +66,23 @@ class MLBParserTests extends FunSuite {
       game.statsFor(p4).get.fantasyPoints(FanDuelMLB) == 18.9f &&
       game.statsFor(p5).get.fantasyPoints(FanDuelMLB) == 18.7f)
   }
+  
+    test("Correct hitter FPTS - old format") {
+    val p1 = Players.get("453568") // Charlie Blackmon
+    val p2 = Players.get("547172") // Tony Wolters
+    assert(game6.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 15.2f &&
+      game6.statsFor(p2).get.fantasyPoints(FanDuelMLB) == 19.2f)
+  }
 
   test("Correct hitter FPTS with runner scoring but no RBI") {
     val p1 = Players.get("592192") // Mark Canha
     //println(game2.statsFor(p1).get.printStats)
     assert(game2.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 3f)
   }
-  
+
   test("Correct hitter FPTS with runner scoring on wild pitch") {
     val p1 = Players.get("518960") // Jonathan Lucroy
-    println(game4.statsFor(p1).get.printStats)
+    //println(game4.statsFor(p1).get.printStats)
     assert(game4.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 21.7f)
   }
 
@@ -74,18 +90,30 @@ class MLBParserTests extends FunSuite {
     val p1 = Players.get("621439") // Byron Buxton
     val p2 = Players.get("596451") // Roman Quinn
     val p3 = Players.get("516416") // Jean Segura
-    println(game2.statsFor(p1).get.printStats)
-    println(game3.statsFor(p2).get.printStats)
-    println(game3.statsFor(p3).get.printStats)
+    //println(game2.statsFor(p1).get.printStats)
+    //println(game3.statsFor(p2).get.printStats)
+    //println(game3.statsFor(p3).get.printStats)
     assert(game2.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 12f &&
       game3.statsFor(p2).get.fantasyPoints(FanDuelMLB) == 18.2f &&
       game3.statsFor(p3).get.fantasyPoints(FanDuelMLB) == 9f)
   }
-  
+
+  test("Correct hitter FPTS with stolen base - old format") {
+    val p1 = Players.get("452655") // Denard Span
+    //println(game5.statsFor(p1).get.printStats)
+    assert(game5.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 6f)
+  }
+
   test("Correct hitter FPTS with grand slam") {
     val p1 = Players.get("493329") // Yuli Gurriel
-    println(game4.statsFor(p1).get.printStats)
+    //println(game4.statsFor(p1).get.printStats)
     assert(game4.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 44.6f)
+  }
+
+  test("Correct hitter FPTS with HR - old format") {
+    val p1 = Players.get("595978") // Austin Hedges
+    //println(game5.statsFor(p1).get.printStats)
+    assert(game5.statsFor(p1).get.fantasyPoints(FanDuelMLB) == 25.2f)
   }
 
 }
