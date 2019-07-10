@@ -13,6 +13,8 @@ import scala.annotation.tailrec
 
 class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
 
+  import MLBGameParser._
+
   type HomeOrAway = Int
   private val VISITING_TEAM: HomeOrAway = 0
   private val HOME_TEAM: HomeOrAway = 1
@@ -387,7 +389,11 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
     next(play, Nil)
   }
 
-  private def cleanName(name: String): String = {
+}
+
+object MLBGameParser {
+
+  def cleanName(name: String): String = {
     if (name.endsWith(" Jr.") || name.endsWith(" Jr")) name.substringBefore(" Jr")
     else name
   }
