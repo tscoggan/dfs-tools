@@ -74,6 +74,12 @@ object DateTimeUtils {
       calendar.getTime
     }
 
+    def year: Int = {
+      val calendar = Calendar.getInstance
+      calendar.setTime(d)
+      calendar.get(Calendar.YEAR)
+    }
+
   }
 
 }

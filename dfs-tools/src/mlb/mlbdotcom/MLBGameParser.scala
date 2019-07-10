@@ -163,9 +163,14 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
 
       case Some(eventXML) =>
         val event = (eventXML \ "@event").text
+        val runnerEvents = (eventXML \ "runner")
         val outs = (eventXML \ "@o").text.toInt
         val description = (eventXML \ "@des").text
-        val rbi = (eventXML \ "@rbi").headOption.map(_.text.toInt).getOrElse(0)
+        val rbi = if (date.year <= 2018) {
+          (eventXML \ "@rbi").headOption.map(_.text.toInt).getOrElse(0)
+        } else {
+          runnerEvents.count(_.attribute("rbi").headOption.map(_.text.trim.toUpperCase).getOrElse("") == "T")
+        }
         lazy val homeTeamRuns = (eventXML \ "@home_team_runs").headOption.map(_.text.toInt).get
         lazy val awayTeamRuns = (eventXML \ "@away_team_runs").headOption.map(_.text.toInt).get
 
@@ -193,20 +198,21 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
             }
         }
 
-        val runnersWhoScored: List[PlayerGameStats] = if (description.contains("scores")) {
-          namesOfPlayersWhoScored(description).map {
-            case playerDisplayName =>
-              val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
-                mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
-              val player = battingTeam match {
-                case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
-                case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
-              }
-              //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
-              player.addRunAgainst(pitcher)
-              player
+        if (date.year <= 2018) {
+          if (description.contains("scores")) {
+            namesOfPlayersWhoScored(description).map {
+              case playerDisplayName =>
+                val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
+                  mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
+                val player = battingTeam match {
+                  case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
+                  case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
+                }
+                //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
+                player.addRunAgainst(pitcher)
+            }
           }
-        } else Nil
+        }
 
         eventXML.toString.substringBefore(" ").tail match {
 
@@ -221,6 +227,14 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
             }
 
             if (event != "Runner Out") hitter.addAtBatAgainst(pitcher)
+
+            if (date.year >= 2019) {
+              runnerEvents.foreach { runnerEvent =>
+                val runner = players((runnerEvent \ "@id").text)
+                if ((runnerEvent \ "@event").headOption.map(_.text).getOrElse("").startsWith("Stolen Base")) runner.addStolenBaseAgainst(pitcher)
+                if ((runnerEvent \ "@end").headOption.map(_.text).getOrElse("") == "score") runner.addRunAgainst(pitcher)
+              }
+            }
 
             event match {
               case "Batter Interference" =>
@@ -242,7 +256,7 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Field Error" | "Pickoff Error 1B" | "Pickoff Error 2B" | "Pickoff Error 3B" => // do nothing
               case "Home Run" =>
                 hitter.addHomeRunAgainst(pitcher)
-                hitter.addRunAgainst(pitcher)
+                if (date.year <= 2018) hitter.addRunAgainst(pitcher)
               case "Intent Walk" | "Walk" | "Hit By Pitch" =>
                 hitter.addWalkAgainst(pitcher)
               case "Runner Out" => // out already recorded --- do nothing
@@ -255,17 +269,19 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Game Advisory" => // do nothing
               case "Passed Ball"   => // do nothing
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
-                namesOfPlayersWhoStoleBase(description).map {
-                  case (playerDisplayName, stoleHome) =>
-                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
-                      mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
-                    val player = battingTeam match {
-                      case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
-                      case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
-                    }
-                    //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
-                    player.addStolenBaseAgainst(pitcher)
-                    if (stoleHome) player.addRunAgainst(pitcher)
+                if (date.year <= 2018) {
+                  namesOfPlayersWhoStoleBase(description).map {
+                    case (playerDisplayName, stoleHome) =>
+                      val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
+                        mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
+                      val player = battingTeam match {
+                        case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
+                        case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
+                      }
+                      //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
+                      player.addStolenBaseAgainst(pitcher)
+                      if (stoleHome) player.addRunAgainst(pitcher)
+                  }
                 }
               case "" => // should only see this for a game that ended before completion
               case _  => throw new Exception("Unknown event: " + event)
@@ -324,17 +340,19 @@ class MLBGameParser(eventsXML: Elem, boxScoreXML: Elem, lineScoreXML: Elem) {
               case "Other Advance" => //???
               case "Runner Out" => //???
               case "Stolen Base 2B" | "Stolen Base 3B" | "Stolen Base Home" =>
-                namesOfPlayersWhoStoleBase(description).map {
-                  case (playerDisplayName, stoleHome) =>
-                    val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
-                      mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
-                    val player = battingTeam match {
-                      case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
-                      case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
-                    }
-                    //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
-                    player.addStolenBaseAgainst(pitcher)
-                    if (stoleHome) player.addRunAgainst(pitcher)
+                if (date.year <= 2018) {
+                  namesOfPlayersWhoStoleBase(description).map {
+                    case (playerDisplayName, stoleHome) =>
+                      val mlbPlayerID = mlbPlayerIdByDisplayName.getOrElse((cleanName(playerDisplayName), battingTeam),
+                        mlbPlayerIdByDisplayName((cleanName(playerDisplayName).head + " " + cleanName(playerDisplayName).substringAfterLast(" "), battingTeam)))
+                      val player = battingTeam match {
+                        case VISITING_TEAM => visitingTeamPlayers(mlbPlayerID)
+                        case HOME_TEAM     => homeTeamPlayers(mlbPlayerID)
+                      }
+                      //logDebug(s"Runner scored --- name: $playerDisplayName, mlbPlayerID: $mlbPlayerID, player: ${player.player}")
+                      player.addStolenBaseAgainst(pitcher)
+                      if (stoleHome) player.addRunAgainst(pitcher)
+                  }
                 }
               case "Umpire Review"            => //???
               case "Umpire Substitution"      => //???

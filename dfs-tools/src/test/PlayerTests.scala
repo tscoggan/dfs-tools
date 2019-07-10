@@ -12,7 +12,7 @@ class PlayerTests extends FunSuite {
   val flexSlot = LineupSlot(3, "FLEX", List("RB", "WR", "TE"))
 
   test("Player has correct ptsPerSalary") {
-    assert(p1.projValue == 0.001f)
+    assert(p1.projValue == 1.0f)
   }
 
   test("Player has correct positions") {

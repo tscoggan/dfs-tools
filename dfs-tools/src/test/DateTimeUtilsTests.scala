@@ -50,5 +50,9 @@ class DateTimeUtilsTests extends FunSuite {
     val datesExclusive = List("2017-11-07".toDate(), "2017-11-08".toDate(), "2017-11-09".toDate(), "2017-11-10".toDate(), "2017-11-11".toDate())
     assert(getDatesBetween(d1, d7) == datesInclusive && getDatesBetween(d1, d7, false) == datesExclusive)
   }
+  
+  test("year works") {
+    assert(d1.year == 2017)
+  }
 
 }

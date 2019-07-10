@@ -1724,7 +1724,7 @@
 543340|Hudson|Kyle|L|L|LAD|OF
 543351|Jackson|Jay|R|R|MIL|P
 543357|Jankowski|Jordan|R|R|LAA|P
-543359|Jennings|Dan|L|L|WAS|P
+543359|Jennings|Dan|L|L|NYY|P
 543362|Jimenez|A.J.|R|R|TEX|C
 543376|Joseph|Caleb|R|R|ARI|C
 543377|Joseph|Corban|L|R|OAK|1B
@@ -1851,6 +1851,7 @@
 547170|Delmonico|Nicky|L|R|CWS|OF
 547172|Wolters|Tony|L|R|COL|C
 547173|Lopes|Christian|R|R|TEX|2B
+547176|Camarena|Daniel|L|L|NYY|P
 547179|Lorenzen|Michael|R|R|CIN|P
 547180|Harper|Bryce|L|R|PHI|OF
 547181|Lipka|Matt|R|R|NYY|OF
@@ -2152,7 +2153,7 @@
 592288|Emanuel|Kent|L|L|HOU|P
 592314|Foltynewicz|Mike|R|R|ATL|P
 592325|Gamel|Ben|L|L|MIL|OF
-592329|Garcia|Jason|R|R|COL|P
+592329|Garcia|Jason|R|R|TB|P
 592330|Garner|Perci|R|R|BAL|P
 592332|Gausman|Kevin|L|R|ATL|P
 592340|Goeddel|Erik|R|R|LAD|P
@@ -2578,7 +2579,7 @@
 607215|Skoglund|Eric|L|L|KC|P
 607216|Krehbiel|Joey|R|R|ARI|P
 607219|Romano|Sal|L|R|CIN|P
-607223|Reed|AJ|L|L|HOU|1B
+607223|Reed|AJ|L|L|CWS|1B
 607229|Gsellman|Robert|R|R|NYM|P
 607231|Gant|John|R|R|STL|P
 607237|Garrett|Amir|R|L|CIN|P
@@ -3409,7 +3410,7 @@
 664731|Higgins|P.J.|R|R|CHC|C
 664750|De La Guerra|Chad|L|R|BOS|2B
 664767|Scivicque|Kade|R|R|DET|C
-664774|Wade Jr.|LaMonte|L|L|MIN|OF
+664774|Wade|LaMonte|L|L|MIN|OF
 664842|Kaczmarski|Kevin|L|R|NYM|OF
 664843|Keel|Jerry|L|L|SD|P
 664850|Mazeika|Patrick|L|R|NYM|C
