@@ -9,9 +9,9 @@ import utils.DoubleUtils._
 import utils.MathUtils._
 import utils.StringUtils._
 
-object Season2018Review extends App {
+object SeasonReview extends App {
 
-  import mlb.Season2018Stats._
+  import mlb.Season2019Stats._
 
   val hitterLeagueAvgPointsPerGameStarted = mean(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
   val hitterLeaguePointsPerGameStartedStdDev = stdDev(season.allHitters.flatMap(_.gamesStarted).map(_.fantasyPoints()))
@@ -28,7 +28,7 @@ object Season2018Review extends App {
   // Part 1:
 
   log("\n***********************************************")
-  log("***Who were the top-scoring players in 2018?***")
+  log("***Who were the top-scoring players?*************")
   log("***********************************************\n")
 
   log("\n### Hitters with most FPTS per game started (min 25 games started): ###\n")
@@ -55,7 +55,7 @@ object Season2018Review extends App {
     mostPitcherPointsPerGameStarted.map { case (p, fpts) => List(p.player, fpts.rounded(2), p.numberOfGamesStarted) }))
 
   log("\n******************************************************************")
-  log("***Which players improved the most throughout the 2018 season? ***")
+  log("***Which players improved the most throughout the season? **********")
   log("******************************************************************\n")
 
   log("\n### Hitters with most FPTS per plate appearance after All-Star break (min 100 plate appearances): ###\n")
@@ -107,9 +107,9 @@ object Season2018Review extends App {
 
   // Part 2:
 
-  log("\n************************************************************")
-  log("***Which of 2018's top players were the most consistent? ***")
-  log("************************************************************\n")
+  log("\n*****************************************************************")
+  log("***Which of last season's top players were the most consistent? ***")
+  log("*******************************************************************\n")
 
   log("\n### Hitters with lowest standard deviation in FPTS per game started (min 25 games started, min 10 FPTS/game): ###\n")
   val pointsPerGameStartedStdDev: List[(PlayerSeasonStats, Double)] = season.allHitters
@@ -141,9 +141,9 @@ object Season2018Review extends App {
         List(p.player, stdDev.rounded(2), p.pitcherFptsPerGameAsStarter().rounded(1), p.numberOfGamesStarted)
     }))
 
-  log("\n*******************************************************************")
-  log("***Which of 2018's top players were the most consistently good? ***")
-  log("*******************************************************************\n")
+  log("\n************************************************************************")
+  log("***Which of last season's top players were the most consistently good? ***")
+  log("***************************************************************************\n")
 
   log("\n### Hitters with highest net upside deviation in fantasy points per game started (min 25 games started): ###\n")
   val pointsPerGameStartedDeviation: List[(PlayerSeasonStats, Stats)] = season.allHitters
