@@ -1,21 +1,263 @@
-MIL
-1 Trent Grisham OF L $4.5K 9.89
-2 Yasmani Grandal C-1B S $7K 10.01
-3 Mike Moustakas 3B L $7.5K 10.39
-4 Keston Hiura 2B R $8K 10.22
-5 Ryan Braun OF R $6.5K 7.73
-6 Eric Thames C-1B L $6K 9.46
-7 Lorenzo Cain OF R $5K 7.11
-8 Orlando Arcia SS R $5.5K 5.6
-9 Brandon Woodruff P R 12.68
+MIA
+1Jonathan Villar OF S
+2Jesus Aguilar 1B R
+3Corey Dickerson OF L
+4Harold Ramirez OF R
+5Brian Anderson 3B R
+6Isan Diaz 2B L
+7Jorge Alfaro C R
+8Miguel Rojas SS R
+9Jon Berti SS R
+P Sandy Alcantara
 
-WAS
-1 Trea Turner SS R $9.5K 12.41
-2 Adam Eaton OF L $7K 10.33
-3 Anthony Rendon 3B R $9K 12.51
-4 Juan Soto OF L $8.5K 12.63
-5 Howie Kendrick C-1B R $4K 9.08
-6 Asdrubal Cabrera 2B S $8K 9.44
-7 Kurt Suzuki C-1B R $4.5K 7.35
-8 Victor Robles OF R $7.5K 8.93
-9 Max Scherzer P R 40.85
+PHI
+1Andrew McCutchen OF R
+2Bryce Harper OF L
+3J.T. Realmuto C R
+4Jay Bruce OF L
+5Rhys Hoskins 1B R
+6Didi Gregorius SS L
+7Jean Segura 3B R
+8Scott Kingery 2B R
+9Adam Haseley OF 
+P Aaron Nola
+
+KC
+1Whit Merrifield OF R
+2Adalberto Mondesi SS S
+3Jorge Soler OF R
+4Alex Gordon OF L
+5Salvador Perez C R
+6Maikel Franco 3B R
+7Franchy Cordero OF L
+8Ryan McBroom 1B R
+9Nicky Lopez 2B L
+P Danny Duffy
+
+CLE
+1Cesar Hernandez 2B S
+2Jose Ramirez 3B S
+3Francisco Lindor SS S
+4Carlos Santana 1B S
+5Franmil Reyes OF R
+6Jordan Luplow OF R
+7Domingo Santana OF R
+8Roberto Perez C R
+9Oscar Mercado OF R
+P Shane Bieber
+
+MIL
+1Lorenzo Cain OF R
+2Christian Yelich OF L
+3Keston Hiura 2B R
+4Ryan Braun 1B R
+5Justin Smoak 1B S
+6Avisail Garcia OF R
+7Omar Narvaez C L
+8Orlando Arcia SS R
+9Eric Sogard 3B L
+P Brandon Woodruff
+
+CHC
+1Kris Bryant 3B R
+2Anthony Rizzo 1B L
+3Javier Baez SS R
+4Kyle Schwarber OF L
+5Willson Contreras C R
+6Jason Heyward OF L
+7David Bote 2B R
+8Jason Kipnis 2B L
+9Ian Happ OF 
+P Kyle Hendricks
+
+BAL
+1Austin Hays OF R
+2Hanser Alberto 2B R
+3Anthony Santander OF S
+4Renato Nunez 1B R
+5Chris Davis 1B L
+6Jose Iglesias SS R
+7Rio Ruiz 3B L
+8Pedro Severino C R
+9DJ Stewart OF L
+P Tommy Milone
+
+BOS
+1Andrew Benintendi OF L
+2J.D. Martinez DH R
+3Rafael Devers 3B L
+4Xander Bogaerts SS R
+5Christian Vazquez C R
+6Michael Chavis 2B R
+7Kevin Pillar OF R
+8Jackie Bradley OF L
+9Jose Peraza 2B R
+P Nathan Eovaldi
+
+COL
+1David Dahl OF L
+2Trevor Story SS R
+3Charlie Blackmon OF L
+4Nolan Arenado 3B R
+5Daniel Murphy 1B L
+6Ryan McMahon 2B L
+7Raimel Tapia OF L
+8Sam Hilliard OF L
+9Tony Wolters C 
+P German Marquez
+
+TEX
+1Shin-soo Choo OF L
+2Elvis Andrus SS R
+3Danny Santana OF S
+4Joey Gallo OF L
+5Rougned Odor 2B L
+6Todd Frazier 3B R
+7Robinson Chirinos C R
+8Nick Solak 2B R
+9Isiah Kiner-Falefa 3B R
+P Lance Lynn
+
+MIN
+1Max Kepler OF L
+2Jorge Polanco SS S
+3Nelson Cruz DH R
+4Josh Donaldson 3B R
+5Eddie Rosario OF L
+6Mitch Garver C R
+7Luis Arraez 2B L
+8Miguel Sano 1B R
+9Byron Buxton OF 
+P Jose Berrios
+
+CWS
+1Tim Anderson SS R
+2Yoan Moncada 3B S
+3Jose Abreu 1B R
+4Edwin Encarnacion 1B R
+5Yasmani Grandal C S
+6Eloy Jimenez OF R
+7Luis Robert OF R
+8Nicky Delmonico OF L
+9Leury Garcia 2B S
+P Lucas Giolito
+
+PIT
+1Kevin Newman SS R
+2Bryan Reynolds OF S
+3Adam Frazier 2B L
+4Josh Bell 1B S
+5Colin Moran 3B L
+6Jose Osuna 3B R
+7Cole Tucker SS S
+8Jacob Stallings C R
+9Jarrod Dyson OF L
+P Joe Musgrove
+
+STL
+1Kolten Wong 2B L
+2Matt Carpenter 3B L
+3Paul Goldschmidt 1B R
+4Paul DeJong SS R
+5Yadier Molina C R
+6Dexter Fowler OF S
+7Tyler O'Neill OF R
+8Tommy Edman 3B S
+9Harrison Bader OF 
+P Jack Flaherty
+
+SEA
+1Shed Long 2B L
+2J.P. Crawford SS L
+3Kyle Seager 3B L
+4Daniel Vogelbach 1B L
+5Kyle Lewis OF R
+6Jake Fraley OF L
+7Evan White 1B R
+8Mallex Smith OF L
+9Austin Nola C R
+P Marco Gonzales
+
+HOU
+1George Springer OF R
+2Jose Altuve 2B R
+3Alex Bregman 3B R
+4Michael Brantley OF L
+5Yulieski Gurriel 1B R
+6Carlos Correa SS R
+7Josh Reddick OF L
+8Martin Maldonado C R
+9Myles Straw OF R
+P Justin Verlander
+
+ARI
+1Kole Calhoun OF L
+2Ketel Marte 2B S
+3Starling Marte OF R
+4Eduardo Escobar 3B S
+5David Peralta OF L
+6Christian Walker 1B R
+7Carson Kelly C R
+8Jake Lamb 3B L
+9Nick Ahmed SS R
+P Madison Bumgarner
+
+SD
+1Fernando Tatis SS R
+2Manny Machado 3B R
+3Tommy Pham OF R
+4Eric Hosmer 1B L
+5Jurickson Profar 2B S
+6Wil Myers OF R
+7Tyler France 3B R
+8Trent Grisham OF L
+9Francisco Mejia C S
+P Chris Paddack
+
+SF
+1Mike Yastrzemski OF L
+2Alex Dickerson OF L
+3Hunter Pence OF R
+4Pablo Sandoval 3B S
+5Wilmer Flores 2B R
+6Brandon Crawford SS L
+7Mauricio Dubon 2B R
+8Rob Brantly C L
+9Joe McCarthy OF 
+P Jeff Samardzija
+
+LAD
+1Mookie Betts OF R
+2Max Muncy 1B L
+3Justin Turner 3B R
+4Cody Bellinger OF L
+5Corey Seager SS L
+6A.J. Pollock OF R
+7Joc Pederson OF L
+8Will Smith C R
+9Enrique Hernandez OF R
+P Ross Stripling
+
+LAA
+1David Fletcher 2B R
+2Mike Trout OF R
+3Shohei Ohtani DH L
+4Justin Upton OF R
+5Tommy "La Stella" 2B L
+6Albert Pujols 1B R
+7Brian Goodwin OF L
+8Andrelton Simmons SS R
+9Jason Castro C 
+P Andrew Heaney
+
+OAK
+1Marcus Semien SS R
+2Ramon Laureano OF R
+3Matt Chapman 3B R
+4Matt Olson 1B L
+5Khris Davis DH R
+6Mark Canha OF R
+7Stephen Piscotty OF R
+8Chad Pinder OF R
+9Sean Murphy C R
+P Frankie Montas

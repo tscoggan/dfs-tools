@@ -59,7 +59,10 @@ object StartingLineups {
       case teamID :: lines =>
         val team = Teams.get(teamID)
         val batters = lines.takeWhile(_.nonEmpty).map { line =>
-          val position :: first :: last :: otherStuff = line.splitOnSpace().toList
+          val position :: first :: last :: otherStuff = (line.trim.charAt(1) == ' ') match {
+            case true  => line.splitOnSpace().toList // space after bat position --- example: 1 Ronald Acuna OF R
+            case false => line.head.toString :: line.tail.splitOnSpace().toList // no space --- example: 1Ronald Acuna OF R
+          }
           (playerMappings.find(m => m.rgPlayerName.toUpperCase == s"$first $last".toUpperCase && m.team == team) match {
             case Some(mapping) =>
               // mapping found --> use it
@@ -80,7 +83,7 @@ object StartingLineups {
   }
 
   lazy val all: List[BattingOrder] = battingOrderByTeam.values.toList
-  
+
   //log(all.mkString("\n\n"))
 
   def isStarting(player: Player): Boolean = battingOrderByTeam.get(player.team) match {
